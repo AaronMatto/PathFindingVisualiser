@@ -1,0 +1,182 @@
+/* NAVBAR  */
+  .navbar {
+    display: flex;
+    height: 100px;
+    width: 102%;
+    position: relative;
+    left: -10px;
+    bottom: 10px;
+    margin: 0;
+    background-color: rgb(52, 73, 95);
+    color: aliceblue;
+  }
+
+  #title {
+    font-size: 13px;
+    width: 190px;
+    height: 80px;
+    position: relative;
+    padding-bottom: 16px;
+  }
+
+  #title:hover{
+    background-color: rgb(52, 73, 95);
+  }
+
+  #algo-button{
+    width: 20px;
+    background-color: grey;
+  }
+
+  #algo-nav{
+    padding-top: 22px;
+    font-size: 15px;
+    height: 60px;
+  }
+
+  #maze-button {
+    width: 20px;
+    background-color: grey;
+  }
+
+  #maze-nav{
+    padding-top: 20px;
+    padding-left: 10px;
+    font-size: 15px;
+    height: 60px;
+  }
+
+  #speed-button {
+    width: 70px;
+    background-color: grey;
+  }
+
+  #speed-nav {
+    padding-top: 15px;
+    padding-left: 10px;
+    font-size: 15px;
+    height: 60px;
+  }
+
+  .nav-option {
+    /* border: 2px solid black; */
+    border-radius: 2%;
+    height: 70px;
+    width: 9%;
+    margin-left: 13px;
+    margin-top: 10px;
+    font-size: 15px;
+    padding-left: 10px;
+    font-family: 'Noto Sans', sans-serif;
+  }
+
+  .nav-option:hover {
+    background-color: rgb(72, 201, 177);
+  }
+
+/* KEY GUIDE */
+  .key {
+    margin-top: 40px;
+    width: 100%;
+    /* border: 1px solid black; */
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .key-item {
+    /* border: 2px solid green; */
+    font-family: 'Quicksand', sans-serif;
+    width: 190px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .icons{
+    height: 18px;
+    margin: 25px 0 0 0;
+    display: inline;
+    /* border: 1px solid red; */
+  }
+
+  .icon-text {
+    position: relative;
+    bottom: 3px;
+  }
+
+  .node-icons{
+    height: 18px;
+    margin: 25px 0 0 0;
+    display: inline-block;
+    /* border: 1px solid red; */
+    width: 20px;
+  }
+
+  #unvisited-node{
+    border: 1.5px solid rgb(187, 216, 240);
+  }
+
+  .unvisited-text{
+    position: relative;
+    bottom: 5px;
+  }
+
+  #visited-node-1{
+    background-color: rgb(101, 207, 229);
+  }
+
+  #visited-node-2{
+    background-color:rgb(199, 118, 255);
+  }
+
+  #shortest-path-node{
+    background-color: rgb(31, 182, 23);
+  }
+
+  #wall-node{
+    background-color: rgb(14, 53, 72);
+  }
+
+/* GRID */
+  #grid {
+    /* border: 2px solid orange; */
+    width: 98%;
+    height: 467px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(60, 23px);
+    grid-template-rows: repeat(20, 23px);
+    grid-gap: 0px;
+  }
+
+  .node {
+    border: 0.5px solid rgb(187, 216, 240);
+    margin: 0;
+    font-size: 5px;
+  }
+
+  .grid-icons{
+    height: 18px;
+    margin: 2px 0 0 1px;
+    display: inline-block;
+    /* border: 1px solid red; */
+    width: 20px;
+    z-index: -1;
+    opacity: 0.3;
+  }
+
+  #startCell{
+    height: 18px;
+    margin: 2px 0 0 1px;
+    display: inline-block;
+    /* border: 1px solid red; */
+    width: 20px;
+    z-index: 0;
+  }
+
+#pick-msg{
+  /* border: 2px solid black; */
+  text-align: center;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 20px;
+}
