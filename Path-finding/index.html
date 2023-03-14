@@ -51,7 +51,7 @@
       </div>
 
       <div class="nav-option">
-        <p id="visualise-btn">Visualise!</p>
+        <p id="visualise-btn">Visualise</p>
       </div>
 
       <div class="nav-option">
@@ -82,24 +82,29 @@
     </div>
 
     <div class="key">
-      <div class="key-item">
-        <img src="icons/right-arrow.png" class="icons" id="icon-arrow">
+      <div class="key-item user-slct">
+        <img src="icons/right-arrow.png" class="icons-sizing" id="icon-arrow">
         <span class="icon-text">Start Node</span>
       </div>
 
-      <div class="key-item">
-        <img src="icons/target.png" class="icons" id="icon-target">
+      <div class="key-item user-slct">
+        <img src="icons/target.png" class="icons-sizing" id="icon-target">
         <span class="icon-text">Target Node</span>
       </div>
 
-      <div class="key-item">
-        <img src="icons/bomb.png" class="icons" id="icon-bomb">
+      <div class="key-item user-slct">
+        <img src="icons/bomb.png" class="icons-sizing" id="icon-bomb">
         <span class="icon-text">Bomb Node</span>
       </div>
 
-      <div class="key-item">
-        <img src="icons/weight.png" class="icons" id="icon-weight">
+      <div class="key-item user-slct">
+        <img src="icons/weight.png" class="icons-sizing" id="icon-weight">
         <span class="icon-text">Weight Node</span>
+      </div>
+
+      <div class="key-item user-slct">
+        <div class="node-icons" id="wall-node"></div>
+        <span class="icon-text">Wall Node</span>
       </div>
 
       <div class="key-item">
@@ -113,21 +118,19 @@
         <span class="icon-text">Visited Nodes</span>
       </div>
 
-      <div class="key-item">
+      <div class="key-item shortest-path-flex-spacing">
         <div class="node-icons" id="shortest-path-node"></div>
         <span class="icon-text">Shortest-path Node</span>
       </div>
 
-      <div class="key-item">
-        <div class="node-icons" id="wall-node"></div>
-        <span class="icon-text">Wall Node</span>
-      </div>
     </div>
 
-    <p id="pick-msg">Pick an algorithm to visualise it!</p>
+    <p id="pick-msg">Pick an algorithm to visualise it</p>
 
     <div id="grid">
     </div>
+
+    <input type="text" id="hiddenField" value="">
 
   </div>
   <script src="app.js"></script>
