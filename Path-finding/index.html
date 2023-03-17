@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="HTML, CSS, JavaScript, Algorithms, Path finding">
+  <meta name="author" content="Aaron">
+  <title>Path finding Algorithms!</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Quicksand&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="main">
+    <div class = "navbar">
+
+      <div id="title" class="nav-option">
+        <h1>Path finding Visualiser 🎯</h1>
+      </div>
+
+      <div class="nav-option" id="algo-nav">
+        <label for="algo-button">Algorithms:</label>
+        <select name="algo-button" id="algo-button">
+          <option value="dijkstra">Dijkstra's Algorithm</option>
+          <option value="A* search">A* Search</option>
+          <option value="Greedy Best-first Search">Greedy Best-first Search</option>
+          <option value="Swarm Algorithm">Swarm Algorithm</option>
+          <option value="Convergent Swarm Algorithm">Convergent Swarm Algorithm</option>
+          <option value="Bidirectional Swarm Algorithm">Bidirectional Swarm Algorithm</option>
+          <option value="Breadth-first search">Breadth-first Search</option>
+          <option value="Depth-first search">Depth-first Search</option>
+        </select>
+      </div>
+
+      <div class="nav-option" id="maze-nav">
+        <label for="maze-button">Mazes & Patterns</label>
+        <select name="maze-button" id="maze-button">
+          <option value="dijkstra">Dijkstra's Algorithm</option>
+          <option value="A* search">A* Search</option>
+          <option value="Greedy Best-first Search">Greedy Best-first Search</option>
+          <option value="Swarm Algorithm">Swarm Algorithm</option>
+        </select>
+      </div>
+
+      <div class="nav-option">
+        <p id="bomb-btn">Add Bomb</p>
+      </div>
+
+      <div class="nav-option">
+        <p id="visualise-btn">Visualise</p>
+      </div>
+
+      <div class="nav-option">
+        <p>Clear Board</p>
+      </div>
+
+      <div class="nav-option">
+        <p>Clear Walls & Weights</p>
+      </div>
+
+      <div class="nav-option">
+        <p>Clear Walls & Weights</p>
+      </div>
+
+      <div class="nav-option">
+        <p>Clear Path</p>
+      </div>
+
+      <div class="nav-option" id="speed-nav">
+        <label for="speed-button">Speed:</label>
+        <select name="speed-button" id="speed-button">
+          <option value="fast">Fast</option>
+          <option value="medium">Medium</option>
+          <option value="slow">Slow</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="key">
+      <div class="key-item user-slct">
+        <img src="icons/right-arrow.png" class="icons-sizing" id="icon-arrow">
+        <span class="icon-text">Start Node</span>
+      </div>
+
+      <div class="key-item user-slct">
+        <img src="icons/target.png" class="icons-sizing" id="icon-target">
+        <span class="icon-text">Target Node</span>
+      </div>
+
+      <div class="key-item user-slct">
+        <img src="icons/bomb.png" class="icons-sizing" id="icon-bomb">
+        <span class="icon-text">Bomb Node</span>
+      </div>
+
+      <div class="key-item user-slct">
+        <img src="icons/weight.png" class="icons-sizing" id="icon-weight">
+        <span class="icon-text">Weight Node</span>
+      </div>
+
+      <div class="key-item user-slct">
+        <div class="node-icons" id="wall-node"></div>
+        <span class="icon-text">Wall Node</span>
+      </div>
+
+      <div class="key-item">
+        <div class="node-icons" id="unvisited-node"></div>
+        <span class="unvisited-text">Unvisited Node</span>
+      </div>
+
+      <div class="key-item">
+        <div class="node-icons" id="visited-node-1"></div>
+        <div class="node-icons" id="visited-node-2"></div>
+        <span class="icon-text">Visited Nodes</span>
+      </div>
+
+      <div class="key-item shortest-path-flex-spacing">
+        <div class="node-icons" id="shortest-path-node"></div>
+        <span class="icon-text">Shortest-path Node</span>
+      </div>
+
+    </div>
+
+    <p id="pick-msg">Pick an algorithm to visualise it</p>
+
+    <div id="grid">
+    </div>
+
+    <input type="text" id="hiddenField" value="">
+
+  </div>
+  <script src="app.js"></script>
+</body>
+
+</html>
