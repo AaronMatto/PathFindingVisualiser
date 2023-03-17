@@ -60,7 +60,7 @@
 
   .nav-option {
     /* border: 2px solid black; */
-    border-radius: 2%;
+    border-radius: 3%;
     height: 70px;
     width: 9%;
     margin-left: 13px;
@@ -75,26 +75,36 @@
   }
 
 /* KEY GUIDE */
+
+  .user-slct{
+    border: 1px solid rgba(200,200,200, 1);
+    padding-top: 3px;
+  }
+
   .key {
     margin-top: 40px;
     width: 100%;
+    height: 130px;
     /* border: 1px solid black; */
     display: flex;
-    justify-content: space-between;
+    gap: 50px;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
 
   .key-item {
-    /* border: 2px solid green; */
+    /* border: 2px solid red; */
     font-family: 'Quicksand', sans-serif;
-    width: 190px;
+    width: 130px;
+    height: 50px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-left: 20px;
+    /* margin-top: -50px; */
   }
 
-  .icons{
+  .icons-sizing{
     height: 18px;
-    margin: 25px 0 0 0;
+    margin: 12px 0 0 0;
     display: inline;
     /* border: 1px solid red; */
   }
@@ -102,11 +112,21 @@
   .icon-text {
     position: relative;
     bottom: 3px;
+    font-size: 16px;
+    /* border: 2px solid orange; */
+    height: 20px;
+    width: 30px;
+  }
+
+  .shortest-path-flex-spacing {
+    position: relative;
+    left: 10px;
+    bottom: 40px;
   }
 
   .node-icons{
     height: 18px;
-    margin: 25px 0 0 0;
+    margin: 12px 0 0 0;
     display: inline-block;
     /* border: 1px solid red; */
     width: 20px;
@@ -137,6 +157,10 @@
     background-color: rgb(14, 53, 72);
   }
 
+  .user-slct:hover {
+    cursor: pointer;
+  }
+
 /* GRID */
   #grid {
     /* border: 2px solid orange; */
@@ -155,7 +179,7 @@
     font-size: 5px;
   }
 
-  .grid-icons{
+  .mouseover-grid-icons{
     height: 18px;
     margin: 2px 0 0 1px;
     display: inline-block;
@@ -165,7 +189,7 @@
     opacity: 0.3;
   }
 
-  #startCell{
+  .selectedCell{
     height: 18px;
     margin: 2px 0 0 1px;
     display: inline-block;
@@ -176,7 +200,14 @@
 
 #pick-msg{
   /* border: 2px solid black; */
+  margin-top: 20px;
   text-align: center;
   font-family: 'Quicksand', sans-serif;
   font-size: 20px;
 }
+
+
+/* Changing the cursor once a node has been clicked */
+  .start-cursor {
+    cursor: url("icons/right-arrow.png")
+  }
