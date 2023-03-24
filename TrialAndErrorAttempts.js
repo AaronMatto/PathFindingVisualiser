@@ -69,3 +69,25 @@ userNodeDivs.forEach(userNodeDiv => {
     console.log('f')
   }
 });
+
+
+
+
+
+// removing from a gridcell
+// if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML != "") {
+//   console.log(e.target);
+//   gridcell.innerHTML = "";
+// }
+
+
+// // adding to a gridcell
+// if ((e.target == gridcell || gridcell.firstElementChild) && hiddenField.value != "") {
+//   hiddenFieldValue(gridcell);
+//   gridcell.firstElementChild.classList.remove("mouseover-grid-icons");
+//   gridcell.firstElementChild.classList.add("selectedCell");
+//   console.log('f');
+// }
+// originally only tried to have one set of nodes to be used for both the hover in a mouseover event for a gridcell and
+// to place a node in a gridcell upon a click. This would be done by dynamically adding and removing classes. However,
+// the logic for hover and the logic for click become contradictory and less readable when this is done.

@@ -17,6 +17,8 @@
     height: 80px;
     position: relative;
     padding-bottom: 16px;
+    padding-left: 20px;
+    font-family: 'Noto Sans', sans-serif;
   }
 
   #title:hover{
@@ -72,6 +74,7 @@
 
   .nav-option:hover {
     background-color: rgb(72, 201, 177);
+    cursor: pointer;
   }
 
 /* KEY GUIDE */
@@ -159,6 +162,7 @@
 
   .user-slct:hover {
     cursor: pointer;
+    background-color: rgba(25, 133, 241, 0.6);
   }
 
 /* GRID */
