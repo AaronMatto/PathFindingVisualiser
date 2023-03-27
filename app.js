@@ -140,12 +140,46 @@
 
 // PLOTTING THE SHORTEST PATH - here we go...
 
-  // first, identify the cell with a start node and cell with a target node
-  // grab the x and y coordinates of each
-  // find the difference between each coordinate (x and y) from start node to end node. Do start - end.
-  // store the difference for each
-  // if the difference is say (-10, 15) that means we need to go 10 cells left (-ve is )
-  // as the target has a smaller x, and 15 cells up (+ve is up for y and -ve is down(but up on the scale))
-  // the difference for each coord is the shortest path. Sign matters as tells us to go left/right or up/down.
-  // fill in the number of cells equal to the y diff above/below the start with shortest path node
-  // fill in the number of cells equal to the x diff left/right of the start with the shortest path node
+  dijkstra = (startcell) => {
+
+    let y = startcell.getAttribute("data-y");
+    let x = startcell.getAttribute("data-x");
+
+    let yCoord = parseInt(y, 10);
+    let xCoord = parseInt(x, 10);
+
+
+
+  }
+
+
+  const visualiseBtn = document.getElementById("visualise-btn");
+  visualiseBtn.parentElement.addEventListener('click', e => {
+    gridCells.forEach(gridcell => {
+      if(gridcell.innerHTML == startNodeSelect) {
+        dijkstra(gridcell);
+      };
+    });
+  });
+
+  // we must start from the start node. cannot foreach the grid.
+  // dijkstra says:
+  // visit the closest unvisited. so we go one sq up.
+  // distance travelled, one:
+  // then one sq right, then one down, then one left
+  // distance: two
+  // then one up one right, one right one right, one down one right, one left one right
+  // then two up, two right, two down, two left
+
+  // then two up, one right etc
+
+  // basically, you need to go in a straight line to the max distance of the iteration
+  // then you need to cover all the combos of steps that go some of the max distance vertical
+  // and some of the max distance RIGHT
+  // so say we are on the iteration of travelling 4 steps, we need to go:
+  // 4 up
+  // 3 up 1 right
+  // 2 up 2 right
+  // 1 up 3 right
+
+  // then we go 4 right and repeat for that vertical line.
