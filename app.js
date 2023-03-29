@@ -142,7 +142,7 @@
 
 // PLOTTING THE SHORTEST PATH - here we go...
 
-  dijkstra = (startcell) => {
+  dijkstra = (startcell, startIndex) => {
 
     // parsing out the x, y and i coords of each cell for reference
     let y = startcell.getAttribute("data-y");
@@ -163,13 +163,10 @@
       // Referencing the nodes right and left is easy via iCoord (not using x since other cells have same x which is not useful for
       // uniquely identifying visited/unvisited). Up and down is done via y-coord and we can use this dynamically to grab the iCoord for
       // those cells possibly. Right and left first
-      rightCell = unvisited[unvisited.indexOf(startcell) + 1];
-      leftCell = unvisited[unvisited.indexOf(startcell) - 1];
+      rightCell = unvisited[startIndex + 1];
+      leftCell = unvisited[startIndex - 1];
+      aboveCellY = yCoord + 1;
 
-      console.log(rightCell);
-      console.log(leftCell);
-      console.log(typeof x);
-      console.log(xCoord);
 
 
     //};
@@ -181,9 +178,9 @@
   visualiseBtn.parentElement.addEventListener('click', e => {
 
     if (e.target == visualiseBtn.parentElement){
-      gridCells.forEach(gridcell => {
+      gridCells.forEach((gridcell, index) => {
         if(gridcell.innerHTML == startNodeSelect) {
-          dijkstra(gridcell);
+          dijkstra(gridcell, index);
         };
       });
     };
