@@ -10,8 +10,10 @@
     if (x == 0 && i != 0){
       y++;
     }
-    grid.innerHTML += `<div class='node' data-x='${x}' data-y='${y}' ${i}></div>`
+    grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-i=${i}></div>`
     x++;
+    // turns out, I MIGHT only need i for dijkstra's algorithm to identify visited and unvisited nodes. x and y could be useful for calculating
+    // distances however, so leaving in for now.
   };
 
 // CLEAR BOARD
@@ -142,25 +144,52 @@
 
   dijkstra = (startcell) => {
 
+    // parsing out the x, y and i coords of each cell for reference
     let y = startcell.getAttribute("data-y");
     let x = startcell.getAttribute("data-x");
+    let i = startcell.getAttribute("data-i");
 
     let yCoord = parseInt(y, 10);
     let xCoord = parseInt(x, 10);
+    let iCoord = parseInt(i, 10);
+
+    // implementing the algorithm
+    let visited = [];
+    let unvisited = [...gridCells]; // rather than removing the start node from this array, we can set the loop to run until it has a length of 1 ?
+    // while (unvisited.length != 1){ // No. We don't want to visit the entire grid. We want to loop until we find the target. Fix later, works for now.
+
+      // 1. Visit the vertex with the smallest known distance from the start vertex
+      // this is going to be the nodes directly above, below, right and left of the start cell
+      // Referencing the nodes right and left is easy via iCoord (not using x since other cells have same x which is not useful for
+      // uniquely identifying visited/unvisited). Up and down is done via y-coord and we can use this dynamically to grab the iCoord for
+      // those cells possibly. Right and left first
+      rightCell = unvisited[unvisited.indexOf(startcell) + 1];
+      leftCell = unvisited[unvisited.indexOf(startcell) - 1];
+
+      console.log(rightCell);
+      console.log(leftCell);
+      console.log(typeof x);
+      console.log(xCoord);
 
 
+    //};
 
-  }
+  };
 
 
   const visualiseBtn = document.getElementById("visualise-btn");
   visualiseBtn.parentElement.addEventListener('click', e => {
-    gridCells.forEach(gridcell => {
-      if(gridcell.innerHTML == startNodeSelect) {
-        dijkstra(gridcell);
-      };
-    });
+
+    if (e.target == visualiseBtn.parentElement){
+      gridCells.forEach(gridcell => {
+        if(gridcell.innerHTML == startNodeSelect) {
+          dijkstra(gridcell);
+        };
+      });
+    };
   });
+
+
 
   // we must start from the start node. cannot foreach the grid.
   // dijkstra says:
