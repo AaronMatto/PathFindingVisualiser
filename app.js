@@ -185,11 +185,11 @@
     // parsing out the x, y and i coords of each cell for reference
     let y = currentCell.getAttribute("data-y");
     let x = currentCell.getAttribute("data-x");
-    let i = currentCell.getAttribute("data-i");
 
     let yCoord = parseInt(y, 10);
     let xCoord = parseInt(x, 10);
-    let iCoord = parseInt(i, 10);
+
+    // will always be 1 up or down or left or right
   }
 
 
