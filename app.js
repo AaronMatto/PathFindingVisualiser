@@ -144,15 +144,6 @@
 
   dijkstra = (startcell, startIndex) => {
 
-    // parsing out the x, y and i coords of each cell for reference
-    let y = startcell.getAttribute("data-y");
-    let x = startcell.getAttribute("data-x");
-    let i = startcell.getAttribute("data-i");
-
-    let yCoord = parseInt(y, 10);
-    let xCoord = parseInt(x, 10);
-    let iCoord = parseInt(i, 10);
-
     // implementing the algorithm
     let visited = [];
     let unvisited = [...gridCells]; // rather than removing the start node from this array, we can set the loop to run until it has a length of 1 ?
@@ -163,9 +154,14 @@
       // Referencing the nodes right and left is easy via iCoord (not using x since other cells have same x which is not useful for
       // uniquely identifying visited/unvisited). Up and down is done via y-coord and we can use this dynamically to grab the iCoord for
       // those cells possibly. Right and left first
-      rightCell = unvisited[startIndex + 1];
-      leftCell = unvisited[startIndex - 1];
-      aboveCellY = yCoord + 1;
+
+      // distance is the total distance for that iteration. verticalDist + horizontaldist always = distance.
+      //
+      let currentlyVisitedCell = startcell;
+      let distanceOfCurrentlyVistedCell = 0;
+      let shortestPathFromStartforNeighbours = 1000;
+      let distanceFromStartToNeighbourCell = distanceOfCurrentlyVistedCell + distanceOfNeighbours(currentlyVisitedCell);
+
 
 
 
@@ -173,19 +169,28 @@
 
   };
 
-
   const visualiseBtn = document.getElementById("visualise-btn");
   visualiseBtn.parentElement.addEventListener('click', e => {
 
     if (e.target == visualiseBtn.parentElement){
-      gridCells.forEach((gridcell, index) => {
+      gridCells.forEach((gridcell) => {
         if(gridcell.innerHTML == startNodeSelect) {
-          dijkstra(gridcell, index);
+          dijkstra(gridcell);
         };
       });
     };
   });
 
+  distanceOfNeighbours = (currentCell) => {
+    // parsing out the x, y and i coords of each cell for reference
+    let y = currentCell.getAttribute("data-y");
+    let x = currentCell.getAttribute("data-x");
+    let i = currentCell.getAttribute("data-i");
+
+    let yCoord = parseInt(y, 10);
+    let xCoord = parseInt(x, 10);
+    let iCoord = parseInt(i, 10);
+  }
 
 
   // we must start from the start node. cannot foreach the grid.
@@ -209,3 +214,12 @@
   // 1 up 3 right
 
   // then we go 4 right and repeat for that vertical line.
+
+
+
+
+
+
+  // n = 10, x = 0
+  // n = 9, x = 1
+  // n = 8, x = 2
