@@ -146,6 +146,7 @@
 
     // implementing the algorithm
     let visited = [];
+    let currentlyVisting = [];
     let unvisited = [...gridCells]; // rather than removing the start node from this array, we can set the loop to run until it has a length of 1 ?
     // while (unvisited.length != 1){ // No. We don't want to visit the entire grid. We want to loop until we find the target. Fix later, works for now.
 
@@ -157,13 +158,12 @@
 
       // distance is the total distance for that iteration. verticalDist + horizontaldist always = distance.
       //
-      let currentlyVisitedCell = startcell;
-      let distanceOfCurrentlyVistedCell = 0;
-      let shortestPathFromStartforNeighbours = 1000;
-      let distanceFromStartToNeighbourCell = distanceOfCurrentlyVistedCell + distanceOfNeighbours(currentlyVisitedCell);
+      while (visited.includes(targetNodeSelect) == false){
+        let currentlyVisitedCell = startcell;
+        findUnvisitedNeighbours(currentlyVisitedCell);
+        visited.unshift(currentlyVisitedCell);
 
-
-
+      };
 
     //};
 
@@ -181,17 +181,40 @@
     };
   });
 
-  distanceOfNeighbours = (currentCell) => {
-    // parsing out the x, y and i coords of each cell for reference
-    let y = currentCell.getAttribute("data-y");
-    let x = currentCell.getAttribute("data-x");
 
-    let yCoord = parseInt(y, 10);
-    let xCoord = parseInt(x, 10);
+  // function to find unvisited neighbours
+  findUnvisitedNeighbours = (currentCell) => {
+    let yCoord = currentCell.getAttribute("data-y");
+    let xCoord = currentCell.getAttribute("data-x");
 
-    // will always be 1 up or down or left or right
-  }
+    let y = parseInt(yCoord, 10);
+    let x = parseInt(xCoord, 10);
 
+    let aboveNeighbour = findNeighbours(x, y, 1, 0);
+    let rightNeighbour = findNeighbours(x, y, 0, -1);
+    let belowNeighbour = findNeighbours(x, y, -1, 0);
+    let leftNeighbour = findNeighbours (x, y, 0, 1);
+    let neighbours = [aboveNeighbour, rightNeighbour, belowNeighbour, leftNeighbour];
+
+    neighbours.forEach((neighbour, index) => {
+
+      // if neighbour is the target call calculate path function
+
+      if (neighbour.classList.contains("visited-node-1")){
+        neighbours.splice(index, 1);
+      } else {
+        neighbour.classList.add("visited-node-1");
+      };
+    });
+
+    return neighbours;
+  };
+
+  findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+    let neighbour = gridCells.find(cell => parseInt(cell.getAttribute("data-y")) == currentY - ySubtrahend
+    && parseInt(cell.getAttribute("data-x")) ==  currentX - xSubtrahend);
+    return neighbour;
+  };
 
   // we must start from the start node. cannot foreach the grid.
   // dijkstra says:

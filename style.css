@@ -144,7 +144,7 @@
     bottom: 5px;
   }
 
-  #visited-node-1{
+  .visited-node-1{
     background-color: rgb(101, 207, 229);
   }
 
