@@ -142,30 +142,40 @@
 
 // PLOTTING THE SHORTEST PATH - here we go...
 
-  dijkstra = (startcell, startIndex) => {
+  dijkstra = (startcell) => {
 
     // implementing the algorithm
     let visited = [];
-    let currentlyVisting = [];
-    let unvisited = [...gridCells]; // rather than removing the start node from this array, we can set the loop to run until it has a length of 1 ?
-    // while (unvisited.length != 1){ // No. We don't want to visit the entire grid. We want to loop until we find the target. Fix later, works for now.
+    let unvisited = [startcell];
+    let test = 1;
+    // visited.includes(targetNodeSelect) == false)
+    let breakpoint = 0;
 
-      // 1. Visit the vertex with the smallest known distance from the start vertex
-      // this is going to be the nodes directly above, below, right and left of the start cell
-      // Referencing the nodes right and left is easy via iCoord (not using x since other cells have same x which is not useful for
-      // uniquely identifying visited/unvisited). Up and down is done via y-coord and we can use this dynamically to grab the iCoord for
-      // those cells possibly. Right and left first
+// on iteration 1 we know:
+// currentlyVisitedCellWorks, so it grabs the reference from unvisited fine, meaning unvisited works
+// currentlyVisitedNewNeighbours recognises the right cells but does not grab a proper reference to them, HTMLObject
 
-      // distance is the total distance for that iteration. verticalDist + horizontaldist always = distance.
-      //
-      while (visited.includes(targetNodeSelect) == false){
-        let currentlyVisitedCell = startcell;
-        findUnvisitedNeighbours(currentlyVisitedCell);
-        visited.unshift(currentlyVisitedCell);
+      while (breakpoint < 2){
+        let numberToVisit = unvisited.length;
+        console.log(`numberToVisit on iteration ${breakpoint} is ${numberToVisit}`);
+        for(let i = 0; i < numberToVisit; i++){
+          currentlyVisitedCell = unvisited[i];
+          console.log(currentlyVisitedCell);
 
+          currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+          console.log(`next iterations nodes to visit: ${currentlyVisitedNewNeighbours}`)
+
+          visited.push(currentlyVisitedCell);
+          console.log(visited)
+
+          unvisited.concat(currentlyVisitedNewNeighbours);
+          console.log(`unvisited with next iterations' new neighbours: ${unvisited}`);
+        };
+
+        unvisited.splice(0, numberToVisit);
+        console.log(`unvisited with new neighbours only: ${unvisited}`);
+        breakpoint++;
       };
-
-    //};
 
   };
 
@@ -191,6 +201,7 @@
     let x = parseInt(xCoord, 10);
 
     let aboveNeighbour = findNeighbours(x, y, 1, 0);
+    console.log(`above neighbour is ${aboveNeighbour}`);
     let rightNeighbour = findNeighbours(x, y, 0, -1);
     let belowNeighbour = findNeighbours(x, y, -1, 0);
     let leftNeighbour = findNeighbours (x, y, 0, 1);
@@ -207,12 +218,14 @@
       };
     });
 
+    console.log(``);
+    console.log(`retutning neighbours. neighbours is ${neighbours}`);
     return neighbours;
   };
 
   findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
     let neighbour = gridCells.find(cell => parseInt(cell.getAttribute("data-y")) == currentY - ySubtrahend
-    && parseInt(cell.getAttribute("data-x")) ==  currentX - xSubtrahend);
+    && parseInt(cell.getAttribute("data-x")) == currentX - xSubtrahend);
     return neighbour;
   };
 
