@@ -147,7 +147,6 @@
     // implementing the algorithm
     let visited = [];
     let unvisited = [startcell];
-    let test = 1;
     // visited.includes(targetNodeSelect) == false)
     let breakpoint = 0;
 
@@ -155,27 +154,29 @@
 // currentlyVisitedCellWorks, so it grabs the reference from unvisited fine, meaning unvisited works
 // currentlyVisitedNewNeighbours recognises the right cells but does not grab a proper reference to them, HTMLObject
 
-      while (breakpoint < 2){
-        let numberToVisit = unvisited.length;
-        console.log(`numberToVisit on iteration ${breakpoint} is ${numberToVisit}`);
-        for(let i = 0; i < numberToVisit; i++){
-          currentlyVisitedCell = unvisited[i];
-          console.log(currentlyVisitedCell);
+    while (visited.includes(targetNodeSelect) == false){
+      console.log(``);
+      let numberToVisit = unvisited.length;
+      console.log(`numberToVisit on iteration ${breakpoint} is ${numberToVisit}`);
+      for(let i = 0; i < numberToVisit; i++){
+        currentlyVisitedCell = unvisited[i];
+        console.log(`currently visiting ${currentlyVisitedCell + ' ' + i}`);
+        console.log(currentlyVisitedCell);
 
-          currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
-          console.log(`next iterations nodes to visit: ${currentlyVisitedNewNeighbours}`)
+        currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+        console.log(`next iterations nodes to visit: ${currentlyVisitedNewNeighbours}`)
 
-          visited.push(currentlyVisitedCell);
-          console.log(visited)
+        visited.push(currentlyVisitedCell);
+        console.log(visited);
 
-          unvisited.concat(currentlyVisitedNewNeighbours);
-          console.log(`unvisited with next iterations' new neighbours: ${unvisited}`);
-        };
-
-        unvisited.splice(0, numberToVisit);
-        console.log(`unvisited with new neighbours only: ${unvisited}`);
-        breakpoint++;
+        unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
       };
+
+      unvisited.splice(0, numberToVisit);
+      console.log(`unvisited with new neighbours only:`);
+      console.log(unvisited.length);
+      breakpoint++;
+    };
 
   };
 
@@ -201,26 +202,31 @@
     let x = parseInt(xCoord, 10);
 
     let aboveNeighbour = findNeighbours(x, y, 1, 0);
-    console.log(`above neighbour is ${aboveNeighbour}`);
     let rightNeighbour = findNeighbours(x, y, 0, -1);
     let belowNeighbour = findNeighbours(x, y, -1, 0);
     let leftNeighbour = findNeighbours (x, y, 0, 1);
     let neighbours = [aboveNeighbour, rightNeighbour, belowNeighbour, leftNeighbour];
+    let unvisitedNeighbours = [];
 
-    neighbours.forEach((neighbour, index) => {
+    neighbours.forEach((neighbour) => {
 
       // if neighbour is the target call calculate path function
+      console.log(neighbour);
+      if (neighbour == undefined){
 
-      if (neighbour.classList.contains("visited-node-1")){
-        neighbours.splice(index, 1);
+      }
+
+      if (neighbour.classList.contains("visited-node-1") || neighbour.innerHTML != ""){
+        console.log('na');
+        return
       } else {
+        console.log('ye');
         neighbour.classList.add("visited-node-1");
+        unvisitedNeighbours.push(neighbour);
       };
     });
 
-    console.log(``);
-    console.log(`retutning neighbours. neighbours is ${neighbours}`);
-    return neighbours;
+    return unvisitedNeighbours;
   };
 
   findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
@@ -228,34 +234,3 @@
     && parseInt(cell.getAttribute("data-x")) == currentX - xSubtrahend);
     return neighbour;
   };
-
-  // we must start from the start node. cannot foreach the grid.
-  // dijkstra says:
-  // visit the closest unvisited. so we go one sq up.
-  // distance travelled, one:
-  // then one sq right, then one down, then one left
-  // distance: two
-  // then one up one right, one right one right, one down one right, one left one right
-  // then two up, two right, two down, two left
-
-  // then two up, one right etc
-
-  // basically, you need to go in a straight line to the max distance of the iteration
-  // then you need to cover all the combos of steps that go some of the max distance vertical
-  // and some of the max distance RIGHT
-  // so say we are on the iteration of travelling 4 steps, we need to go:
-  // 4 up
-  // 3 up 1 right
-  // 2 up 2 right
-  // 1 up 3 right
-
-  // then we go 4 right and repeat for that vertical line.
-
-
-
-
-
-
-  // n = 10, x = 0
-  // n = 9, x = 1
-  // n = 8, x = 2
