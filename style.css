@@ -172,15 +172,14 @@
     height: 467px;
     margin: auto;
     display: grid;
-    grid-template-columns: repeat(60, 23px);
-    grid-template-rows: repeat(20, 23px);
+    grid-template-columns: repeat(60, 24px);
+    grid-template-rows: repeat(20, 24px);
     grid-gap: 0px;
   }
 
   .node {
     border: 0.5px solid rgb(187, 216, 240);
     margin: 0;
-    font-size: 5px;
   }
 
   .mouseover-grid-icons{

@@ -23,6 +23,8 @@
     if (e.target == clearBoardBtn){
       gridCells.forEach(gridcell => {
         gridcell.innerHTML = "";
+        gridcell.className = "";
+        gridcell.classList.add('node');
       });
     };
   });
@@ -147,34 +149,40 @@
     // implementing the algorithm
     let visited = [];
     let unvisited = [startcell];
-    // visited.includes(targetNodeSelect) == false)
     let breakpoint = 0;
+    let targetX;
+    let targetY;
 
-// on iteration 1 we know:
-// currentlyVisitedCellWorks, so it grabs the reference from unvisited fine, meaning unvisited works
-// currentlyVisitedNewNeighbours recognises the right cells but does not grab a proper reference to them, HTMLObject
-
-    while (visited.includes(targetNodeSelect) == false){
+    while (unvisited.includes('TARGET FOUND') == false){
       console.log(``);
       let numberToVisit = unvisited.length;
-      console.log(`numberToVisit on iteration ${breakpoint} is ${numberToVisit}`);
+      // console.log(`numberToVisit on iteration ${breakpoint} is ${numberToVisit}`);
       for(let i = 0; i < numberToVisit; i++){
         currentlyVisitedCell = unvisited[i];
-        console.log(`currently visiting ${currentlyVisitedCell + ' ' + i}`);
-        console.log(currentlyVisitedCell);
+        // console.log(`currently visiting ${currentlyVisitedCell + ' ' + i}`);
+        // console.log(currentlyVisitedCell);
 
         currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
-        console.log(`next iterations nodes to visit: ${currentlyVisitedNewNeighbours}`)
+        // console.log(`next iterations nodes to visit: ${currentlyVisitedNewNeighbours}`)
+        if (currentlyVisitedNewNeighbours.includes(typeof 'string')){
+          let splitArray = currentlyVisitedNewNeighbours.split(" ");
+          console.log(splitArray[0]);
+          // currentlyVisitedNewNeighbours = splitArray[0];
+          // targetX = parseInt(splitArray[1], 10);
+          // targetY = parseInt(splitArray[2], 10);
+          // console.log(targetX, targetY);
+        }
 
         visited.push(currentlyVisitedCell);
-        console.log(visited);
+        // console.log('visited is:')
+        // console.log(visited);
 
         unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
       };
 
       unvisited.splice(0, numberToVisit);
-      console.log(`unvisited with new neighbours only:`);
-      console.log(unvisited.length);
+      //console.log(`unvisited with new neighbours only:`);
+      //console.log(unvisited.length);
       breakpoint++;
     };
 
@@ -182,13 +190,27 @@
 
   const visualiseBtn = document.getElementById("visualise-btn");
   visualiseBtn.parentElement.addEventListener('click', e => {
-
+    let startCell;
+    let targetCell;
     if (e.target == visualiseBtn.parentElement){
       gridCells.forEach((gridcell) => {
+
+        if(gridcell.innerHTML == targetNodeSelect){
+          targetCell = gridcell;
+        }
+
         if(gridcell.innerHTML == startNodeSelect) {
-          dijkstra(gridcell);
+          startCell = gridcell;
         };
       });
+
+      if (startCell == undefined || targetCell == undefined){ // May change later. Can we do this without knowing where the target is?
+        alert('Please select both a start and end point');
+        return;
+      };
+
+      dijkstra(startCell);
+
     };
   });
 
@@ -207,25 +229,34 @@
     let leftNeighbour = findNeighbours (x, y, 0, 1);
     let neighbours = [aboveNeighbour, rightNeighbour, belowNeighbour, leftNeighbour];
     let unvisitedNeighbours = [];
-
-    neighbours.forEach((neighbour) => {
+    // console.log(neighbours);
+    for(let z = 0; z < neighbours.length; z++){
 
       // if neighbour is the target call calculate path function
-      console.log(neighbour);
-      if (neighbour == undefined){
-
+      if(neighbours[z] == undefined){
+        // console.log(z);
+        continue;
       }
 
-      if (neighbour.classList.contains("visited-node-1") || neighbour.innerHTML != ""){
-        console.log('na');
-        return
-      } else {
-        console.log('ye');
-        neighbour.classList.add("visited-node-1");
-        unvisitedNeighbours.push(neighbour);
-      };
-    });
+      if (neighbours[z].innerHTML == targetNodeSelect) {
+        let targetX = neighbours[z].getAttribute("data-x");
+        let targetY = neighbours[z].getAttribute("data-y");
+        return `TARGET FOUND`
+      }
 
+      if (neighbours[z].classList.contains("visited-node-1") ||
+        neighbours[z].innerHTML === startNodeSelect){
+        //console.log('na');
+        continue;
+      }
+
+      //console.log('ye');
+      neighbours[z].classList.add("visited-node-1");
+      unvisitedNeighbours.push(neighbours[z]);
+
+    };
+
+    //console.log(unvisitedNeighbours);
     return unvisitedNeighbours;
   };
 
@@ -233,4 +264,14 @@
     let neighbour = gridCells.find(cell => parseInt(cell.getAttribute("data-y")) == currentY - ySubtrahend
     && parseInt(cell.getAttribute("data-x")) == currentX - xSubtrahend);
     return neighbour;
+  };
+
+  // function to calculate shortest path once target found
+  calculatePath = (targetCell) => {
+    let targetX;
+    let targetY;
+    let startX;
+    let startY;
+
+
   };
