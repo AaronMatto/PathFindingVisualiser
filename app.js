@@ -208,12 +208,12 @@
   });
 
 
-
+  let tracker = {};
   // function to find unvisited neighbours
   findUnvisitedNeighbours = (currentCell) => {
     let yCoord = getCoord(currentCell, 'y');
     let xCoord = getCoord(currentCell, 'x');
-    let tracker = {};
+
     let y = parseInt(yCoord);
     let x = parseInt(xCoord);
 
