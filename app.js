@@ -127,7 +127,7 @@
 
   placeNodeInGridCell = (e, hiddenfieldValue) => {
     gridCells.forEach(gridcell => {
-    // I need to compare the innerhtml of the cell to the hidden field value
+    // compare the innerhtml of the cell to the hidden field value
 
       // removing a placed node from a gridcell
       if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue) {
@@ -142,49 +142,42 @@
     });
   }
 
-// PLOTTING THE SHORTEST PATH - here we go...
+// PLOTTING THE SHORTEST PATH
+
+  getCoord = (cell, z) => {
+    return cell.getAttribute(`data-${z}`);
+  }
 
   dijkstra = (startcell) => {
 
     // implementing the algorithm
     let visited = [];
     let unvisited = [startcell];
-    let breakpoint = 0;
-    let targetX;
-    let targetY;
+    let iterations = 0;
 
-    while (unvisited.includes('TARGET FOUND') == false){
+
+    while (unvisited.includes('TARGET-FOUND') == false){
       console.log(``);
       let numberToVisit = unvisited.length;
-      // console.log(`numberToVisit on iteration ${breakpoint} is ${numberToVisit}`);
-      for(let i = 0; i < numberToVisit; i++){
-        currentlyVisitedCell = unvisited[i];
-        // console.log(`currently visiting ${currentlyVisitedCell + ' ' + i}`);
-        // console.log(currentlyVisitedCell);
 
-        currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
-        // console.log(`next iterations nodes to visit: ${currentlyVisitedNewNeighbours}`)
-        if (currentlyVisitedNewNeighbours.includes(typeof 'string')){
-          let splitArray = currentlyVisitedNewNeighbours.split(" ");
-          console.log(splitArray[0]);
-          // currentlyVisitedNewNeighbours = splitArray[0];
-          // targetX = parseInt(splitArray[1], 10);
-          // targetY = parseInt(splitArray[2], 10);
-          // console.log(targetX, targetY);
+      for(let i = 0; i < numberToVisit; i++){
+        let currentlyVisitedCell = unvisited[i];
+
+        let currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell); // has a max length of 4 on 1st iteration. Then a max of 3.
+        if (typeof currentlyVisitedNewNeighbours == 'string'){
+          console.log(iterations);
+          i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
         }
 
         visited.push(currentlyVisitedCell);
-        // console.log('visited is:')
-        // console.log(visited);
 
         unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
       };
 
       unvisited.splice(0, numberToVisit);
-      //console.log(`unvisited with new neighbours only:`);
-      //console.log(unvisited.length);
-      breakpoint++;
+      iterations++;
     };
+
 
   };
 
@@ -215,13 +208,14 @@
   });
 
 
+
   // function to find unvisited neighbours
   findUnvisitedNeighbours = (currentCell) => {
-    let yCoord = currentCell.getAttribute("data-y");
-    let xCoord = currentCell.getAttribute("data-x");
-
-    let y = parseInt(yCoord, 10);
-    let x = parseInt(xCoord, 10);
+    let yCoord = getCoord(currentCell, 'y');
+    let xCoord = getCoord(currentCell, 'x');
+    let tracker = {};
+    let y = parseInt(yCoord);
+    let x = parseInt(xCoord);
 
     let aboveNeighbour = findNeighbours(x, y, 1, 0);
     let rightNeighbour = findNeighbours(x, y, 0, -1);
@@ -229,49 +223,65 @@
     let leftNeighbour = findNeighbours (x, y, 0, 1);
     let neighbours = [aboveNeighbour, rightNeighbour, belowNeighbour, leftNeighbour];
     let unvisitedNeighbours = [];
-    // console.log(neighbours);
+
     for(let z = 0; z < neighbours.length; z++){
 
       // if neighbour is the target call calculate path function
       if(neighbours[z] == undefined){
-        // console.log(z);
         continue;
       }
 
       if (neighbours[z].innerHTML == targetNodeSelect) {
-        let targetX = neighbours[z].getAttribute("data-x");
-        let targetY = neighbours[z].getAttribute("data-y");
-        return `TARGET FOUND`
+        neighbours[z].classList.add("visited-node-1");
+        return `TARGET-FOUND`;
       }
 
       if (neighbours[z].classList.contains("visited-node-1") ||
         neighbours[z].innerHTML === startNodeSelect){
-        //console.log('na');
         continue;
       }
 
-      //console.log('ye');
+      updateTracker(currentCell, neighbours[z]);
       neighbours[z].classList.add("visited-node-1");
       unvisitedNeighbours.push(neighbours[z]);
-
     };
 
-    //console.log(unvisitedNeighbours);
     return unvisitedNeighbours;
   };
 
+  updateTracker = (currentCell, neighbour) => {
+    tracker[neighbour] = currentCell;
+
+  }
+
   findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
-    let neighbour = gridCells.find(cell => parseInt(cell.getAttribute("data-y")) == currentY - ySubtrahend
-    && parseInt(cell.getAttribute("data-x")) == currentX - xSubtrahend);
+    let neighbour = gridCells.find(cell => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend
+    && parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
     return neighbour;
   };
 
   // function to calculate shortest path once target found
-  calculatePath = (targetCell) => {
-    let targetX;
-    let targetY;
-    let startX;
-    let startY;
+  calculatePath = (tracker) => {
+    let rotations = 0;
+    // scenarios:
+    // if target x > start x, we know target is right of start
+    // if target x < start x, target is left of start
+    // if target y is > than start y, target is below start
+    // if target y is < than start
 
+    // base condition: if gridcell innerhtml is startselect then stop
+
+    // otherwise starting with the target find the previous cell. repeat this recursively. add them to an array in order then add the animations
+    // to highlight the path.
 
   };
+
+
+
+  // i need:
+  // the previous node to the one we've just discovered (not visited) since we KNOW that the shortest path to this one is the one we are currently
+  // visiting.
+  // i also need the previous node we visited to the one we are currently visitng, as this is the last step in the shortest path to the one
+  // we are currently visiting.
+  // and the same for the node before the one we are visiting....this is recursive.
+  // the number of steps to the target is the number of iterations + 1. perhaps put iterations as inner text of a node.
