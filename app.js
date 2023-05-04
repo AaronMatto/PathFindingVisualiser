@@ -143,30 +143,32 @@
   }
 
 // PLOTTING THE SHORTEST PATH
+  let running;
+
 
   getCoord = (cell, z) => {
     return cell.getAttribute(`data-${z}`);
   }
 
   dijkstra = (startcell) => {
-
-    // implementing the algorithm
     let visited = [];
     let unvisited = [startcell];
     let iterations = 0;
+    let target;
+    running = true;
 
-
-    while (unvisited.includes('TARGET-FOUND') == false){
+    while (running == true){
       console.log(``);
       let numberToVisit = unvisited.length;
 
       for(let i = 0; i < numberToVisit; i++){
         let currentlyVisitedCell = unvisited[i];
 
-        let currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell); // has a max length of 4 on 1st iteration. Then a max of 3.
-        if (typeof currentlyVisitedNewNeighbours == 'string'){
+        let currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+        if (Array.isArray(currentlyVisitedNewNeighbours) == false){
           console.log(iterations);
-          i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
+          i = numberToVisit;
+          target = currentlyVisitedNewNeighbours; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
         }
 
         visited.push(currentlyVisitedCell);
@@ -178,7 +180,7 @@
       iterations++;
     };
 
-
+    calculatePath(tracker, target);
   };
 
   const visualiseBtn = document.getElementById("visualise-btn");
@@ -193,6 +195,7 @@
         }
 
         if(gridcell.innerHTML == startNodeSelect) {
+          gridcell.classList.add('start');
           startCell = gridcell;
         };
       });
@@ -208,7 +211,7 @@
   });
 
 
-  let tracker = {};
+  let tracker = new Object();
   // function to find unvisited neighbours
   findUnvisitedNeighbours = (currentCell) => {
     let yCoord = getCoord(currentCell, 'y');
@@ -233,7 +236,10 @@
 
       if (neighbours[z].innerHTML == targetNodeSelect) {
         neighbours[z].classList.add("visited-node-1");
-        return `TARGET-FOUND`;
+        running = false;
+        updateTracker(currentCell, neighbours[z]);
+        console.log(tracker);
+        return neighbours[z].outerHTML;
       }
 
       if (neighbours[z].classList.contains("visited-node-1") ||
@@ -241,8 +247,10 @@
         continue;
       }
 
-      updateTracker(currentCell, neighbours[z]);
+
+
       neighbours[z].classList.add("visited-node-1");
+      updateTracker(currentCell, neighbours[z]);
       unvisitedNeighbours.push(neighbours[z]);
     };
 
@@ -250,7 +258,8 @@
   };
 
   updateTracker = (currentCell, neighbour) => {
-    tracker[neighbour] = currentCell;
+
+   tracker[neighbour.outerHTML] = currentCell.outerHTML;
 
   }
 
@@ -261,8 +270,9 @@
   };
 
   // function to calculate shortest path once target found
-  calculatePath = (tracker) => {
+  calculatePath = (tracker, target) => {
     let rotations = 0;
+    let path = [];
     // scenarios:
     // if target x > start x, we know target is right of start
     // if target x < start x, target is left of start
@@ -273,6 +283,21 @@
 
     // otherwise starting with the target find the previous cell. repeat this recursively. add them to an array in order then add the animations
     // to highlight the path.
+    let previousCell = target;
+
+    console.log(tracker[previousCell]);
+    if (tracker[previousCell].includes("start")){
+      console.log('f');
+      path.push(previousCell);
+      console.log(path);
+      return;
+    }
+    else{
+      path.push(previousCell);
+      calculatePath(tracker, tracker[previousCell]);
+    };
+    //if (tracker[previousCell])
+
 
   };
 
