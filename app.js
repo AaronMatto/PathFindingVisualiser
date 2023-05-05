@@ -261,7 +261,7 @@
 
   updateTracker = (currentCell, neighbour) => {
 
-   tracker[neighbour.outerHTML] = currentCell.outerHTML;
+   tracker[neighbour.outerHTML] = currentCell.outerHTML; // change to get attribute i
 
   }
 
@@ -314,7 +314,7 @@
   // Maybe in 'visited' I could store the div that was used to discover the div we are currently visiting.
   // Why?
   // This problem comes from implementing the algorithm within the confines of the language and the DOM.
-  // the algorithm requires that in order to know the shortest path from the start to any given node/cell,
+  // The algorithm requires that in order to know the shortest path from the start to any given node/cell,
   // we must know which node/cell came before the given one. And that the path up to the one before it, is definitely the shortest path
   // to the one before it.
   // So if we want to know the shortest path from A -> C, we may find that this is actually via B (A -> B -> C) even though there is a direct
