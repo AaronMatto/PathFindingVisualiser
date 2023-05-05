@@ -12,8 +12,8 @@
     }
     grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-i=${i}></div>`
     x++;
-    // turns out, I MIGHT only need i for dijkstra's algorithm to identify visited and unvisited nodes. x and y could be useful for calculating
-    // distances however, so leaving in for now.
+    // MIGHT only need i for dijkstra's algorithm to identify visited and unvisited nodes.
+    // distances.
   };
 
 // CLEAR BOARD
@@ -132,12 +132,12 @@
       // removing a placed node from a gridcell
       if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue) {
         gridcell.innerHTML = "";
-      }
+      };
 
       // adding a different node to a new gridcell
       if ((e.target == gridcell || e.target == gridcell.firstElementChild) && gridcell.innerHTML != hiddenfieldValue) {
         gridcell.innerHTML = hiddenField.value;
-      }
+      };
 
     });
   }
@@ -228,7 +228,9 @@
     let unvisitedNeighbours = [];
 
     for(let z = 0; z < neighbours.length; z++){
-
+      // console.log(' ');
+      // console.log(currentCell);
+      // console.log(neighbours[z]);
       // if neighbour is the target call calculate path function
       if(neighbours[z] == undefined){
         continue;
@@ -270,16 +272,15 @@
   };
 
   // function to calculate shortest path once target found
+  let path = [];
   calculatePath = (tracker, target) => {
     let rotations = 0;
-    let path = [];
+
     // scenarios:
     // if target x > start x, we know target is right of start
     // if target x < start x, target is left of start
     // if target y is > than start y, target is below start
     // if target y is < than start
-
-    // base condition: if gridcell innerhtml is startselect then stop
 
     // otherwise starting with the target find the previous cell. repeat this recursively. add them to an array in order then add the animations
     // to highlight the path.
@@ -287,26 +288,69 @@
 
     console.log(tracker[previousCell]);
     if (tracker[previousCell].includes("start")){
-      console.log('f');
-      path.push(previousCell);
+      // path.unshift(previousCell);
       console.log(path);
+      showPath(path);
       return;
     }
     else{
-      path.push(previousCell);
+      path.unshift(previousCell);
       calculatePath(tracker, tracker[previousCell]);
     };
-    //if (tracker[previousCell])
-
 
   };
 
 
+  showPath = (pathArray) => {
+    console.log(pathArray.length);
+    pathArray.forEach(div => {
+      console.log(div);
+    });
+  };
 
-  // i need:
-  // the previous node to the one we've just discovered (not visited) since we KNOW that the shortest path to this one is the one we are currently
-  // visiting.
-  // i also need the previous node we visited to the one we are currently visitng, as this is the last step in the shortest path to the one
-  // we are currently visiting.
-  // and the same for the node before the one we are visiting....this is recursive.
-  // the number of steps to the target is the number of iterations + 1. perhaps put iterations as inner text of a node.
+
+
+
+  // Maybe in 'visited' I could store the div that was used to discover the div we are currently visiting.
+  // Why?
+  // This problem comes from implementing the algorithm within the confines of the language and the DOM.
+  // the algorithm requires that in order to know the shortest path from the start to any given node/cell,
+  // we must know which node/cell came before the given one. And that the path up to the one before it, is definitely the shortest path
+  // to the one before it.
+  // So if we want to know the shortest path from A -> C, we may find that this is actually via B (A -> B -> C) even though there is a direct
+  // path from A -> C. For this to be true, A -> B must be the shortest path from A -> B.
+  // In the visualiser, because it is a 2D grid, on every iteration where we visit a new node from the current one we are inspecting,
+  // we know that the shortest path to that new node is via the one we are inspecting. Any alternative route would be >= to this path.
+  // At the point when the target is found, we know the cell that is a neighbour to it and whose inspection discovers it, is the final node
+  // in the shortest path to the target.
+  // We can then conceptually execute this idea recursively; we know that the neighbour of the cell whose inspection discovered the cell that is
+  // a neighbour of the target (and discovered and discovered the target) is the final node in the path to that neighbour.
+  // We can repeat these steps recursively until we get back to the start...and then we just have to count the number of nodes we went through
+  // and we have the shortest path.
+  // The problem arises when trying to store this information in JS from the DOM.
+  // The only appropriate data structure that immediately comes to mind is an object. Why?
+  // Because of the way the algorithm implementation works.
+  // On the first iteration of the algo, we start with the start node and we must examine the nodes closest to the start i.e. one step away.
+  // In the grid, these are the nodes above, right, below and left of the start node.
+  // We can then consider the start node as 'visited' since we have examined all the nodes we can travel to from it.
+  // If none of those contain the target, we then perform the same idea on the nodes we just examined, we 'visit' them. So, for the node
+  // above the start node, we examine the node above it, to its' right, below it and left of it.
+  // We do this for the node to the right of the start node and the ones below and to the left of it too.
+  // Of course, there is some overlap here. For example, when we examine the node above the start, and look at the nodes above, right, below
+  // and left of it - we of course already know that the node below it is the start node, which we have already visited, so we don't
+  // need to examine it and we can skip over it. This is captured in the code with a continue statement.
+  // We repeat this process until we find the target. With each iteration, we are demonstrating the 'visit the node with the closest known
+  // distance from the start and examine its' neighbours' step of the algo. This is also why it is diamond shaped.
+  // Back to the problem - capturing the data of which node was used to discover the shortest path to the node we are currently visiting.
+  // Based on the implementation of how we visit a node i.e. we examine its' neighbours above, right, below and left, we know that any
+  // all of the valid neighbours were visited by the cell we are currently examining.
+  // Given this, we can store the neighbours as the keys of an object and the value as the cell we are currently visiting.
+  // This way, all the keys are unique since they are all different cells, but the the values are not. Two cells represented
+  // as keys may have the same value i.e. they may have been discovered by the same cell because they could be the above and left neighbours
+  // of that cell, for example.
+  // The problem is object keys can only be stored as strings, meaning when the div representing a neighbour of the cell we are visiting
+  // is stored as a key, it is converted to a string as [object HTMLDivElement] first and JS therefore fails to recognise it a uniquely new key.
+  // So the object only ends up with one key that is constantly overwritten.
+  // We can overcome this problem by storing the outerHTML of the div neighbours as keys. And then the recursive function of tracing the path backwards
+  // works. But it means we then have to search for the cells in the DOM again since we lost reference to them. So perhaps there is a better way.
+  // Maybe I could use document.replaceChild....
