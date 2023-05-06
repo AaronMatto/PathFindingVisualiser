@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstraAlgo, tracker} from './dijkstra.js';
+import {dijkstraAlgo, tracker, path} from './dijkstra.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 
 const grid = document.getElementById('grid');
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   clearBoardBtn.addEventListener('click', (e) => {
-    if (e.tagret == clearBoardBtn) {
+    if (e.target == clearBoardBtn) {
       switch (algoBtnSelector) {
         case 'dijkstra':
           for (let i = 0; i < gridCells.length; i++) {

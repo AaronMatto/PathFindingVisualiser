@@ -88,7 +88,7 @@ const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
 };
 
 // function to calculate shortest path once target found
-const path = [];
+export const path = [];
 const calculatePath = (tracker, targetId) => {
   // eslint-disable-next-line no-unused-vars
   const rotations = 0;
