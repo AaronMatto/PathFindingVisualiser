@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // SELECTING an algorithm to visualise
   const algoDropdown = document.getElementById('algo-button');
-  algoDropdown.addEventListener('change', e => {
+  algoDropdown.addEventListener('change', (e) => {
     switch (algoDropdown.value) {
       case 'dijkstra':
         dijkstra();
@@ -44,9 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
   keyForNodes.addEventListener('click', (e) => {
     let i = 0;
     for (i = 0; i < userNodeDivs.length; i++) {
-      const iconsAndText = Array.from(userNodeDivs[i].children)
+      const iconsAndText = Array.from(userNodeDivs[i].children);
       if (userNodeDivs[i] == e.target || iconsAndText.includes(e.target)) {
-        switch (userNodeDivs[i].lastElementChild.innerText){
+        switch (userNodeDivs[i].lastElementChild.innerText) {
           case 'Start Node':
             hiddenField.value = startNodeSelect;
             break;
@@ -100,17 +100,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   grid.addEventListener('mouseover', (e) => {
+    console.log(gridCells);
     gridCells.forEach((gridcell) => {
       if (e.target == gridcell.firstElementChild) {
         return;
       };
 
-      if (gridcell.innerHTML == "" && e.target == gridcell) {
+      if (gridcell.innerHTML == '' && e.target == gridcell) {
         hiddenFieldValue(gridcell);
       };
 
       if (nodeArray.includes(gridcell.innerHTML) && gridcell != e.target) {
-        gridcell.innerHTML = "";
+        gridcell.innerHTML = '';
       };
     });
   });
