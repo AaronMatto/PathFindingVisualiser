@@ -18,17 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const gridCells = Array.from(document.getElementsByClassName('node'));
 
-
-  // SELECTING an algorithm to visualise
-  const algoDropdown = document.getElementById('algo-button');
-  algoDropdown.addEventListener('change', (e) => {
-    switch (algoDropdown.value) {
-      case 'dijkstra':
-        dijkstra();
-    };
-  });
-
-
   // USER SELECTING A NODE FROM THE KEY
   const keyForNodes = document.querySelector('#main .key');
   const userNodeDivs = Array.from(document.querySelectorAll('#main .key .user-slct'));
@@ -40,6 +29,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const weightNodeMouseOver = '<img src="../images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
   const bombNodeMouseOver = '<img src="../images/bomb.png" class="mouseover-grid-icons" id="icon-bomb">';
   const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></div>';
+
+  // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
+  const startNodeSelect = '<img src="../images/right-arrow.png" class="selectedCell">';
+  const targetNodeSelect = '<img src="../images/target.png" class="selectedCell" id="icon-target">';
+  const weightNodeSelect = '<img src="../images/weight.png" class="selectedCell" id="icon-weight">';
+  const bombNodeSelect = '<img src="../images/bomb.png" class="selectedCell" id="icon-bomb">';
+  const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
+
+  // SELECTING an algorithm to visualise
+  const algoDropdown = document.getElementById('algo-button');
+  algoDropdown.addEventListener('change', (e) => {
+    switch (algoDropdown.value) {
+      case 'dijkstra':
+        dijkstra();
+    };
+  });
 
   keyForNodes.addEventListener('click', (e) => {
     let i = 0;
@@ -67,14 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
-  const startNodeSelect = '<img src="../images/right-arrow.png" class="selectedCell">';
-  const targetNodeSelect = '<img src="../images/target.png" class="selectedCell" id="icon-target">';
-  const weightNodeSelect = '<img src="../images/weight.png" class="selectedCell" id="icon-weight">';
-  const bombNodeSelect = '<img src="../images/bomb.png" class="selectedCell" id="icon-bomb">';
-  const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
   const nodeArray = [startNodeMouseOver, targetNodeMouseOver, weightNodeMouseOver, bombNodeMouseOver, wallNodeMouseOver];
-
   /* function to add inner html to the grid cell is used for hover and for click */
   function hiddenFieldValue(gridcell) {
     switch (hiddenField.value) {
