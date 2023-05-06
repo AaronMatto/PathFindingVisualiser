@@ -83,7 +83,7 @@ export function dijkstra() {
   });
 
   // function to find unvisited neighbours
-  findUnvisitedNeighbours = (currentCell) => {
+  const findUnvisitedNeighbours = (currentCell) => {
     const yCoord = getCoord(currentCell, 'y');
     const xCoord = getCoord(currentCell, 'x');
 
