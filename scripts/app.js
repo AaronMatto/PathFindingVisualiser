@@ -80,21 +80,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const clearBoardBtn = document.getElementById('clearBoardBtn');
   clearBoardBtn.addEventListener('click', (e) => {
-    switch (algoBtnSelector) {
-      case 'dijkstra':
-        for (let i = 0; i < gridCells.length; i++) {
-          gridCells[i].innerHTML = '';
-          gridCells[i].className = '';
-          gridCells[i].id = i;
-          gridCells[i].classList.add('node');
-        };
-        for (const id in tracker) {
-          delete tracker[id];
-        };
-        path.length = 0;
-        break;
-      default:
-        break;
+    if (e.tagret == clearBoardBtn) {
+      switch (algoBtnSelector) {
+        case 'dijkstra':
+          for (let i = 0; i < gridCells.length; i++) {
+            gridCells[i].innerHTML = '';
+            gridCells[i].className = '';
+            gridCells[i].id = i;
+            gridCells[i].classList.add('node');
+          };
+          for (const id in tracker) {
+            delete tracker[id];
+          };
+          path.length = 0;
+          break;
+        default:
+          break;
+      };
     };
   });
 
