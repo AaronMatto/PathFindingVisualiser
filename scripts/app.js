@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstraAlgo} from './dijkstra.js';
+import {dijkstraAlgo, tracker} from './dijkstra.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 
 const grid = document.getElementById('grid');

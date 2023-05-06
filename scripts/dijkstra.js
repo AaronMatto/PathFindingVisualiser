@@ -8,7 +8,7 @@ const getCoord = (cell, z) => {
   return cell.getAttribute(`data-${z}`);
 };
 
-const tracker = {};
+export const tracker = {};
 export const dijkstraAlgo = (startcell) => {
   const visited = [];
   let unvisited = [startcell];
