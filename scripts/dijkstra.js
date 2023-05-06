@@ -153,7 +153,7 @@ export function dijkstra() {
 
   const showPath = (pathIdArray) => {
     for (let j = 0; j < pathIdArray.length; j++) {
-      pathDiv = document.getElementById(parseInt(pathIdArray[j]));
+      const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
       pathDiv.classList.remove('visited-node-1');
       pathDiv.classList.add('path-node');
     };
