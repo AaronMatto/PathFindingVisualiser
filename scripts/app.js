@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstraAlgo, tracker} from './dijkstra.js';
+import {dijkstraAlgo} from './dijkstra.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 
 const grid = document.getElementById('grid');
@@ -18,7 +18,6 @@ for (i=0; i < gridCellsNo; i++) {
 // i for dijkstra's algorithm to identify the node that came before the one just discovered.
 };
 const gridCells = Array.from(document.getElementsByClassName('node'));
-const clearBoardBtn = document.getElementById('clearBoardBtn');
 
 // NAVBAR buttons
 let algoBtnSelector = document.getElementById('algo-button').value;
@@ -79,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
+  const clearBoardBtn = document.getElementById('clearBoardBtn');
   clearBoardBtn.addEventListener('click', (e) => {
     if (e.tagret == clearBoardBtn) {
       switch (algoBtnSelector) {
