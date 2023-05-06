@@ -1,6 +1,7 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstra} from './dijkstra.js';
+import {dijkstraAlgo} from './dijkstra.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 
 const grid = document.getElementById('grid');
@@ -39,11 +40,59 @@ const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
 document.addEventListener('DOMContentLoaded', () => {
   // SELECTING an algorithm to visualise
-  const algoDropdown = document.getElementById('algo-button');
-  algoDropdown.addEventListener('change', (e) => {
-    switch (algoDropdown.value) {
+  const algoBtnSelector = document.getElementById('algo-buttton').value;
+  algoBtnSelector = 'dijsktra';
+
+  const visualiseBtn = document.getElementById('visualise-btn');
+  visualiseBtn.parentElement.addEventListener('click', (e) => {
+    let startCell;
+    let targetCell;
+    if (e.target == visualiseBtn.parentElement) {
+      gridCells.forEach((gridcell) => {
+        if (gridcell.innerHTML == targetNodeSelect) {
+          targetCell = gridcell;
+        }
+
+        if (gridcell.innerHTML == startNodeSelect) {
+          gridcell.classList.add('start');
+          gridcell.id += ' start';
+          startCell = gridcell;
+        };
+      });
+
+      if (startCell == undefined || targetCell == undefined) { // May change later. Can we do this without knowing where the target is?
+        alert('Please select both a start and end point to visualise an algorithm');
+        return;
+      };
+
+      switch (algoBtnSelector) {
+        case 'dijsktra':
+          dijkstraAlgo(startCell);
+          break;
+
+        default:
+          break;
+      };
+    };
+  });
+
+  const clearBoardBtn = document.getElementById('clearBoardBtn');
+  clearBoardBtn.addEventListener('click', (e) => {
+    switch (algoBtnSelector) {
       case 'dijkstra':
-        dijkstra();
+        for (let i = 0; i < gridCells.length; i++) {
+          gridCells[i].innerHTML = '';
+          gridCells[i].className = '';
+          gridCells[i].id = i;
+          gridCells[i].classList.add('node');
+        };
+        for (const id in tracker) {
+          delete tracker[id];
+        };
+        path.length = 0;
+        break;
+      default:
+        break;
     };
   });
 

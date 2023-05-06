@@ -2,162 +2,120 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 import {gridCells, startNodeSelect, targetNodeSelect} from './app.js';
-export function dijkstra() {
-  const clearBoardBtn = document.getElementById('clearBoardBtn');
-  clearBoardBtn.addEventListener('click', (e) => {
-    if (e.target == clearBoardBtn) {
-      for (let i = 0; i < gridCells.length; i++) {
-        gridCells[i].innerHTML = '';
-        gridCells[i].className = '';
-        gridCells[i].id = i;
-        gridCells[i].classList.add('node');
-      };
-      for (const id in tracker) {
-        delete tracker[id];
-      };
-      path.length = 0;
-    };
-  });
 
-  // PLOTTING THE SHORTEST PATH
-  const getCoord = (cell, z) => {
-    return cell.getAttribute(`data-${z}`);
+// PLOTTING THE SHORTEST PATH
+const getCoord = (cell, z) => {
+  return cell.getAttribute(`data-${z}`);
+};
+
+const tracker = {};
+export const dijkstraAlgo = (startcell) => {
+  const visited = [];
+  let unvisited = [startcell];
+  let iterations = 0;
+  let target;
+  let running = true;
+
+  while (running == true) {
+    const numberToVisit = unvisited.length;
+    for (let i = 0; i < numberToVisit; i++) {
+      const currentlyVisitedCell = unvisited[i];
+      const currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+
+      if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
+        running = false;
+        i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
+        target = currentlyVisitedNewNeighbours;
+      }
+
+      visited.push(currentlyVisitedCell);
+      unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
+    };
+
+    unvisited.splice(0, numberToVisit);
+    // eslint-disable-next-line no-unused-vars
+    iterations++;
   };
+  calculatePath(tracker, target);
+};
 
-  const tracker = {};
-  const dijkstraAlgo = (startcell) => {
-    const visited = [];
-    let unvisited = [startcell];
-    let iterations = 0;
-    let target;
-    let running = true;
+// function to find unvisited neighbours
+const findUnvisitedNeighbours = (currentCell) => {
+  const yCoord = getCoord(currentCell, 'y');
+  const xCoord = getCoord(currentCell, 'x');
 
-    while (running == true) {
-      const numberToVisit = unvisited.length;
-      for (let i = 0; i < numberToVisit; i++) {
-        const currentlyVisitedCell = unvisited[i];
-        const currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+  const y = parseInt(yCoord);
+  const x = parseInt(xCoord);
 
-        if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
-          running = false;
-          i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
-          target = currentlyVisitedNewNeighbours;
-        }
+  const rightNeighbour = findNeighbours(x, y, 0, -1);
+  const aboveNeighbour = findNeighbours(x, y, 1, 0);
+  const belowNeighbour = findNeighbours(x, y, -1, 0);
+  const leftNeighbour = findNeighbours(x, y, 0, 1);
+  const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
+  const unvisitedNeighbours = [];
 
-        visited.push(currentlyVisitedCell);
-        unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
-      };
+  for (let z = 0; z < neighbours.length; z++) {
+    if (neighbours[z] == undefined) {
+      continue;
+    }
 
-      unvisited.splice(0, numberToVisit);
-      // eslint-disable-next-line no-unused-vars
-      iterations++;
-    };
-    calculatePath(tracker, target);
-  };
-
-  const visualiseBtn = document.getElementById('visualise-btn');
-  visualiseBtn.parentElement.addEventListener('click', (e) => {
-    let startCell;
-    let targetCell;
-    if (e.target == visualiseBtn.parentElement) {
-      gridCells.forEach((gridcell) => {
-        if (gridcell.innerHTML == targetNodeSelect) {
-          targetCell = gridcell;
-        }
-
-        if (gridcell.innerHTML == startNodeSelect) {
-          gridcell.classList.add('start');
-          gridcell.id += ' start';
-          startCell = gridcell;
-        };
-      });
-
-      if (startCell == undefined || targetCell == undefined) { // May change later. Can we do this without knowing where the target is?
-        alert('Please select both a start and end point');
-        return;
-      };
-
-      dijkstraAlgo(startCell);
-    };
-  });
-
-  // function to find unvisited neighbours
-  const findUnvisitedNeighbours = (currentCell) => {
-    const yCoord = getCoord(currentCell, 'y');
-    const xCoord = getCoord(currentCell, 'x');
-
-    const y = parseInt(yCoord);
-    const x = parseInt(xCoord);
-
-    const rightNeighbour = findNeighbours(x, y, 0, -1);
-    const aboveNeighbour = findNeighbours(x, y, 1, 0);
-    const belowNeighbour = findNeighbours(x, y, -1, 0);
-    const leftNeighbour = findNeighbours(x, y, 0, 1);
-    const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
-    const unvisitedNeighbours = [];
-
-    for (let z = 0; z < neighbours.length; z++) {
-      if (neighbours[z] == undefined) {
-        continue;
-      }
-
-      if (neighbours[z].innerHTML == targetNodeSelect) {
-        neighbours[z].classList.add('visited-node-1');
-        updateTracker(currentCell, neighbours[z]);
-        return neighbours[z].id;
-      }
-
-      if (neighbours[z].classList.contains('visited-node-1') ||
-        neighbours[z].innerHTML === startNodeSelect) {
-        continue;
-      }
-
+    if (neighbours[z].innerHTML == targetNodeSelect) {
       neighbours[z].classList.add('visited-node-1');
       updateTracker(currentCell, neighbours[z]);
-      unvisitedNeighbours.push(neighbours[z]);
-    };
-    return unvisitedNeighbours;
-  };
+      return neighbours[z].id;
+    }
 
-  const updateTracker = (currentCell, neighbour) => {
-    tracker[neighbour.id] = currentCell.id;
-  };
+    if (neighbours[z].classList.contains('visited-node-1') ||
+      neighbours[z].innerHTML === startNodeSelect) {
+      continue;
+    }
 
-  const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
-    const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
-      parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
-    return neighbour;
+    neighbours[z].classList.add('visited-node-1');
+    updateTracker(currentCell, neighbours[z]);
+    unvisitedNeighbours.push(neighbours[z]);
   };
+  return unvisitedNeighbours;
+};
 
-  // function to calculate shortest path once target found
-  const path = [];
-  const calculatePath = (tracker, targetId) => {
-    // eslint-disable-next-line no-unused-vars
-    const rotations = 0;
-    // scenarios:
-    // if target x > start x, we know target is right of start
-    // if target x < start x, target is left of start
-    // if target y is > than start y, target is below start
-    // if target y is < than start
-    const previousCell = targetId;
-    if (tracker[previousCell].includes('start')) {
-      path.unshift(previousCell);
-      showPath(path);
-      return;
-    } else {
-      path.unshift(previousCell);
-      calculatePath(tracker, tracker[previousCell]);
-    };
-  };
+const updateTracker = (currentCell, neighbour) => {
+  tracker[neighbour.id] = currentCell.id;
+};
 
-  const showPath = (pathIdArray) => {
-    for (let j = 0; j < pathIdArray.length; j++) {
-      const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
-      pathDiv.classList.remove('visited-node-1');
-      pathDiv.classList.add('shortest-path-node');
-    };
+const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+  const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
+    parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
+  return neighbour;
+};
+
+// function to calculate shortest path once target found
+const path = [];
+const calculatePath = (tracker, targetId) => {
+  // eslint-disable-next-line no-unused-vars
+  const rotations = 0;
+  // scenarios:
+  // if target x > start x, we know target is right of start
+  // if target x < start x, target is left of start
+  // if target y is > than start y, target is below start
+  // if target y is < than start
+  const previousCell = targetId;
+  if (tracker[previousCell].includes('start')) {
+    path.unshift(previousCell);
+    showPath(path);
+    return;
+  } else {
+    path.unshift(previousCell);
+    calculatePath(tracker, tracker[previousCell]);
   };
 };
+
+const showPath = (pathIdArray) => {
+  for (let j = 0; j < pathIdArray.length; j++) {
+    const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
+    pathDiv.classList.remove('visited-node-1');
+    pathDiv.classList.add('shortest-path-node');
+  };
+};
+
 
 // Maybe in 'visited' I could store the div that was used to discover the div we are currently visiting.
 // Why?
