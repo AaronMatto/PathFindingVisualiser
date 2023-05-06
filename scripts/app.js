@@ -19,6 +19,9 @@ for (i=0; i < gridCellsNo; i++) {
 };
 const gridCells = Array.from(document.getElementsByClassName('node'));
 
+// NAVBAR buttons
+const algoBtnSelector = document.getElementById('algo-buttton').value;
+
 // USER SELECTING A NODE FROM THE KEY
 const keyForNodes = document.querySelector('#main .key');
 const userNodeDivs = Array.from(document.querySelectorAll('#main .key .user-slct'));
@@ -40,7 +43,6 @@ const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
 document.addEventListener('DOMContentLoaded', () => {
   // SELECTING an algorithm to visualise
-  const algoBtnSelector = document.getElementById('algo-buttton').value;
   algoBtnSelector = 'dijsktra';
 
   const visualiseBtn = document.getElementById('visualise-btn');
