@@ -1,5 +1,5 @@
 // CLEAR BOARD
-const dijkstra = () => {
+export function dijkstra(){
   const gridCells = Array.from(document.getElementsByClassName("node"));
   const clearBoardBtn = document.getElementById('clearBoardBtn');
   clearBoardBtn.addEventListener('click', e => {
@@ -160,7 +160,6 @@ const dijkstra = () => {
   };
 };
 
-export default dijkstra;
 // Maybe in 'visited' I could store the div that was used to discover the div we are currently visiting.
 // Why?
 // This problem comes from implementing the algorithm within the confines of the language and the DOM.
@@ -204,3 +203,8 @@ export default dijkstra;
 // We can overcome this problem by storing the outerHTML of the div neighbours as keys. And then the recursive function of tracing the path backwards
 // works. But it means we then have to search for the cells in the DOM again since we lost reference to them. So perhaps there is a better way.
 // Maybe I could use document.replaceChild....
+
+
+// Update:
+// What I should have done (but didn't want to) was create a node/cell class that has the properties of previousCell, distance from start,
+// isTarget, isStart etc. A class representing a node presents us with a much easier data structure to implement the algorithm.

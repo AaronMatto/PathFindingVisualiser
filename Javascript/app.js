@@ -1,5 +1,5 @@
-import dijkstra from "Dijkstra/dijkstra.js";
-
+import {dijkstra} from "Dijkstra/dijkstra.js";
+console.log('j');
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
   const grid = document.getElementById('grid');
   // const rowNodes = document.getElementsByClassName('row-node');
@@ -23,7 +23,7 @@ import dijkstra from "Dijkstra/dijkstra.js";
     switch(algoDropdown.value){
       case 'dijkstra':
         dijkstra();
-    }
+    };
   });
 
 
