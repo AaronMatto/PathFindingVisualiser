@@ -4,7 +4,8 @@ import {dijkstra} from './dijkstra.js';
 document.addEventListener('DOMContentLoaded', () => {
   // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
   const grid = document.getElementById('grid');
-  const gridCells = Array.from(document.getElementsByClassName('node'));
+  const gridCellsNodes = document.getElementsByClassName('node');
+  const gridCells = Array.from(gridCellsNodes);
 
   const gridCellsNo = 1200;
   let i = 0;
