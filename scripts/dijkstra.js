@@ -121,11 +121,11 @@ export function dijkstra() {
     return unvisitedNeighbours;
   };
 
-  updateTracker = (currentCell, neighbour) => {
+  const updateTracker = (currentCell, neighbour) => {
     tracker[neighbour.id] = currentCell.id;
   };
 
-  findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+  const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
     const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
       parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
     return neighbour;
@@ -133,7 +133,7 @@ export function dijkstra() {
 
   // function to calculate shortest path once target found
   const path = [];
-  calculatePath = (tracker, targetId) => {
+  const calculatePath = (tracker, targetId) => {
     // eslint-disable-next-line no-unused-vars
     const rotations = 0;
     // scenarios:
@@ -152,7 +152,7 @@ export function dijkstra() {
     };
   };
 
-  showPath = (pathIdArray) => {
+  const showPath = (pathIdArray) => {
     for (let j = 0; j < pathIdArray.length; j++) {
       pathDiv = document.getElementById(parseInt(pathIdArray[j]));
       pathDiv.classList.remove('visited-node-1');
