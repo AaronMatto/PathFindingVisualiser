@@ -42,7 +42,7 @@ console.log('j');
   keyForNodes.addEventListener('click', e => {
     let i = 0;
     for (i = 0; i < userNodeDivs.length; i++){
-      iconsAndText = Array.from(userNodeDivs[i].children)
+      const iconsAndText = Array.from(userNodeDivs[i].children)
       if (userNodeDivs[i] == e.target || iconsAndText.includes(e.target)) {
         switch(userNodeDivs[i].lastElementChild.innerText){
           case 'Start Node':
@@ -121,7 +121,7 @@ console.log('j');
     placeNodeInGridCell(e, hiddenField.value);
   });
 
-  placeNodeInGridCell = (e, hiddenfieldValue) => {
+  const placeNodeInGridCell = (e, hiddenfieldValue) => {
     gridCells.forEach(gridcell => {
     // compare the innerhtml of the cell to the hidden field value
 
