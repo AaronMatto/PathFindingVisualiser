@@ -18,7 +18,7 @@ export function dijkstra(){
   });
 
   // PLOTTING THE SHORTEST PATH
-  getCoord = (cell, z) => {
+  const getCoord = (cell, z) => {
     return cell.getAttribute(`data-${z}`);
   }
 

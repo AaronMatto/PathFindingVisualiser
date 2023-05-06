@@ -1,6 +1,5 @@
 import { dijkstra } from "./dijkstra.js";
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('k');
   // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
     const grid = document.getElementById('grid');
     const gridCells = Array.from(document.getElementsByClassName("node"));
