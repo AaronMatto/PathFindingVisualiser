@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const grid = document.getElementById('grid');
   const gridCellsNodes = document.getElementsByClassName('node');
   const gridCells = Array.from(gridCellsNodes);
-
+  console.log(gridCellsNodes);
+  console.log(gridCells);
   const gridCellsNo = 1200;
   let i = 0;
   let y = 0;
