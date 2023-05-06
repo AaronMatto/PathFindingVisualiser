@@ -104,7 +104,6 @@ export function dijkstra() {
       if (neighbours[z].innerHTML == targetNodeSelect) {
         neighbours[z].classList.add('visited-node-1');
         updateTracker(currentCell, neighbours[z]);
-        console.log(tracker);
         return neighbours[z].id;
       }
 
@@ -155,7 +154,7 @@ export function dijkstra() {
     for (let j = 0; j < pathIdArray.length; j++) {
       const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
       pathDiv.classList.remove('visited-node-1');
-      pathDiv.classList.add('path-node');
+      pathDiv.classList.add('shortest-path-node');
     };
   };
 };
