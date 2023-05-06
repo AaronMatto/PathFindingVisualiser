@@ -20,7 +20,7 @@ for (i=0; i < gridCellsNo; i++) {
 const gridCells = Array.from(document.getElementsByClassName('node'));
 
 // NAVBAR buttons
-const algoBtnSelector = document.getElementById('algo-buttton').value;
+const algoBtnSelector = document.getElementById('algo-button').value;
 
 // USER SELECTING A NODE FROM THE KEY
 const keyForNodes = document.querySelector('#main .key');
@@ -43,7 +43,7 @@ const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
 document.addEventListener('DOMContentLoaded', () => {
   // SELECTING an algorithm to visualise
-  algoBtnSelector = 'dijsktra';
+  algoBtnSelector = 'dijkstra';
 
   const visualiseBtn = document.getElementById('visualise-btn');
   visualiseBtn.parentElement.addEventListener('click', (e) => {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       switch (algoBtnSelector) {
-        case 'dijsktra':
+        case 'dijkstra':
           dijkstraAlgo(startCell);
           break;
 
