@@ -1,4 +1,4 @@
-import { dijkstra } from "Dijkstra/dijkstra.js";
+import dijkstra from "Dijkstra/dijkstra.js";
 
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
   const grid = document.getElementById('grid');
