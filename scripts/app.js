@@ -25,16 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // To populate hidden field when user clicks on which node they want to place in the grid
   const startNodeMouseOver = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="mouseover-grid-icons">';
-  const targetNodeMouseOver = '<img src="../images/target.png" class="mouseover-grid-icons" id="icon-target">';
-  const weightNodeMouseOver = '<img src="../images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
-  const bombNodeMouseOver = '<img src="../images/bomb.png" class="mouseover-grid-icons" id="icon-bomb">';
+  const targetNodeMouseOver = '<img src="../PathFindingVisualiser/images/target.png" class="mouseover-grid-icons" id="icon-target">';
+  const weightNodeMouseOver = '<img src="../PathFindingVisualiser/images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
+  const bombNodeMouseOver = '<img src="../PathFindingVisualiser/images/bomb.png" class="mouseover-grid-icons" id="icon-bomb">';
   const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></div>';
 
   // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
-  const startNodeSelect = '<img src="../images/right-arrow.png" class="selectedCell">';
-  const targetNodeSelect = '<img src="../images/target.png" class="selectedCell" id="icon-target">';
-  const weightNodeSelect = '<img src="../images/weight.png" class="selectedCell" id="icon-weight">';
-  const bombNodeSelect = '<img src="../images/bomb.png" class="selectedCell" id="icon-bomb">';
+  const startNodeSelect = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="selectedCell">';
+  const targetNodeSelect = '<img src="../PathFindingVisualiser/images/target.png" class="selectedCell" id="icon-target">';
+  const weightNodeSelect = '<img src="../PathFindingVisualiser/images/weight.png" class="selectedCell" id="icon-weight">';
+  const bombNodeSelect = '<img src="../PathFindingVisualiser/images/bomb.png" class="selectedCell" id="icon-bomb">';
   const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
   // SELECTING an algorithm to visualise
