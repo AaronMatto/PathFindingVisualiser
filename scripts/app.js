@@ -20,7 +20,7 @@ for (i=0; i < gridCellsNo; i++) {
 const gridCells = Array.from(document.getElementsByClassName('node'));
 
 // NAVBAR buttons
-const algoBtnSelector = document.getElementById('algo-button').value;
+let algoBtnSelector = document.getElementById('algo-button').value;
 
 // USER SELECTING A NODE FROM THE KEY
 const keyForNodes = document.querySelector('#main .key');
