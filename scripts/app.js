@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hiddenField = document.getElementById('hiddenField');
 
   // To populate hidden field when user clicks on which node they want to place in the grid
-  const startNodeMouseOver = '<img src="../images/right-arrow.png" class="mouseover-grid-icons">';
+  const startNodeMouseOver = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="mouseover-grid-icons">';
   const targetNodeMouseOver = '<img src="../images/target.png" class="mouseover-grid-icons" id="icon-target">';
   const weightNodeMouseOver = '<img src="../images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
   const bombNodeMouseOver = '<img src="../images/bomb.png" class="mouseover-grid-icons" id="icon-bomb">';
