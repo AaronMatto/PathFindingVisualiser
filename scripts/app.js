@@ -3,8 +3,8 @@
 import {dijkstra} from './dijkstra.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 const grid = document.getElementById('grid');
-const gridCellsNodes = document.getElementsByClassName('node');
-const gridCells = Array.from(gridCellsNodes);
+const gridCells = document.getElementsByClassName('node');
+
 const gridCellsNo = 1200;
 let i = 0;
 let y = 0;
