@@ -1,12 +1,15 @@
+/* eslint-disable max-len */
+/* eslint-disable guard-for-in */
+/* eslint-disable require-jsdoc */
 // CLEAR BOARD
-export function dijkstra(){
-  const gridCells = Array.from(document.getElementsByClassName("node"));
+export function dijkstra() {
+  const gridCells = Array.from(document.getElementsByClassName('node'));
   const clearBoardBtn = document.getElementById('clearBoardBtn');
-  clearBoardBtn.addEventListener('click', e => {
+  clearBoardBtn.addEventListener('click', (e) => {
     if (e.target == clearBoardBtn) {
       for (let i = 0; i < gridCells.length; i++) {
-        gridCells[i].innerHTML = "";
-        gridCells[i].className = "";
+        gridCells[i].innerHTML = '';
+        gridCells[i].className = '';
         gridCells[i].id = i;
         gridCells[i].classList.add('node');
       };
@@ -20,22 +23,21 @@ export function dijkstra(){
   // PLOTTING THE SHORTEST PATH
   const getCoord = (cell, z) => {
     return cell.getAttribute(`data-${z}`);
-  }
+  };
 
-  let tracker = {};
-  dijkstraAlgo = (startcell) => {
-    let visited = [];
+  const tracker = {};
+  const dijkstraAlgo = (startcell) => {
+    const visited = [];
     let unvisited = [startcell];
     let iterations = 0;
     let target;
     let running = true;
 
     while (running == true) {
-      let numberToVisit = unvisited.length;
+      const numberToVisit = unvisited.length;
       for (let i = 0; i < numberToVisit; i++) {
-
-        let currentlyVisitedCell = unvisited[i];
-        let currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+        const currentlyVisitedCell = unvisited[i];
+        const currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
 
         if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
           running = false;
@@ -48,25 +50,25 @@ export function dijkstra(){
       };
 
       unvisited.splice(0, numberToVisit);
+      // eslint-disable-next-line no-unused-vars
       iterations++;
     };
     calculatePath(tracker, target);
   };
 
-  const visualiseBtn = document.getElementById("visualise-btn");
-  visualiseBtn.parentElement.addEventListener('click', e => {
+  const visualiseBtn = document.getElementById('visualise-btn');
+  visualiseBtn.parentElement.addEventListener('click', (e) => {
     let startCell;
     let targetCell;
     if (e.target == visualiseBtn.parentElement) {
       gridCells.forEach((gridcell) => {
-
         if (gridcell.innerHTML == targetNodeSelect) {
           targetCell = gridcell;
         }
 
         if (gridcell.innerHTML == startNodeSelect) {
           gridcell.classList.add('start');
-          gridcell.id += " start"
+          gridcell.id += ' start';
           startCell = gridcell;
         };
       });
@@ -82,38 +84,37 @@ export function dijkstra(){
 
   // function to find unvisited neighbours
   findUnvisitedNeighbours = (currentCell) => {
-    let yCoord = getCoord(currentCell, 'y');
-    let xCoord = getCoord(currentCell, 'x');
+    const yCoord = getCoord(currentCell, 'y');
+    const xCoord = getCoord(currentCell, 'x');
 
-    let y = parseInt(yCoord);
-    let x = parseInt(xCoord);
+    const y = parseInt(yCoord);
+    const x = parseInt(xCoord);
 
-    let rightNeighbour = findNeighbours(x, y, 0, -1);
-    let aboveNeighbour = findNeighbours(x, y, 1, 0);
-    let belowNeighbour = findNeighbours(x, y, -1, 0);
-    let leftNeighbour = findNeighbours(x, y, 0, 1);
-    let neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
-    let unvisitedNeighbours = [];
+    const rightNeighbour = findNeighbours(x, y, 0, -1);
+    const aboveNeighbour = findNeighbours(x, y, 1, 0);
+    const belowNeighbour = findNeighbours(x, y, -1, 0);
+    const leftNeighbour = findNeighbours(x, y, 0, 1);
+    const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
+    const unvisitedNeighbours = [];
 
     for (let z = 0; z < neighbours.length; z++) {
-
       if (neighbours[z] == undefined) {
         continue;
       }
 
       if (neighbours[z].innerHTML == targetNodeSelect) {
-        neighbours[z].classList.add("visited-node-1");
+        neighbours[z].classList.add('visited-node-1');
         updateTracker(currentCell, neighbours[z]);
         console.log(tracker);
         return neighbours[z].id;
       }
 
-      if (neighbours[z].classList.contains("visited-node-1") ||
+      if (neighbours[z].classList.contains('visited-node-1') ||
         neighbours[z].innerHTML === startNodeSelect) {
         continue;
       }
 
-      neighbours[z].classList.add("visited-node-1");
+      neighbours[z].classList.add('visited-node-1');
       updateTracker(currentCell, neighbours[z]);
       unvisitedNeighbours.push(neighbours[z]);
     };
@@ -122,30 +123,30 @@ export function dijkstra(){
 
   updateTracker = (currentCell, neighbour) => {
     tracker[neighbour.id] = currentCell.id;
-  }
+  };
 
   findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
-    let neighbour = gridCells.find(cell => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend
-      && parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
+    const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
+      parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
     return neighbour;
   };
 
   // function to calculate shortest path once target found
-  let path = [];
+  const path = [];
   calculatePath = (tracker, targetId) => {
-    let rotations = 0;
+    // eslint-disable-next-line no-unused-vars
+    const rotations = 0;
     // scenarios:
     // if target x > start x, we know target is right of start
     // if target x < start x, target is left of start
     // if target y is > than start y, target is below start
     // if target y is < than start
-    let previousCell = targetId;
-    if (tracker[previousCell].includes("start")) {
+    const previousCell = targetId;
+    if (tracker[previousCell].includes('start')) {
       path.unshift(previousCell);
       showPath(path);
       return;
-    }
-    else {
+    } else {
       path.unshift(previousCell);
       calculatePath(tracker, tracker[previousCell]);
     };
