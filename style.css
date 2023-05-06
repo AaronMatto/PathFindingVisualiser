@@ -70,6 +70,7 @@
     font-size: 15px;
     padding-left: 10px;
     font-family: 'Noto Sans', sans-serif;
+    text-align: center;
   }
 
   .nav-option:hover {
@@ -172,8 +173,8 @@
     height: 467px;
     margin: auto;
     display: grid;
-    grid-template-columns: repeat(60, 24px);
-    grid-template-rows: repeat(20, 24px);
+    grid-template-columns: repeat(60, 23px);
+    grid-template-rows: repeat(20, 23px);
     grid-gap: 0px;
   }
 
@@ -214,3 +215,9 @@
   .start-cursor {
     cursor: url("icons/right-arrow.png")
   }
+
+
+/* Highlighting The Path */
+.path-node {
+  background-color: rgb(31, 182, 23);
+}

@@ -10,7 +10,7 @@
     if (x == 0 && i != 0){
       y++;
     }
-    grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-i=${i}></div>`
+    grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} id=${i}></div>`
     x++;
     // MIGHT only need i for dijkstra's algorithm to identify visited and unvisited nodes.
     // distances.
@@ -21,11 +21,18 @@
   const clearBoardBtn = document.getElementById('clearBoardBtn');
   clearBoardBtn.addEventListener('click', e => {
     if (e.target == clearBoardBtn){
-      gridCells.forEach(gridcell => {
-        gridcell.innerHTML = "";
-        gridcell.className = "";
-        gridcell.classList.add('node');
-      });
+      for(let i = 0; i < gridCells.length; i++){
+        gridCells[i].innerHTML = "";
+        gridCells[i].className = "";
+        gridCells[i].id = i;
+        gridCells[i].classList.add('node');
+      };
+      // location.reload()
+      for (const id in tracker) {
+        delete tracker[id];
+      };
+      path.length = 0;
+      console.log(tracker);
     };
   });
 
@@ -143,19 +150,19 @@
   }
 
 // PLOTTING THE SHORTEST PATH
-  let running;
 
 
   getCoord = (cell, z) => {
     return cell.getAttribute(`data-${z}`);
   }
 
+  let tracker = {};
   dijkstra = (startcell) => {
     let visited = [];
     let unvisited = [startcell];
     let iterations = 0;
     let target;
-    running = true;
+    let running = true;
 
     while (running == true){
       console.log(``);
@@ -166,9 +173,10 @@
 
         let currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
         if (Array.isArray(currentlyVisitedNewNeighbours) == false){
-          console.log(iterations);
-          i = numberToVisit;
-          target = currentlyVisitedNewNeighbours; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
+          // console.log(iterations);
+          running = false;
+          i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
+          target = currentlyVisitedNewNeighbours;
         }
 
         visited.push(currentlyVisitedCell);
@@ -196,6 +204,7 @@
 
         if(gridcell.innerHTML == startNodeSelect) {
           gridcell.classList.add('start');
+          gridcell.id += " start"
           startCell = gridcell;
         };
       });
@@ -211,7 +220,6 @@
   });
 
 
-  let tracker = new Object();
   // function to find unvisited neighbours
   findUnvisitedNeighbours = (currentCell) => {
     let yCoord = getCoord(currentCell, 'y');
@@ -238,18 +246,15 @@
 
       if (neighbours[z].innerHTML == targetNodeSelect) {
         neighbours[z].classList.add("visited-node-1");
-        running = false;
         updateTracker(currentCell, neighbours[z]);
         console.log(tracker);
-        return neighbours[z].outerHTML;
+        return neighbours[z].id;
       }
 
       if (neighbours[z].classList.contains("visited-node-1") ||
         neighbours[z].innerHTML === startNodeSelect){
         continue;
       }
-
-
 
       neighbours[z].classList.add("visited-node-1");
       updateTracker(currentCell, neighbours[z]);
@@ -261,7 +266,7 @@
 
   updateTracker = (currentCell, neighbour) => {
 
-   tracker[neighbour.outerHTML] = currentCell.outerHTML; // change to get attribute i
+   tracker[neighbour.id] = currentCell.id; // change to get attribute i
 
   }
 
@@ -273,7 +278,7 @@
 
   // function to calculate shortest path once target found
   let path = [];
-  calculatePath = (tracker, target) => {
+  calculatePath = (tracker, targetId) => {
     let rotations = 0;
 
     // scenarios:
@@ -284,28 +289,28 @@
 
     // otherwise starting with the target find the previous cell. repeat this recursively. add them to an array in order then add the animations
     // to highlight the path.
-    let previousCell = target;
+    let previousCell = targetId;
 
     console.log(tracker[previousCell]);
     if (tracker[previousCell].includes("start")){
-      // path.unshift(previousCell);
+      path.unshift(previousCell);
       console.log(path);
       showPath(path);
       return;
     }
-    else{
+    else {
       path.unshift(previousCell);
       calculatePath(tracker, tracker[previousCell]);
     };
-
   };
 
 
-  showPath = (pathArray) => {
-    console.log(pathArray.length);
-    pathArray.forEach(div => {
-      console.log(div);
-    });
+  showPath = (pathIdArray) => {
+    for(let j = 0; j < pathIdArray.length; j++){
+      pathDiv = document.getElementById(parseInt(pathIdArray[j]));
+      pathDiv.classList.remove('visited-node-1');
+      pathDiv.classList.add('path-node');
+    };
   };
 
 
