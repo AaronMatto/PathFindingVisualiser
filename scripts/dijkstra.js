@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
-// CLEAR BOARD
+import {gridCells, startNodeSelect, targetNodeSelect} from './app.js';
 export function dijkstra() {
-  const gridCells = Array.from(document.getElementsByClassName('node'));
   const clearBoardBtn = document.getElementById('clearBoardBtn');
   clearBoardBtn.addEventListener('click', (e) => {
     if (e.target == clearBoardBtn) {
