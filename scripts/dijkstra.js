@@ -9,7 +9,7 @@ const getCoord = (cell, z) => {
 };
 
 export const tracker = {};
-export const dijkstraAlgo = (startcell) => {
+export const dijkstraAlgo = async (startcell) => {
   const visited = [];
   let unvisited = [startcell];
   let iterations = 0;
@@ -20,7 +20,7 @@ export const dijkstraAlgo = (startcell) => {
     const numberToVisit = unvisited.length;
     for (let i = 0; i < numberToVisit; i++) {
       const currentlyVisitedCell = unvisited[i];
-      const currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedCell);
+      const currentlyVisitedNewNeighbours = await findUnvisitedNeighbours(currentlyVisitedCell);
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
         running = false;
@@ -39,8 +39,16 @@ export const dijkstraAlgo = (startcell) => {
   calculatePath(tracker, target);
 };
 
+const addDelay = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};
+
 // function to find unvisited neighbours
-const findUnvisitedNeighbours = (currentCell) => {
+const findUnvisitedNeighbours = async (currentCell) => {
   const yCoord = getCoord(currentCell, 'y');
   const xCoord = getCoord(currentCell, 'x');
 
@@ -53,6 +61,7 @@ const findUnvisitedNeighbours = (currentCell) => {
   const leftNeighbour = findNeighbours(x, y, 0, 1);
   const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
   const unvisitedNeighbours = [];
+
 
   for (let z = 0; z < neighbours.length; z++) {
     if (neighbours[z] == undefined) {
@@ -73,6 +82,7 @@ const findUnvisitedNeighbours = (currentCell) => {
     neighbours[z].classList.add('visited-node-1');
     updateTracker(currentCell, neighbours[z]);
     unvisitedNeighbours.push(neighbours[z]);
+    await addDelay(50);
   };
   return unvisitedNeighbours;
 };
@@ -84,7 +94,8 @@ const updateTracker = (currentCell, neighbour) => {
 const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
   const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
     parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
-  return neighbour;
+    // add a visting class here.
+  return (neighbour);
 };
 
 // function to calculate shortest path once target found
@@ -108,11 +119,12 @@ const calculatePath = (tracker, targetId) => {
   };
 };
 
-const showPath = (pathIdArray) => {
+const showPath = async (pathIdArray) => {
   for (let j = 0; j < pathIdArray.length; j++) {
     const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
     pathDiv.classList.remove('visited-node-1');
     pathDiv.classList.add('shortest-path-node');
+    await addDelay(100);
   };
 };
 
