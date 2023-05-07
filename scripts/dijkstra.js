@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
-import {gridCells, startNodeSelect, targetNodeSelect} from './app.js';
+import {gridCells, startNodeSelect, targetNodeSelect, wallNodeSelect} from './app.js';
 
 // PLOTTING THE SHORTEST PATH
 const getCoord = (cell, z) => {
@@ -75,14 +75,17 @@ const findUnvisitedNeighbours = async (currentCell) => {
     }
 
     if (neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].innerHTML === startNodeSelect) {
+      neighbours[z].innerHTML === startNodeSelect ||
+      neighbours[z].innerHTML == wallNodeSelect) {
       continue;
     }
 
+    neighbours[z].classList.add('visiting-node');
+    await addDelay(20);
+    neighbours[z].classList.remove('visiting-node');
     neighbours[z].classList.add('visited-node-1');
     updateTracker(currentCell, neighbours[z]);
     unvisitedNeighbours.push(neighbours[z]);
-    await addDelay(50);
   };
   return unvisitedNeighbours;
 };
@@ -124,7 +127,7 @@ const showPath = async (pathIdArray) => {
     const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
     pathDiv.classList.remove('visited-node-1');
     pathDiv.classList.add('shortest-path-node');
-    await addDelay(100);
+    await addDelay(40);
   };
 };
 

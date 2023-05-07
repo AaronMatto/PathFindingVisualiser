@@ -178,6 +178,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gridCells.forEach((gridcell) => {
     // compare the innerhtml of the cell to the hidden field value
 
+      if (gridcell.innerHTML == wallNodeSelect) {
+        return;
+      }
+
       // removing a placed node from a gridcell
       if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue) {
         gridcell.innerHTML = '';
@@ -189,7 +193,19 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
   };
+
+  grid.addEventListener('mousedown', (e) => {
+    placeWallInGrid(e, hiddenField.value);
+  });
+
+  const placeWallInGrid = (e, hiddenfieldValue) => {
+    gridCells.forEach((gridcell) => {
+      if ((e.target == gridcell) && hiddenFieldVaue == wallNodeSelect) {
+        gridcell.innerHTML = wallNodeSelect;
+      };
+    });
+  };
 // ADD WALLS
 });
 
-export {gridCells, startNodeSelect, targetNodeSelect};
+export {gridCells, startNodeSelect, targetNodeSelect, wallNodeSelect};
