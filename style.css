@@ -161,7 +161,11 @@
     background-color: rgb(31, 182, 23);
   }
 
-  #wall-node{
+  #wall-node {
+    background-color: rgb(14, 53, 72);
+  }
+
+  .wall-node {
     background-color: rgb(14, 53, 72);
   }
 

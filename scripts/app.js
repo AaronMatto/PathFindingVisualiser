@@ -23,7 +23,6 @@ const gridCells = Array.from(document.getElementsByClassName('node'));
 let algoBtnSelector = document.getElementById('algo-button').value;
 const clearBoardBtn = document.getElementById('clearBoardBtn');
 
-
 // USER SELECTING A NODE FROM THE KEY
 const keyForNodes = document.querySelector('#main .key');
 const userNodeDivs = Array.from(document.querySelectorAll('#main .key .user-slct'));
@@ -43,10 +42,32 @@ const weightNodeSelect = '<img src="../PathFindingVisualiser/images/weight.png" 
 const bombNodeSelect = '<img src="../PathFindingVisualiser/images/bomb.png" class="selectedCell" id="icon-bomb">';
 const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
-document.addEventListener('DOMContentLoaded', () => {
-  // SELECTING an algorithm to visualise
-  algoBtnSelector = 'dijkstra';
 
+// SELECTING an algorithm to visualise and giving it the delay chosen by user
+const addDelay = async (userChoice) => {
+  switch (userChoice) {
+    case 'fast':
+      await delay(2);
+      return;
+    case 'medium':
+      await delay(20);
+      return;
+    case 'slow':
+      await delay(90);
+      return;
+  };
+};
+
+const delay = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  algoBtnSelector = 'dijkstra';
   const visualiseBtn = document.getElementById('visualise-btn');
   visualiseBtn.parentElement.addEventListener('click', (e) => {
     let startCell;
@@ -142,10 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gridcell.innerHTML = bombNodeMouseOver;
         break;
 
-      case wallNodeSelect:
-        gridcell.innerHTML = wallNodeMouseOver;
-        break;
-
       case weightNodeSelect:
         gridcell.innerHTML = weightNodeMouseOver;
         break;
@@ -170,6 +187,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ADDING SELECTED ICON INTO A GRID CELL
 
+  // WALL NODES
+  let mouseDown;
+  grid.addEventListener('mousedown', (e) => {
+    if (hiddenField.value == wallNodeSelect) {
+      mouseDown = true;
+    };
+  });
+
+  grid.addEventListener('mouseup', (e) => {
+    mouseDown = false;
+  });
+
+  grid.addEventListener('mouseover', (e) => {
+    if (mouseDown == true && e.target.classList.contains('node')) {
+      e.target.classList.add('wall-node');
+    };
+  });
+
+  // EVERY OTHER NODE
   grid.addEventListener('click', (e) => {
     placeNodeInGridCell(e, hiddenField.value);
   });
@@ -178,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gridCells.forEach((gridcell) => {
     // compare the innerhtml of the cell to the hidden field value
 
-      if (gridcell.innerHTML == wallNodeSelect) {
+      if (hiddenField.value == wallNodeSelect) {
         return;
       }
 
@@ -193,19 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
   };
-
-  grid.addEventListener('mousedown', (e) => {
-    placeWallInGrid(e, hiddenField.value);
-  });
-
-  const placeWallInGrid = (e, hiddenfieldValue) => {
-    gridCells.forEach((gridcell) => {
-      if ((e.target == gridcell) && hiddenFieldVaue == wallNodeSelect) {
-        gridcell.innerHTML = wallNodeSelect;
-      };
-    });
-  };
-// ADD WALLS
 });
 
-export {gridCells, startNodeSelect, targetNodeSelect, wallNodeSelect};
+export {gridCells, startNodeSelect, targetNodeSelect, addDelay};

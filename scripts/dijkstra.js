@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
-import {gridCells, startNodeSelect, targetNodeSelect, wallNodeSelect} from './app.js';
+import {gridCells, startNodeSelect, targetNodeSelect, addDelay} from './app.js';
 
 // PLOTTING THE SHORTEST PATH
 const getCoord = (cell, z) => {
@@ -10,6 +10,7 @@ const getCoord = (cell, z) => {
 
 export const tracker = {};
 export const dijkstraAlgo = async (startcell) => {
+  console.log(speedSelection);
   const visited = [];
   let unvisited = [startcell];
   let iterations = 0;
@@ -39,15 +40,9 @@ export const dijkstraAlgo = async (startcell) => {
   calculatePath(tracker, target);
 };
 
-const addDelay = (time) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, time);
-  });
-};
-
 // function to find unvisited neighbours
+const speedSelection = document.getElementById('speed-button');
+
 const findUnvisitedNeighbours = async (currentCell) => {
   const yCoord = getCoord(currentCell, 'y');
   const xCoord = getCoord(currentCell, 'x');
@@ -76,12 +71,12 @@ const findUnvisitedNeighbours = async (currentCell) => {
 
     if (neighbours[z].classList.contains('visited-node-1') ||
       neighbours[z].innerHTML === startNodeSelect ||
-      neighbours[z].innerHTML == wallNodeSelect) {
+      neighbours[z].classList.contains('wall-node')) {
       continue;
     }
 
     neighbours[z].classList.add('visiting-node');
-    await addDelay(20);
+    await addDelay(speedSelection.value);
     neighbours[z].classList.remove('visiting-node');
     neighbours[z].classList.add('visited-node-1');
     updateTracker(currentCell, neighbours[z]);
@@ -127,7 +122,7 @@ const showPath = async (pathIdArray) => {
     const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
     pathDiv.classList.remove('visited-node-1');
     pathDiv.classList.add('shortest-path-node');
-    await addDelay(40);
+    await addDelay('medium');
   };
 };
 
