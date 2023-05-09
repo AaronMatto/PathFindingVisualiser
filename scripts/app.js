@@ -53,7 +53,7 @@ const addDelay = async (userChoice) => {
       await delay(20);
       return;
     case 'slow':
-      await delay(90);
+      await delay(1000);
       return;
   };
 };

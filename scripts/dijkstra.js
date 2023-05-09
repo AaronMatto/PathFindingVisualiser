@@ -1,16 +1,15 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 import {gridCells, startNodeSelect, targetNodeSelect, addDelay} from './app.js';
 
-// PLOTTING THE SHORTEST PATH
 const getCoord = (cell, z) => {
   return cell.getAttribute(`data-${z}`);
 };
 
 export const tracker = {};
 export const dijkstraAlgo = async (startcell) => {
-  console.log(speedSelection);
   const visited = [];
   let unvisited = [startcell];
   let iterations = 0;
@@ -34,7 +33,7 @@ export const dijkstraAlgo = async (startcell) => {
     };
 
     unvisited.splice(0, numberToVisit);
-    // eslint-disable-next-line no-unused-vars
+    if (unvisited.length == 0) return; // to stop infinite loops if there is no path from start to target
     iterations++;
   };
   calculatePath(tracker, target);
@@ -57,10 +56,13 @@ const findUnvisitedNeighbours = async (currentCell) => {
   const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
   const unvisitedNeighbours = [];
 
-
   for (let z = 0; z < neighbours.length; z++) {
     if (neighbours[z] == undefined) {
       continue;
+    }
+
+    if (currentCell.innerHTML == startNodeSelect) {
+      currentCell.classList.add('shortest-path-node');
     }
 
     if (neighbours[z].innerHTML == targetNodeSelect) {
@@ -70,7 +72,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
     }
 
     if (neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].innerHTML === startNodeSelect ||
       neighbours[z].classList.contains('wall-node')) {
       continue;
     }
@@ -82,6 +83,9 @@ const findUnvisitedNeighbours = async (currentCell) => {
     updateTracker(currentCell, neighbours[z]);
     unvisitedNeighbours.push(neighbours[z]);
   };
+
+  // if (unvisitedNeighbours.length == 0) { noTargetFoundStopper++ }
+  console.log(unvisitedNeighbours);
   return unvisitedNeighbours;
 };
 
