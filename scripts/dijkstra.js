@@ -84,8 +84,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
     unvisitedNeighbours.push(neighbours[z]);
   };
 
-  // if (unvisitedNeighbours.length == 0) { noTargetFoundStopper++ }
-  console.log(unvisitedNeighbours);
   return unvisitedNeighbours;
 };
 
@@ -96,14 +94,12 @@ const updateTracker = (currentCell, neighbour) => {
 const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
   const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
     parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
-    // add a visting class here.
-  return (neighbour);
+  return neighbour;
 };
 
 // function to calculate shortest path once target found
 export const path = [];
 const calculatePath = (tracker, targetId) => {
-  // eslint-disable-next-line no-unused-vars
   const rotations = 0;
   // scenarios:
   // if target x > start x, we know target is right of start
