@@ -229,5 +229,5 @@
 /* Highlighting The Path */
 .shortest-path-node {
   background-color: rgb(31, 182, 23);
-  border:rgb(31, 182, 23);
+  border: 0.2px solid rgb(31, 182, 23);
 }
