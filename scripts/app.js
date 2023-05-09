@@ -232,3 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
+
+
+
+// TO DO:
+// - improve animations
+// - change arrow rotation
+// - caclulate number of rotations
+// - fix clearboard btn
+// - add weights
+// - add bomb
+// - add mazes and patterns
+// - clear walls and weights button
+// - drag and drop target once path is calculated
