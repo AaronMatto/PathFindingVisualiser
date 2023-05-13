@@ -13,15 +13,19 @@ for (i=0; i < gridCellsNo; i++) {
   if (x == 0 && i != 0) {
     y++;
   };
-  grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} id=${i}></div>`;
+  grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-euclidean='' id=${i}></div>`;
   x++;
-// i for dijkstra's algorithm to identify the node that came before the one just discovered.
+// i to identify the node that came before the one just discovered.
 };
+
+// create euclidean func for a*
+
 const gridCells = Array.from(document.getElementsByClassName('node'));
 
 // NAVBAR buttons
 let algoBtnSelector = document.getElementById('algo-button').value;
 const clearBoardBtn = document.getElementById('clearBoardBtn');
+const clearPathBtn = document.getElementById('clearPathBtn');
 
 // USER SELECTING A NODE FROM THE KEY
 const keyForNodes = document.querySelector('#main .key');
@@ -186,8 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // WALL NODES
   let mouseDown;
   grid.addEventListener('mousedown', (e) => {
+    if (hiddenField.value == wallNodeSelect && e.target.classList.contains('wall-node')) {
+      console.log(e.target);
+      mouseDown = true;
+      e.target.classList.remove('wall-node');
+      return;
+    };
+
     if (hiddenField.value == wallNodeSelect) {
       mouseDown = true;
+      e.target.classList.add('wall-node');
     };
   });
 
@@ -196,6 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   grid.addEventListener('mouseover', (e) => {
+    if (mouseDown == true && e.target.classList.contains('wall-node')) {
+      e.target.classList.remove('wall-node');
+      return;
+    };
+
     if (mouseDown == true && e.target.classList.contains('node')) {
       e.target.classList.add('wall-node');
     };
@@ -225,6 +242,20 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
   };
+
+  // CLEAR PATH BUT NOT WALLS AND WEIGHTS
+  clearPathBtn.addEventListener('click', () => {
+    gridCells.forEach((gridcell) => {
+      if (gridcell.classList.contains('visited-node-1') || gridcell.classList.contains('shortest-path-node')) {
+        gridcell.classList.remove('visited-node-1');
+        gridcell.classList.remove('shortest-path-node');
+        for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
+          delete tracker[id];
+        };
+        path.length = 0;
+      };
+    });
+  });
 });
 
 export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
