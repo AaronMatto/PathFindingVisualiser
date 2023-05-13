@@ -9,6 +9,42 @@
     margin: 0;
     background-color: rgb(52, 73, 95);
     color: aliceblue;
+    justify-content: space-evenly;
+  }
+
+  .div-dropdown-option {
+    border-radius: 3%;
+    height: 50px;
+    width: 9%;
+    padding-top: 20px;
+    margin-top: 10px;
+    font-family: 'Noto Sans', sans-serif;
+    text-align: center;
+  }
+
+  .div-dropdown-option:hover {
+    color: red;
+  }
+
+  .nav-option {
+    border: 2px solid rgba(0,0,0, 0.2);
+    border-radius: 3%;
+    height: 50px;
+    font-family: 'Noto Sans', sans-serif;
+    text-align: center;
+    width: 9%;
+    margin-top: 10px;
+    padding-top: 20px;
+  }
+
+  .nav-option:hover {
+    cursor: pointer;
+    background-color: green;
+  }
+
+  .walls-weights-text {
+    position: relative;
+    bottom: 10px;
   }
 
   #title {
@@ -16,67 +52,25 @@
     width: 190px;
     height: 80px;
     position: relative;
-    padding-bottom: 16px;
-    padding-left: 20px;
+    padding-bottom: 30px;
+    padding-left: 0px;
     font-family: 'Noto Sans', sans-serif;
   }
 
-  #title:hover{
+  .dropdown-button {
+    width: 20px;
+    display: inline;
     background-color: rgb(52, 73, 95);
-  }
-
-  #algo-button{
-    width: 20px;
-    background-color: grey;
-  }
-
-  #algo-nav{
-    padding-top: 22px;
+    color: red;
+    border: none;
     font-size: 15px;
-    height: 60px;
   }
 
-  #maze-button {
-    width: 20px;
-    background-color: grey;
-  }
-
-  #maze-nav{
-    padding-top: 20px;
-    padding-left: 10px;
-    font-size: 15px;
-    height: 60px;
-  }
-
-  #speed-button {
-    width: 70px;
-    background-color: grey;
-  }
-
-  #speed-nav {
-    padding-top: 15px;
-    padding-left: 10px;
-    font-size: 15px;
-    height: 60px;
-  }
-
-  .nav-option {
-    /* border: 2px solid black; */
-    border-radius: 3%;
-    height: 70px;
-    width: 9%;
-    margin-left: 13px;
-    margin-top: 10px;
-    font-size: 15px;
-    padding-left: 10px;
-    font-family: 'Noto Sans', sans-serif;
-    text-align: center;
-  }
-
-  .nav-option:hover {
-    background-color: rgb(72, 201, 177);
+  .dropdown-button:hover {
+    color: rgb(31, 182, 23);
     cursor: pointer;
   }
+
 
 /* KEY GUIDE */
 
@@ -229,5 +223,5 @@
 /* Highlighting The Path */
 .shortest-path-node {
   background-color: rgb(31, 182, 23);
-  border: 0.2px solid rgb(31, 182, 23);
+  border: 0.01px solid rgb(31, 182, 23);
 }

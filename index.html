@@ -19,12 +19,12 @@
     <div class = "navbar">
 
       <div id="title" class="">
-        <h1>Path finding Visualiser 🎯</h1>
+        <h1>Path Finding Visualiser</h1>
       </div>
 
-      <div class="nav-option" id="algo-nav">
+      <div class="div-dropdown-option" id="algo-nav">
         <label for="algo-button">Algorithms:</label>
-        <select name="algo-button" id="algo-button">
+        <select name="algo-button" class="dropdown-button" id="algo-button">
           <option value="dijkstra">Dijkstra's Algorithm</option>
           <option value="A* search">A* Search</option>
           <option value="Greedy Best-first Search">Greedy Best-first Search</option>
@@ -36,9 +36,9 @@
         </select>
       </div>
 
-      <div class="nav-option" id="maze-nav">
-        <label for="maze-button">Mazes & Patterns</label>
-        <select name="maze-button" id="maze-button">
+      <div class="div-dropdown-option" id="maze-nav">
+        <label for="maze-button">Mazes</label>
+        <select name="maze-button" class="dropdown-button">
           <option value="dijkstra">Dijkstra's Algorithm</option>
           <option value="A* search">A* Search</option>
           <option value="Greedy Best-first Search">Greedy Best-first Search</option>
@@ -46,25 +46,25 @@
         </select>
       </div>
 
-      <div class="nav-option">
-        <p id="visualise-btn">Visualise</p>
+      <div class="nav-option" id="visualise-btn">
+        Visualise
       </div>
 
       <div class="nav-option" id="clearBoardBtn">
-        <p>Clear Board</p>
+        Clear Board
       </div>
 
       <div class="nav-option">
-        <p>Clear Walls & Weights</p>
+        <span class="walls-weights-text">Clear Walls & Weights</span>
       </div>
 
       <div class="nav-option">
-        <p>Clear Path</p>
+        Clear Path
       </div>
 
-      <div class="nav-option" id="speed-nav">
+      <div class="div-dropdown-option" id="speed-nav">
         <label for="speed-button">Speed:</label>
-        <select name="speed-button" id="speed-button">
+        <select name="speed-button" class="dropdown-button" id="speed-button">
           <option value="fast" selected>Fast</option>
           <option value="medium">Medium</option>
           <option value="slow">Slow</option>

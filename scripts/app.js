@@ -69,15 +69,11 @@ const delay = (time) => {
 document.addEventListener('DOMContentLoaded', () => {
   algoBtnSelector = 'dijkstra';
   const visualiseBtn = document.getElementById('visualise-btn');
-  visualiseBtn.parentElement.addEventListener('click', (e) => {
+  visualiseBtn.addEventListener('click', (e) => {
     let startCell;
-    let targetCell;
-    if (e.target == visualiseBtn.parentElement) {
-      gridCells.forEach((gridcell) => {
-        if (gridcell.innerHTML == targetNodeSelect) {
-          targetCell = gridcell;
-        }
 
+    if (e.target == visualiseBtn) {
+      gridCells.forEach((gridcell) => {
         if (gridcell.innerHTML == startNodeSelect) {
           gridcell.classList.add('start');
           gridcell.id += ' start';
@@ -85,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       });
 
-      if (startCell == undefined || targetCell == undefined) { // May change later. Can we do this without knowing where the target is?
-        alert('Please select both a start and end point to visualise an algorithm');
+      if (startCell == undefined) { // May change later. Can we do this without knowing where the target is?
+        alert('Please place a start in the grid to visualise an algorithm');
         return;
       };
 
@@ -233,8 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
 
-
-
 // TO DO:
 // - improve animations
 // - change arrow rotation
@@ -245,3 +239,6 @@ export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
 // - add mazes and patterns
 // - clear walls and weights button
 // - drag and drop target once path is calculated
+
+
+// euclidean distance for a*
