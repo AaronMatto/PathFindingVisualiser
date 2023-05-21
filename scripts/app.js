@@ -270,6 +270,7 @@ export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
 // - add mazes and patterns
 // - clear walls and weights button
 // - drag and drop target once path is calculated
+// - iteration
 
 
 // euclidean distance for a*

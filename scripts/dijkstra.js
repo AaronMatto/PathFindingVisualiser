@@ -175,3 +175,8 @@ const showPath = async (pathIdArray) => {
 // Update:
 // What I should have done (but didn't want to) was create a node/cell class that has the properties of previousCell, distance from start,
 // isTarget, isStart etc. A class representing a node presents us with a much easier data structure to implement the algorithm.
+
+// Improvements:
+// when complete, have a file of the shared toolset for each algorithm, call it tools.js
+// then for each algorithm seperate out what is unique to each algorithm, and name the file
+// [insertAlgoName].js
