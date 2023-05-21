@@ -58,5 +58,10 @@ const = calculateEuclidean => (currentCell) {
   // you form a diamond on eevery iteration that hits the wall
   // on that iteration we check all cells with that value for actual distance
 
-
+  // in one iteration if we hit the wall we must travel to all nodes from the start at the
+  // actual current distance, hence the diamond. do we calculate the euclidean?
+  // yes, it's not that expensive and for now i need to think about whether
+  // the shortest path could still end up being a path that has a larger euclidean
+  // than what the current iteration would prioritise
+  // If such a situation isn't possible, we wouldnt need to calculate the euclidean
 }
