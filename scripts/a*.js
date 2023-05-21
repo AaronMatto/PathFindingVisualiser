@@ -19,7 +19,7 @@ const getCoord = (cell, z) => {
 
 const = calculateEuclidean => (currentCell) {
 
-  // getCoord x 3
+
 
   // do we only want to calculate the euclidean for the cell we are currently visiting or,
   // do we want to pre-mptively calculate it for every cell in the grid?
@@ -54,6 +54,9 @@ const = calculateEuclidean => (currentCell) {
   // so the area that searched upward at the wall and the area that searched downward
   // should be (area + 1) or (area - 1) the other
 
+  // why does the area form a diamond when there's a wall?
+  // you form a diamond on eevery iteration that hits the wall
+  // on that iteration we check all cells with that value for actual distance
 
 
 }
