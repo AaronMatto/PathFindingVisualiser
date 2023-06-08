@@ -1,11 +1,13 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
+import Node from './nodeObject.js';
 import {dijkstraAlgo, tracker, path} from './dijkstra.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 
 const grid = document.getElementById('grid');
 const gridCellsNo = 1200;
+const nodesArray = [];
 let i = 0;
 let y = 0;
 for (i=0; i < gridCellsNo; i++) {
@@ -13,11 +15,11 @@ for (i=0; i < gridCellsNo; i++) {
   if (x == 0 && i != 0) {
     y++;
   };
-  grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-euclidean='' id=${i}></div>`;
+  grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} id=${i}></div>`;
+  nodesArray.push(new Node(x, y, i));
   x++;
-// i to identify the node that came before the one just discovered.
 };
-
+console.log(nodesArray);
 // create euclidean func for a*
 
 const gridCells = Array.from(document.getElementsByClassName('node'));
@@ -57,7 +59,7 @@ const addDelay = async (userChoice) => {
       await delay(20);
       return;
     case 'slow':
-      await delay(90);
+      await delay(900);
       return;
   };
 };
@@ -258,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
+export {gridCells, startNodeSelect, targetNodeSelect, addDelay, nodesArray};
 
 // TO DO:
 // - improve animations

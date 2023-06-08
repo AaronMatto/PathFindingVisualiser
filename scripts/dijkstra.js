@@ -180,3 +180,15 @@ const showPath = async (pathIdArray) => {
 // when complete, have a file of the shared toolset for each algorithm, call it tools.js
 // then for each algorithm seperate out what is unique to each algorithm, and name the file
 // [insertAlgoName].js
+
+
+// need to reimplement shortest path with node object to optimise for rotation
+// record the direction facing of the start node: right
+// for the currently visited cell, record for each of its neighbours whether visiting
+// that neighbour would require a rotation based on the direction the start cell would be facing
+// if it were to travel to the currently visited cell
+// if that neighbour requires a rotation, increment the cost of visiting it by one and capture this
+// so that when we calculate the shortest path, rotation costs are facotred in
+
+// so if node x has already been visited by node y, but to get from x to y we had
+// think of an L shape
