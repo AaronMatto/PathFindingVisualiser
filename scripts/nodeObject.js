@@ -8,6 +8,8 @@ class Node {
     let direction;
     let isStart = false;
     let isTarget = false;
+    let isWall = false;
+    let visited = false;
     let shortestPath = 1000;
     let previousNode;
   }
