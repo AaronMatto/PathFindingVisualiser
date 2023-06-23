@@ -9,10 +9,12 @@ const getCoord = (cell, z) => {
 };
 
 export const tracker = {};
+let iterations = 0;
 export const dijkstraAlgo = async (startcell) => {
   const visited = [];
   let unvisited = [startcell];
-  let iterations = 0;
+  startcell.dataset.direction = '1';
+  startcell.dataset.path = '0';
   let target;
   let running = true;
 
@@ -36,6 +38,8 @@ export const dijkstraAlgo = async (startcell) => {
     if (unvisited.length == 0) return; // to stop infinite loops if there is no path from start to target
     iterations++;
   };
+
+
   calculatePath(tracker, target);
 };
 
@@ -53,13 +57,23 @@ const findUnvisitedNeighbours = async (currentCell) => {
   const aboveNeighbour = findNeighbours(x, y, 1, 0);
   const belowNeighbour = findNeighbours(x, y, -1, 0);
   const leftNeighbour = findNeighbours(x, y, 0, 1);
+
   const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
   const unvisitedNeighbours = [];
 
-  for (let z = 0; z < neighbours.length; z++) {
+  for (let z = 0; z < neighbours.length; z++) { // loop within a loop but max length neighbours can ever be is 4.
     if (neighbours[z] == undefined) {
       continue;
     }
+
+    if (neighbours[z].classList.contains('visited-node-1') ||
+      neighbours[z].classList.contains('wall-node')) {
+      continue;
+    }
+
+    neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
+
+    rotationCost(currentCell, neighbours[z]);
 
     if (currentCell.innerHTML == startNodeSelect) {
       currentCell.classList.add('shortest-path-node');
@@ -69,11 +83,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
       neighbours[z].classList.add('visited-node-1');
       updateTracker(currentCell, neighbours[z]);
       return neighbours[z].id;
-    }
-
-    if (neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].classList.contains('wall-node')) {
-      continue;
     }
 
     neighbours[z].classList.add('visiting-node');
@@ -97,15 +106,34 @@ const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
   return neighbour;
 };
 
+const rotationCost = (currentNode, neighbour) => {
+  const currentDirectionInt = parseInt(currentNode.dataset.direction);
+  const neighbourInt = parseInt(neighbour.dataset.direction);
+  const result = currentDirectionInt - neighbourInt < 0 ? ((currentDirectionInt - neighbourInt) * -1) : (currentDirectionInt - neighbourInt);
+  console.log(result);
+  switch (result) {
+    case (0):
+      // add nothing to number of rotations
+      neighbour.dataset.path = iterations + 1;
+      return;
+    case (1):
+      // add 1 to shortest path, quarter turn
+      neighbour.dataset.path = iterations + 2;
+      return;
+    case (3):
+      // add 1 to shortest path, quarter turn
+      neighbour.dataset.path = iterations + 2;
+      return;
+    case (2):
+      // add 2 to shortest path. This should only happen once at the very start? half turn
+      neighbour.dataset.path = iterations + 3;
+      return;
+  }
+};
+
 // function to calculate shortest path once target found
 export const path = [];
 const calculatePath = (tracker, targetId) => {
-  const rotations = 0;
-  // scenarios:
-  // if target x > start x, we know target is right of start
-  // if target x < start x, target is left of start
-  // if target y is > than start y, target is below start
-  // if target y is < than start
   const previousCell = targetId;
   if (tracker[previousCell].includes('start')) {
     path.unshift(previousCell);
