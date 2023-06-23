@@ -17,29 +17,34 @@ export const dijkstraAlgo = async (startcell) => {
   startcell.dataset.path = '0';
   let target;
   let running = true;
+  let currentlyVisitedNewNeighbours;
+
 
   while (running == true) {
     const numberToVisit = unvisited.length;
     for (let i = 0; i < numberToVisit; i++) {
-      const currentlyVisitedCell = unvisited[i];
-      const currentlyVisitedNewNeighbours = await findUnvisitedNeighbours(currentlyVisitedCell);
+      if (unvisited[i] == undefined) continue;
+
+      if (unvisited[i].dataset.path == iterations) {
+        const currentlyVisitedCell = unvisited[i];
+        currentlyVisitedNewNeighbours = await findUnvisitedNeighbours(currentlyVisitedCell);
+        visited.push(currentlyVisitedCell);
+        unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
+        delete unvisited[i] in unvisited;
+      };
+
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
         running = false;
         i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
         target = currentlyVisitedNewNeighbours;
       }
-
-      visited.push(currentlyVisitedCell);
-      unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
     };
-
-    unvisited.splice(0, numberToVisit);
+    console.log(iterations);
+    console.log(unvisited);
     if (unvisited.length == 0) return; // to stop infinite loops if there is no path from start to target
     iterations++;
   };
-
-
   calculatePath(tracker, target);
 };
 
@@ -110,7 +115,7 @@ const rotationCost = (currentNode, neighbour) => {
   const currentDirectionInt = parseInt(currentNode.dataset.direction);
   const neighbourInt = parseInt(neighbour.dataset.direction);
   const result = currentDirectionInt - neighbourInt < 0 ? ((currentDirectionInt - neighbourInt) * -1) : (currentDirectionInt - neighbourInt);
-  console.log(result);
+
   switch (result) {
     case (0):
       // add nothing to number of rotations
