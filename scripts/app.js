@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
           for (let i = 0; i < gridCells.length; i++) {
             gridCells[i].innerHTML = '';
             gridCells[i].className = '';
+            gridCells[i].id = '';
             gridCells[i].id = i;
             gridCells[i].classList.add('node');
           };
@@ -245,15 +246,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // CLEAR PATH BUT NOT WALLS AND WEIGHTS
   clearPathBtn.addEventListener('click', () => {
     gridCells.forEach((gridcell) => {
-      if (gridcell.classList.contains('visited-node-1') || gridcell.classList.contains('shortest-path-node')) {
+      if (gridcell.classList.contains('visited-node-1') || gridcell.classList.contains('shortest-path-node') ||
+          gridcell.classList.contains('discovered-node')) {
         gridcell.classList.remove('visited-node-1');
         gridcell.classList.remove('shortest-path-node');
-        for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
-          delete tracker[id];
-        };
+        gridcell.classList.remove('start');
+        gridcell.classList.remove('discovered-node');
         path.length = 0;
       };
     });
+    for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
+      delete tracker[id];
+    };
   });
 });
 
