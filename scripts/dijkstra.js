@@ -9,10 +9,11 @@ const getCoord = (cell, z) => {
 };
 
 export const tracker = {};
-let iterations = 0;
+let iterations;
 export const dijkstraAlgo = async (startcell) => {
   const visited = [];
   let unvisited = [startcell];
+  iterations = 0;
   startcell.dataset.direction = '1';
   startcell.dataset.path = '0';
   let target;
@@ -27,12 +28,13 @@ export const dijkstraAlgo = async (startcell) => {
 
       if (unvisited[i].dataset.path == iterations) {
         const currentlyVisitedCell = unvisited[i];
+        currentlyVisitedCell.classList.remove('discovered-node');
+        currentlyVisitedCell.classList.add('visited-node-1');
         currentlyVisitedNewNeighbours = await findUnvisitedNeighbours(currentlyVisitedCell);
         visited.push(currentlyVisitedCell);
         unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
         delete unvisited[i] in unvisited;
       };
-
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
         running = false;
@@ -72,7 +74,9 @@ const findUnvisitedNeighbours = async (currentCell) => {
     }
 
     if (neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].classList.contains('wall-node')) {
+      neighbours[z].classList.contains('discovered-node') ||
+      neighbours[z].classList.contains('wall-node') ||
+      neighbours[z].classList.contains('start')) {
       continue;
     }
 
@@ -93,7 +97,7 @@ const findUnvisitedNeighbours = async (currentCell) => {
     neighbours[z].classList.add('visiting-node');
     await addDelay(speedSelection.value);
     neighbours[z].classList.remove('visiting-node');
-    neighbours[z].classList.add('visited-node-1');
+    neighbours[z].classList.add('discovered-node');
     updateTracker(currentCell, neighbours[z]);
     unvisitedNeighbours.push(neighbours[z]);
   };
@@ -118,19 +122,19 @@ const rotationCost = (currentNode, neighbour) => {
 
   switch (result) {
     case (0):
-      // add nothing to number of rotations
+      // add 1 to number of iterations
       neighbour.dataset.path = iterations + 1;
       return;
     case (1):
-      // add 1 to shortest path, quarter turn
+      // add 2 to shortest path, quarter turn
       neighbour.dataset.path = iterations + 2;
       return;
     case (3):
-      // add 1 to shortest path, quarter turn
+      // add 2 to shortest path, quarter turn
       neighbour.dataset.path = iterations + 2;
       return;
     case (2):
-      // add 2 to shortest path. This should only happen once at the very start? half turn
+      // add 3 to shortest path. This should only happen once at the very start? half turn
       neighbour.dataset.path = iterations + 3;
       return;
   }

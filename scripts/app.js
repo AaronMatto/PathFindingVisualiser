@@ -55,7 +55,7 @@ const addDelay = async (userChoice) => {
       await delay(20);
       return;
     case 'slow':
-      await delay(900);
+      await delay(7000);
       return;
   };
 };
@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             delete tracker[id];
           };
           path.length = 0;
+          console.log(tracker);
           break;
         default:
           break;
