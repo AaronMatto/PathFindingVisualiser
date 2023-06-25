@@ -38,13 +38,13 @@ export const dijkstraAlgo = async (startcell) => {
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
         running = false;
-        i = numberToVisit; // so that we don't perform this code > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
+        i = numberToVisit; // so that we don't perform this loop > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
         target = currentlyVisitedNewNeighbours;
       }
     };
     console.log(iterations);
     console.log(unvisited);
-    if (unvisited.length == 0) return; // to stop infinite loops if there is no path from start to target
+    if (iterations > unvisited.length ) return; // to stop infinite loops if there is no path from start to target. This is a solution but it is not scalale, since the difference in the rate of growth between unvisited.length - iterations increases exponenttially
     iterations++;
   };
   calculatePath(tracker, target);
