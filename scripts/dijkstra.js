@@ -76,7 +76,7 @@ const findUnvisitedNeighbours = async (currentCell) => {
     if (neighbours[z].classList.contains('visited-node-1') ||
       neighbours[z].classList.contains('discovered-node') ||
       neighbours[z].classList.contains('wall-node') ||
-      neighbours[z].classList.contains('start')) {
+      neighbours[z].id.includes('start')) {
       continue;
     }
 
@@ -84,7 +84,7 @@ const findUnvisitedNeighbours = async (currentCell) => {
 
     rotationCost(currentCell, neighbours[z]);
 
-    if (currentCell.innerHTML == startNodeSelect) {
+    if (currentCell.id.includes('start')) {
       currentCell.classList.add('shortest-path-node');
     }
 

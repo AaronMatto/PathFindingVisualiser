@@ -106,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
           for (let i = 0; i < gridCells.length; i++) {
             gridCells[i].innerHTML = '';
             gridCells[i].className = '';
-            gridCells[i].id = '';
             gridCells[i].id = i;
             gridCells[i].classList.add('node');
           };
@@ -252,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gridcell.classList.remove('shortest-path-node');
         gridcell.classList.remove('start');
         gridcell.classList.remove('discovered-node');
+        gridcell.id = gridcell.id.replace(' start', '');
         path.length = 0;
       };
     });
