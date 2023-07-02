@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
-import {gridCells, startNodeSelect, targetNodeSelect, addDelay} from './app.js';
+import {gridCells, weightNodeSelect, targetNodeSelect, addDelay} from './app.js';
 
 const getCoord = (cell, z) => {
   return cell.getAttribute(`data-${z}`);
@@ -42,8 +42,6 @@ export const dijkstraAlgo = async (startcell) => {
         target = currentlyVisitedNewNeighbours;
       }
     };
-    console.log(iterations);
-    console.log(unvisited);
     if (iterations > unvisited.length ) return; // to stop infinite loops if there is no path from start to target. This is a solution but it is not scalale, since the difference in the rate of growth between unvisited.length - iterations increases exponenttially
     iterations++;
   };
@@ -83,6 +81,10 @@ const findUnvisitedNeighbours = async (currentCell) => {
     neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
 
     rotationCost(currentCell, neighbours[z]);
+
+    if (neighbours[z].innerHTML == weightNodeSelect) {
+      neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 3;
+    }
 
     if (currentCell.id.includes('start')) {
       currentCell.classList.add('shortest-path-node');
@@ -208,11 +210,6 @@ const showPath = async (pathIdArray) => {
 // works. But it means we then have to search for the cells in the DOM again since we lost reference to them. So perhaps there is a better way.
 // Maybe I could use document.replaceChild....
 
-
-// Update:
-// What I should have done (but didn't want to) was create a node/cell class that has the properties of previousCell, distance from start,
-// isTarget, isStart etc. A class representing a node presents us with a much easier data structure to implement the algorithm.
-
 // Improvements:
 // when complete, have a file of the shared toolset for each algorithm, call it tools.js
 // then for each algorithm seperate out what is unique to each algorithm, and name the file
@@ -226,6 +223,3 @@ const showPath = async (pathIdArray) => {
 // if it were to travel to the currently visited cell
 // if that neighbour requires a rotation, increment the cost of visiting it by one and capture this
 // so that when we calculate the shortest path, rotation costs are facotred in
-
-// so if node x has already been visited by node y, but to get from x to y we had
-// think of an L shape

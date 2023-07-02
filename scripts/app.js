@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case startNodeSelect:
         gridcell.innerHTML = startNodeMouseOver;
         break;
+
       case targetNodeSelect:
         gridcell.innerHTML = targetNodeMouseOver;
         break;
@@ -184,13 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ADDING SELECTED ICON INTO A GRID CELL
+  // ADDING A USER SELECTED ICON INTO A GRID CELL
 
   // WALL NODES
   let mouseDown;
   grid.addEventListener('mousedown', (e) => {
     if (hiddenField.value == wallNodeSelect && e.target.classList.contains('wall-node')) {
-      console.log(e.target);
       mouseDown = true;
       e.target.classList.remove('wall-node');
       return;
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  grid.addEventListener('mouseup', (e) => {
+  grid.addEventListener('mouseup', () => {
     mouseDown = false;
   });
 
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  // EVERY OTHER NODE
+  // EVERY OTHER NODE, WEIGHT NODES HAVE THEIR OWN FUNCTION
   grid.addEventListener('click', (e) => {
     placeNodeInGridCell(e, hiddenField.value);
   });
@@ -230,7 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // removing a placed node from a gridcell
+      if (hiddenField.value == weightNodeSelect) {
+        addRemoveWeightNode(e, gridcell);
+        return;
+      }
+
+      // removing a placed start/target from a gridcell
       if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue) {
         gridcell.innerHTML = '';
       };
@@ -242,6 +247,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
+  const addRemoveWeightNode = (e, gridcell) => {
+    console.log('a');
+
+    if (gridcell.innerHTML == weightNodeSelect &&
+      (e.target == gridcell.firstElementChild || e.target == gridcell)) {
+      gridcell.innerHTML = '';
+    };
+
+    if (gridcell.innerHTML == weightNodeMouseOver && (e.target == gridcell.firstElementChild ||
+       e.target == gridcell)) {
+      gridcell.innerHTML = weightNodeSelect;
+    };
+  };
+
   // CLEAR PATH BUT NOT WALLS AND WEIGHTS
   clearPathBtn.addEventListener('click', () => {
     gridCells.forEach((gridcell) => {
@@ -249,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
           gridcell.classList.contains('discovered-node')) {
         gridcell.classList.remove('visited-node-1');
         gridcell.classList.remove('shortest-path-node');
-        gridcell.classList.remove('start');
         gridcell.classList.remove('discovered-node');
         gridcell.id = gridcell.id.replace(' start', '');
         path.length = 0;
@@ -261,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export {gridCells, startNodeSelect, targetNodeSelect, addDelay};
+export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect};
 
 // TO DO:
 // - improve animations
