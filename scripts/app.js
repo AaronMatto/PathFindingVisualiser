@@ -2,6 +2,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
 import {dijkstraAlgo, tracker, path} from './dijkstra.js';
+import { aStarSearch } from './a*.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
 
 const grid = document.getElementById('grid');
@@ -21,7 +22,7 @@ for (i=0; i < gridCellsNo; i++) {
 const gridCells = Array.from(document.getElementsByClassName('node'));
 
 // NAVBAR buttons
-let algoBtnSelector = document.getElementById('algo-button').value;
+const algoBtnSelector = document.getElementById('algo-button');
 const clearBoardBtn = document.getElementById('clearBoardBtn');
 const clearPathBtn = document.getElementById('clearPathBtn');
 
@@ -52,10 +53,10 @@ const addDelay = async (userChoice) => {
       await delay(2);
       return;
     case 'medium':
-      await delay(20);
+      await delay(30);
       return;
     case 'slow':
-      await delay(7000);
+      await delay(110);
       return;
   };
 };
@@ -69,7 +70,6 @@ const delay = (time) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  algoBtnSelector = 'dijkstra';
   const visualiseBtn = document.getElementById('visualise-btn');
   visualiseBtn.addEventListener('click', (e) => {
     let startCell;
@@ -77,22 +77,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target == visualiseBtn) {
       gridCells.forEach((gridcell) => {
         if (gridcell.innerHTML == startNodeSelect) {
-          gridcell.classList.add('start');
           gridcell.id += ' start';
           startCell = gridcell;
         };
       });
 
-      if (startCell == undefined) { // May change later. Can we do this without knowing where the target is?
-        alert('Please place a start in the grid to visualise an algorithm');
-        return;
-      };
 
-      switch (algoBtnSelector) {
+      switch (algoBtnSelector.value) {
         case 'dijkstra':
+          if (startCell == undefined) {
+            alert('Please place a start in the grid to visualise an algorithm');
+            return;
+          };
           dijkstraAlgo(startCell);
           break;
 
+        case 'A* search':
+          aStarSearch();
+          break;
         default:
           break;
       };
@@ -101,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   clearBoardBtn.addEventListener('click', (e) => {
     if (e.target == clearBoardBtn) {
-      switch (algoBtnSelector) {
+      switch (algoBtnSelector.value) {
         case 'dijkstra':
           for (let i = 0; i < gridCells.length; i++) {
             gridCells[i].innerHTML = '';
@@ -113,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
             delete tracker[id];
           };
           path.length = 0;
-          console.log(tracker);
+          break;
+        case 'A* search':
+
           break;
         default:
           break;
@@ -248,8 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const addRemoveWeightNode = (e, gridcell) => {
-    console.log('a');
-
     if (gridcell.innerHTML == weightNodeSelect &&
       (e.target == gridcell.firstElementChild || e.target == gridcell)) {
       gridcell.innerHTML = '';

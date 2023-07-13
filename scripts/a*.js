@@ -44,3 +44,8 @@
 // the shortest path could still end up being a path that has a larger euclidean
 // than what the current iteration would prioritise
 // If such a situation isn't possible, we wouldnt need to calculate the euclidean
+
+
+export const aStarSearch = () => {
+  console.log('g');
+};
