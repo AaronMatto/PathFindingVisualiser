@@ -3,7 +3,7 @@
 /* eslint-disable max-len */
 import {dijkstraAlgo, tracker, path} from './dijkstra.js';
 import { aStarSearch } from './a*.js';
-// CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL
+// CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
 
 const grid = document.getElementById('grid');
 const gridCellsNo = 1200;
@@ -17,7 +17,12 @@ for (i=0; i < gridCellsNo; i++) {
   grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-direction='' data-path='' id=${i}></div>`;
   x++;
 };
-// create euclidean func for a*
+const startNodeSelect = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="selectedCell">';
+const targetNodeSelect = '<img src="../PathFindingVisualiser/images/target.png" class="selectedCell" id="icon-target">';
+const defaultStart = document.getElementById('562');
+defaultStart.innerHTML = startNodeSelect;
+const defaultTarget = document.getElementById('578');
+defaultTarget.innerHTML = targetNodeSelect;
 
 const gridCells = Array.from(document.getElementsByClassName('node'));
 
@@ -39,8 +44,6 @@ const bombNodeMouseOver = '<img src="../PathFindingVisualiser/images/bomb.png" c
 const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></div>';
 
 // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
-const startNodeSelect = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="selectedCell">';
-const targetNodeSelect = '<img src="../PathFindingVisualiser/images/target.png" class="selectedCell" id="icon-target">';
 const weightNodeSelect = '<img src="../PathFindingVisualiser/images/weight.png" class="selectedCell" id="icon-weight">';
 const bombNodeSelect = '<img src="../PathFindingVisualiser/images/bomb.png" class="selectedCell" id="icon-bomb">';
 const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
@@ -73,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const visualiseBtn = document.getElementById('visualise-btn');
   visualiseBtn.addEventListener('click', (e) => {
     let startCell;
+    let isBomb = false;
 
     if (e.target == visualiseBtn) {
       gridCells.forEach((gridcell) => {
@@ -80,6 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
           gridcell.id += ' start';
           startCell = gridcell;
         };
+
+        if (gridcell.innerHTML == bombNodeSelect) {
+          isBomb = true;
+        }
       });
 
 
@@ -89,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please place a start in the grid to visualise an algorithm');
             return;
           };
-          dijkstraAlgo(startCell);
+          dijkstraAlgo(startCell, isBomb, false);
           break;
 
         case 'A* search':
@@ -115,6 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
             delete tracker[id];
           };
           path.length = 0;
+          defaultStart.innerHTML = startNodeSelect;
+          defaultTarget.innerHTML = targetNodeSelect;
           break;
         case 'A* search':
 
@@ -281,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect};
+export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect};
 
 // TO DO:
 // - improve animations
