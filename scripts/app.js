@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstraAlgo, tracker, path} from './dijkstra.js';
+import {dijkstraAlgo, path, path2} from './dijkstra.js';
 import { aStarSearch } from './a*.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
 
@@ -119,10 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
             gridCells[i].id = i;
             gridCells[i].classList.add('node');
           };
-          for (const id in tracker) {
-            delete tracker[id];
-          };
+          // for (const id in tracker) {
+          //   delete tracker[id];
+          // };
           path.length = 0;
+          path2.length = 0;
           defaultStart.innerHTML = startNodeSelect;
           defaultTarget.innerHTML = targetNodeSelect;
           break;
@@ -285,9 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
         path.length = 0;
       };
     });
-    for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
-      delete tracker[id];
-    };
+    // for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
+    //   delete tracker[id];
+    // };
   });
 });
 

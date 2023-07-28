@@ -8,12 +8,18 @@ const getCoord = (cell, z) => {
   return cell.getAttribute(`data-${z}`);
 };
 
-export const tracker = {};
 let iterations;
 let bomb;
 let bombStart;
+let tracker;
+
+const startingFromBomb = () => {
+  bombStart == true ? true : false;
+};
+
 export const dijkstraAlgo = async (startcell, isBomb, isBombStart) => {
   const visited = [];
+  tracker = {};
   let unvisited = [startcell];
   iterations = 0;
   bomb = isBomb;
@@ -57,7 +63,7 @@ export const dijkstraAlgo = async (startcell, isBomb, isBombStart) => {
         shouldExit = true;
         console.log(currentlyVisitedNewNeighbours);
         const newStart = document.getElementById(currentlyVisitedNewNeighbours);
-        newStart.id = newStart.id.replace(' bomb', '');
+        console.log(newStart);
         calculatePathToBomb(tracker, newStart.id);
         dijkstraAlgo(newStart, false, true);
         return;
@@ -133,14 +139,15 @@ const findUnvisitedNeighbours = async (currentCell) => {
     if (neighbours[z].innerHTML == targetNodeSelect && bomb == false) {
       neighbours[z].classList.add('shortest-path-node');
       updateTracker(currentCell, neighbours[z]);
+      console.log(`target id is ${neighbours[z].id}`);
       return neighbours[z].id;
     }
 
     if (neighbours[z].innerHTML == bombNodeSelect) {
       bomb = false;
       neighbours[z].classList.add('visited-node-1');
-      updateTracker(currentCell, neighbours[z]);
       neighbours[z].id += ' bomb';
+      updateTracker(currentCell, neighbours[z]);
       console.log(neighbours[z].id);
       return neighbours[z].id;
     }
@@ -194,18 +201,30 @@ const rotationCost = (currentNode, neighbour) => {
 
 // function to calculate shortest path once target found
 export const path = [];
+export const path2 = [];
+let finalPath;
 const calculatePath = (tracker, targetId) => {
   const previousCell = targetId;
   console.log(tracker);
   console.log(path);
   console.log(targetId);
-  if (tracker[previousCell].includes('start')) {
+  if (tracker[previousCell].includes('start') || tracker[previousCell].includes('bomb')) {
     console.log(bombStart);
-    bombStart == false ? path.unshift(previousCell) : path.push(previousCell);
-    showPath(path);
+    if (bombStart == false) {
+      path.unshift(previousCell);
+    } else {
+      path2.unshift(previousCell);
+    }
+    finalPath = path.concat(path2);
+    console.log(finalPath);
+    showPath(finalPath);
     return;
   } else {
-    bombStart == false ? path.unshift(previousCell) : path.push(previousCell);
+    if (bombStart == false) {
+      path.unshift(previousCell);
+    } else {
+      path2.unshift(previousCell);
+    }
     calculatePath(tracker, tracker[previousCell]);
   };
 };
@@ -215,7 +234,6 @@ const calculatePathToBomb = (tracker, targetId) => {
   console.log(previousCell);
   if (tracker[previousCell].includes('start')) {
     path.unshift(previousCell);
-
     return;
   } else {
     path.unshift(previousCell);
@@ -225,7 +243,7 @@ const calculatePathToBomb = (tracker, targetId) => {
 
 const showPath = async (pathIdArray) => {
   for (let j = 0; j < pathIdArray.length; j++) {
-    const pathDiv = document.getElementById(parseInt(pathIdArray[j]));
+    const pathDiv = document.getElementById(pathIdArray[j]);
     pathDiv.classList.remove('visited-node-1');
     pathDiv.classList.add('shortest-path-node');
     await addDelay('medium');
