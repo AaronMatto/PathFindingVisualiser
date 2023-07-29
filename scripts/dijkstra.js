@@ -108,6 +108,14 @@ const findUnvisitedNeighbours = async (currentCell) => {
       continue;
     }
 
+    if (neighbours[z].id.includes('start') && bombStart == false) {
+      continue;
+    }
+
+    if (neighbours[z].id.includes('start') && bombStart == true) {
+      neighbours[z].id = neighbours[z].id.replace(' start', '');
+    }
+
     if (bombStart == false && (neighbours[z].classList.contains('visited-node-1') ||
       neighbours[z].classList.contains('discovered-node'))) {
       continue;
