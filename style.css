@@ -148,7 +148,7 @@
   }
 
   .visited-node-2 {
-    background-color: rgb(207, 136, 4);
+    background-color: rgb(255, 0, 166);
   }
 
   .discovered-node {
@@ -156,7 +156,7 @@
   }
 
   .discovered-node-2 {
-    background-color: rgb(219, 15, 124);
+    background-color: rgb(0, 75, 249);
   }
 
   #shortest-path-node{
