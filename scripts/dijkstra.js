@@ -17,14 +17,14 @@ const startingFromBomb = () => {
   bombStart == true ? true : false;
 };
 
-export const dijkstraAlgo = async (startcell, isBomb, isBombStart) => {
+export const dijkstraAlgo = async (startcell, startingDirection, isBomb, isBombStart) => {
   const visited = [];
   tracker = {};
   let unvisited = [startcell];
   iterations = 0;
   bomb = isBomb;
   bombStart = isBombStart;
-  startcell.dataset.direction = '1';
+  startcell.dataset.direction = startingDirection;
   startcell.dataset.path = '0';
   let target;
   let running = true;
@@ -64,8 +64,9 @@ export const dijkstraAlgo = async (startcell, isBomb, isBombStart) => {
         console.log(currentlyVisitedNewNeighbours);
         const newStart = document.getElementById(currentlyVisitedNewNeighbours);
         console.log(newStart);
+        const bombStartDirection = newStart.dataset.direction;
         calculatePathToBomb(tracker, newStart.id);
-        dijkstraAlgo(newStart, false, true);
+        dijkstraAlgo(newStart, bombStartDirection, false, true);
         return;
       };
 
@@ -103,8 +104,7 @@ const findUnvisitedNeighbours = async (currentCell) => {
 
   for (let z = 0; z < neighbours.length; z++) { // loop within a loop but max length neighbours can ever be is 4.
     if (neighbours[z] == undefined ||
-      neighbours[z].classList.contains('wall-node') ||
-      neighbours[z].id.includes('start')) {
+      neighbours[z].classList.contains('wall-node')) {
       continue;
     }
 

@@ -2,7 +2,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
 import {dijkstraAlgo, path, path2} from './dijkstra.js';
-import { aStarSearch } from './a*.js';
+import {aStarSearch} from './a*.js';
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
 
 const grid = document.getElementById('grid');
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please place a start in the grid to visualise an algorithm');
             return;
           };
-          dijkstraAlgo(startCell, isBomb, false);
+          dijkstraAlgo(startCell, '1', isBomb, false);
           break;
 
         case 'A* search':
@@ -278,12 +278,16 @@ document.addEventListener('DOMContentLoaded', () => {
   clearPathBtn.addEventListener('click', () => {
     gridCells.forEach((gridcell) => {
       if (gridcell.classList.contains('visited-node-1') || gridcell.classList.contains('shortest-path-node') ||
-          gridcell.classList.contains('discovered-node')) {
+          gridcell.classList.contains('discovered-node') || gridcell.classList.contains('visited-node-2') ||
+          gridcell.classList.contains('discovered-node-2')) {
         gridcell.classList.remove('visited-node-1');
         gridcell.classList.remove('shortest-path-node');
         gridcell.classList.remove('discovered-node');
         gridcell.id = gridcell.id.replace(' start', '');
         path.length = 0;
+        path2.length = 0;
+        gridcell.classList.remove('visited-node-2');
+        gridcell.classList.remove('discovered-node-2');
       };
     });
     // for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
