@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gridcell.id = gridcell.id.replace(' start', '');
         path.length = 0;
         path2.length = 0;
+        gridcell.id = gridcell.id.replace(' bomb', '');
         gridcell.classList.remove('visited-node-2');
         gridcell.classList.remove('discovered-node-2');
       };
