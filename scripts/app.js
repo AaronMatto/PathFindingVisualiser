@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const addRemoveWeightNode = (e, gridcell) => {
+  const addRemoveWeightNode = (e, gridcell) => { // unique function since we want to be able to add multiple weight nodes to grid
     if (gridcell.innerHTML == weightNodeSelect &&
       (e.target == gridcell.firstElementChild || e.target == gridcell)) {
       gridcell.innerHTML = '';
@@ -291,9 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gridcell.classList.remove('discovered-node-2');
       };
     });
-    // for (const id in tracker) { // POTENTIALLY TURN THIS INTO FUNCTION if other algos use these variables
-    //   delete tracker[id];
-    // };
   });
 });
 
@@ -302,14 +299,8 @@ export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect
 // TO DO:
 // - improve animations
 // - change arrow rotation
-// - caclulate number of rotations
-// - fix clearboard btn
-// - add weights
-// - add bomb
 // - add mazes and patterns
 // - clear walls and weights button
 // - drag and drop target once path is calculated
-// - iteration
-
-
+// - iteration counter
 // euclidean distance for a*

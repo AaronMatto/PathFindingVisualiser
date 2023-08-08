@@ -36,34 +36,28 @@ export const dijkstraAlgo = async (startcell, startingDirection, isBomb, isBombS
     for (let i = 0; i < numberToVisit; i++) {
       if (unvisited[i] == undefined) continue;
 
-      if (bombStart == false && unvisited[i].dataset.path == iterations) {
+      if (unvisited[i].dataset.path == iterations) {
         const currentlyVisitedCell = unvisited[i];
-        currentlyVisitedCell.classList.remove('discovered-node');
-        currentlyVisitedCell.classList.add('visited-node-1');
-        currentlyVisitedNewNeighbours = await findUnvisitedNeighbours(currentlyVisitedCell);
-        visited.push(currentlyVisitedCell);
-        unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
-        delete unvisited[i] in unvisited;
-      };
+        if (bombStart == true) {
+          currentlyVisitedCell.classList.remove('discovered-node-2');
+          currentlyVisitedCell.classList.add('visited-node-2');
+        } else {
+          currentlyVisitedCell.classList.remove('discovered-node');
+          currentlyVisitedCell.classList.add('visited-node-1');
+        };
 
-      if (bombStart == true && unvisited[i].dataset.path == iterations) {
-        const currentlyVisitedCell = unvisited[i];
-        currentlyVisitedCell.classList.remove('discovered-node-2');
-        currentlyVisitedCell.classList.add('visited-node-2');
         currentlyVisitedNewNeighbours = await findUnvisitedNeighbours(currentlyVisitedCell);
         visited.push(currentlyVisitedCell);
         unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
         delete unvisited[i] in unvisited;
-      };
+      }
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false && currentlyVisitedNewNeighbours.includes('bomb')) {
         running = false;
         i = numberToVisit;
         target = currentlyVisitedNewNeighbours;
         shouldExit = true;
-        console.log(currentlyVisitedNewNeighbours);
         const newStart = document.getElementById(currentlyVisitedNewNeighbours);
-        console.log(newStart);
         const bombStartDirection = newStart.dataset.direction;
         calculatePathToBomb(tracker, newStart.id);
         dijkstraAlgo(newStart, bombStartDirection, false, true);
@@ -76,7 +70,7 @@ export const dijkstraAlgo = async (startcell, startingDirection, isBomb, isBombS
         target = currentlyVisitedNewNeighbours;
       }
     };
-    if (unvisited.every((element) => element == undefined)) return; // to stop infinite loops if there is no path from start to target. This is a solution but it is not scalale, since the difference in the rate of growth between unvisited.length - iterations increases exponenttially
+    if (unvisited.every((element) => element == undefined)) return; // to stop infinite loops if there is no path from start to target.
     iterations++;
   };
 
@@ -98,37 +92,33 @@ const findUnvisitedNeighbours = async (currentCell) => {
   const aboveNeighbour = findNeighbours(x, y, 1, 0);
   const belowNeighbour = findNeighbours(x, y, -1, 0);
   const leftNeighbour = findNeighbours(x, y, 0, 1);
-  console.log(bomb);
   const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
   const unvisitedNeighbours = [];
 
   for (let z = 0; z < neighbours.length; z++) { // loop within a loop but max length neighbours can ever be is 4.
+    if (bombStart == true) {
+      if (neighbours[z] == undefined ||
+        neighbours[z].classList.contains('visited-node-2') ||
+        neighbours[z].classList.contains('discovered-node-2')) {
+        continue;
+      }
+
+      if (neighbours[z].id.includes('start')) {
+        neighbours[z].id = neighbours[z].id.replace(' start', '');
+      }
+
+      if (neighbours[z].classList.contains('visited-node-1') ||
+        neighbours[z].classList.contains('discovered-node')) {
+        neighbours[z].classList.remove('visited-node-1');
+        neighbours[z].classList.remove('discovered-node');
+      }
+    }
+
     if (neighbours[z] == undefined ||
-      neighbours[z].classList.contains('wall-node')) {
-      continue;
-    }
-
-    if (neighbours[z].id.includes('start') && bombStart == false) {
-      continue;
-    }
-
-    if (neighbours[z].id.includes('start') && bombStart == true) {
-      neighbours[z].id = neighbours[z].id.replace(' start', '');
-    }
-
-    if (bombStart == false && (neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].classList.contains('discovered-node'))) {
-      continue;
-    }
-
-    if (bombStart == true && (neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].classList.contains('discovered-node'))) {
-      neighbours[z].classList.remove('visited-node-1');
-      neighbours[z].classList.remove('discovered-node');
-    }
-
-    if (bombStart == true && (neighbours[z].classList.contains('visited-node-2') ||
-      neighbours[z].classList.contains('discovered-node-2'))) {
+      neighbours[z].classList.contains('discovered-node') ||
+      neighbours[z].classList.contains('visited-node-1') ||
+      neighbours[z].classList.contains('wall-node') ||
+      neighbours[z].id.includes('start')) {
       continue;
     }
 
@@ -147,7 +137,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
     if (neighbours[z].innerHTML == targetNodeSelect && bomb == false) {
       neighbours[z].classList.add('shortest-path-node');
       updateTracker(currentCell, neighbours[z]);
-      console.log(`target id is ${neighbours[z].id}`);
       return neighbours[z].id;
     }
 
@@ -156,7 +145,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
       neighbours[z].classList.add('visited-node-1');
       neighbours[z].id += ' bomb';
       updateTracker(currentCell, neighbours[z]);
-      console.log(neighbours[z].id);
       return neighbours[z].id;
     }
 
@@ -168,7 +156,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
     updateTracker(currentCell, neighbours[z]);
     unvisitedNeighbours.push(neighbours[z]);
   };
-
   return unvisitedNeighbours;
 };
 
@@ -213,18 +200,13 @@ export const path2 = [];
 let finalPath;
 const calculatePath = (tracker, targetId) => {
   const previousCell = targetId;
-  console.log(tracker);
-  console.log(path);
-  console.log(targetId);
   if (tracker[previousCell].includes('start') || tracker[previousCell].includes('bomb')) {
-    console.log(bombStart);
     if (bombStart == false) {
       path.unshift(previousCell);
     } else {
       path2.unshift(previousCell);
     }
     finalPath = path.concat(path2);
-    console.log(finalPath);
     showPath(finalPath);
     return;
   } else {
@@ -239,7 +221,6 @@ const calculatePath = (tracker, targetId) => {
 
 const calculatePathToBomb = (tracker, targetId) => {
   const previousCell = targetId;
-  console.log(previousCell);
   if (tracker[previousCell].includes('start')) {
     path.unshift(previousCell);
     return;
@@ -257,9 +238,3 @@ const showPath = async (pathIdArray) => {
     await addDelay('medium');
   };
 };
-
-// we want to delete the key that discovers the bomb as a neighbour i.e. the key that is the id of the bomb node with a value of it's discoverer node
-// do we want to have the tracker update such that the node that discovers the bomb node (which therefor has to be part of shortest path)
-// is persisted as being the previous node to the bomb? what if the bomb node 'rediscovers' this node as part of its path to the target?
-// i.e. the path from start to bomb and the path from bomb to target traverse the same nodes?
-// may need two trackers.
