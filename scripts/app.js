@@ -40,12 +40,12 @@ const hiddenField = document.getElementById('hiddenField');
 const startNodeMouseOver = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="mouseover-grid-icons">';
 const targetNodeMouseOver = '<img src="../PathFindingVisualiser/images/target.png" class="mouseover-grid-icons" id="icon-target">';
 const weightNodeMouseOver = '<img src="../PathFindingVisualiser/images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
-const bombNodeMouseOver = '<img src="../PathFindingVisualiser/images/bomb.png" class="mouseover-grid-icons" id="icon-bomb">';
+const bombNodeMouseOver = '<img src="../PathFindingVisualiser/images/flag.png" class="mouseover-grid-icons" id="icon-bomb">';
 const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></div>';
 
 // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
 const weightNodeSelect = '<img src="../PathFindingVisualiser/images/weight.png" class="selectedCell" id="icon-weight">';
-const bombNodeSelect = '<img src="../PathFindingVisualiser/images/bomb.png" class="selectedCell" id="icon-bomb">';
+const bombNodeSelect = '<img src="../PathFindingVisualiser/images/flag.png" class="selectedCell" id="icon-bomb">';
 const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
           case 'Target Node':
             hiddenField.value = targetNodeSelect;
             break;
-          case 'Bomb Node':
+          case 'Flag Node':
             hiddenField.value = bombNodeSelect;
             break;
           case 'Weight Node':
