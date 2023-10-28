@@ -214,7 +214,7 @@
   }
 
   .weight-node{
-    background-image: url('../images/weight.png');
+    background-image: url('./images/weight.png');
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center center;
@@ -231,7 +231,7 @@
 
 /* Changing the cursor once a node has been clicked */
   .start-cursor {
-    cursor: url("icons/right-arrow.png")
+    cursor: url("images/right-arrow.png")
   }
 
 
