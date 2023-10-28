@@ -13,10 +13,6 @@ let bomb;
 let bombStart;
 let tracker;
 
-const startingFromBomb = () => {
-  bombStart == true ? true : false;
-};
-
 export const dijkstraAlgo = async (startcell, startingDirection, isBomb, isBombStart) => {
   const visited = [];
   tracker = {};
@@ -126,7 +122,7 @@ const findUnvisitedNeighbours = async (currentCell) => {
 
     rotationCost(currentCell, neighbours[z]);
 
-    if (neighbours[z].innerHTML == weightNodeSelect) {
+    if (neighbours[z].classList.contains('weight-node')) {
       neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 10;
     }
 

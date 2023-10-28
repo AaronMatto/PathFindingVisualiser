@@ -17,8 +17,8 @@ for (i=0; i < gridCellsNo; i++) {
   grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-direction='' data-path='' id=${i}></div>`;
   x++;
 };
-const startNodeSelect = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="selectedCell">';
-const targetNodeSelect = '<img src="../PathFindingVisualiser/images/target.png" class="selectedCell" id="icon-target">';
+const startNodeSelect = '<img src="./images/right-arrow.png" class="selectedCell">';
+const targetNodeSelect = '<img src="./images/target.png" class="selectedCell" id="icon-target">';
 const defaultStart = document.getElementById('562');
 defaultStart.innerHTML = startNodeSelect;
 const defaultTarget = document.getElementById('578');
@@ -37,15 +37,15 @@ const userNodeDivs = Array.from(document.querySelectorAll('#main .key .user-slct
 const hiddenField = document.getElementById('hiddenField');
 
 // To populate hidden field when user clicks on which node they want to place in the grid
-const startNodeMouseOver = '<img src="../PathFindingVisualiser/images/right-arrow.png" class="mouseover-grid-icons">';
-const targetNodeMouseOver = '<img src="../PathFindingVisualiser/images/target.png" class="mouseover-grid-icons" id="icon-target">';
-const weightNodeMouseOver = '<img src="../PathFindingVisualiser/images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
-const bombNodeMouseOver = '<img src="../PathFindingVisualiser/images/flag.png" class="mouseover-grid-icons" id="icon-bomb">';
+const startNodeMouseOver = '<img src="./images/right-arrow.png" class="mouseover-grid-icons">';
+const targetNodeMouseOver = '<img src="./images/target.png" class="mouseover-grid-icons" id="icon-target">';
+const weightNodeMouseOver = '<img src="./images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
+const bombNodeMouseOver = '<img src="./images/flag.png" class="mouseover-grid-icons" id="icon-bomb">';
 const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></div>';
 
 // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
-const weightNodeSelect = '<img src="../PathFindingVisualiser/images/weight.png" class="selectedCell" id="icon-weight">';
-const bombNodeSelect = '<img src="../PathFindingVisualiser/images/flag.png" class="selectedCell" id="icon-bomb">';
+const weightNodeSelect = '<img src="./images/weight.png" class="selectedCell" id="icon-weight">';
+const bombNodeSelect = '<img src="./images/flag.png" class="selectedCell" id="icon-bomb">';
 const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
 
@@ -177,10 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
       case bombNodeSelect:
         gridcell.innerHTML = bombNodeMouseOver;
         break;
-
-      case weightNodeSelect:
-        gridcell.innerHTML = weightNodeMouseOver;
-        break;
     };
   };
 
@@ -215,6 +211,17 @@ document.addEventListener('DOMContentLoaded', () => {
       mouseDown = true;
       e.target.classList.add('wall-node');
     };
+
+    if (hiddenField.value == weightNodeSelect && e.target.classList.contains('weight-node')) {
+      mouseDown = true;
+      e.target.classList.remove('weight-node');
+      return;
+    };
+
+    if (hiddenField.value == weightNodeSelect) {
+      mouseDown = true;
+      e.target.classList.add('weight-node');
+    }
   });
 
   grid.addEventListener('mouseup', () => {
@@ -227,8 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     };
 
-    if (mouseDown == true && e.target.classList.contains('node')) {
+    if (mouseDown == true && hiddenField.value == wallNodeSelect) {
       e.target.classList.add('wall-node');
+    };
+
+    if (mouseDown == true && e.target.classList.contains('weight-node')) {
+      e.target.classList.remove('weight-node');
+      return;
+    };
+
+    if (mouseDown == true && hiddenField.value == weightNodeSelect) {
+      e.target.classList.add('weight-node');
     };
   });
 
@@ -263,15 +279,15 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const addRemoveWeightNode = (e, gridcell) => { // unique function since we want to be able to add multiple weight nodes to grid
-    if (gridcell.innerHTML == weightNodeSelect &&
-      (e.target == gridcell.firstElementChild || e.target == gridcell)) {
-      gridcell.innerHTML = '';
-    };
+    // if (gridcell.innerHTML == weightNodeSelect &&
+    //   (e.target == gridcell.firstElementChild || e.target == gridcell)) {
+    //   gridcell.innerHTML = '';
+    // };
 
-    if (gridcell.innerHTML == weightNodeMouseOver && (e.target == gridcell.firstElementChild ||
-       e.target == gridcell)) {
-      gridcell.innerHTML = weightNodeSelect;
-    };
+    // if (gridcell.innerHTML == weightNodeMouseOver && (e.target == gridcell.firstElementChild ||
+    //    e.target == gridcell)) {
+    //   gridcell.innerHTML = weightNodeSelect;
+    // };
   };
 
   // CLEAR PATH BUT NOT WALLS AND WEIGHTS
