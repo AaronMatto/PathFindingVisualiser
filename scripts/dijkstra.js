@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
-import {gridCells, weightNodeSelect, targetNodeSelect, bombNodeSelect, addDelay} from './app.js';
+import {gridCells, targetNodeSelect, bombNodeSelect, addDelay} from './app.js';
 
 const getCoord = (cell, z) => {
   return cell.getAttribute(`data-${z}`);
@@ -46,7 +46,7 @@ export const dijkstraAlgo = async (startcell, startingDirection, isBomb, isBombS
         visited.push(currentlyVisitedCell);
         unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
         delete unvisited[i] in unvisited;
-      }
+      };
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false && currentlyVisitedNewNeighbours.includes('bomb')) {
         running = false;

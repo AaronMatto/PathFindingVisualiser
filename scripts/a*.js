@@ -1,5 +1,9 @@
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable padded-blocks */
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
+import {gridCells, targetNodeSelect, bombNodeSelect, addDelay} from './app.js';
 
 /*
 A*:
@@ -88,7 +92,7 @@ iteration:
     g(n) = 2
     sum = 9.81
 
-    we go to the right neigbour again...but h(n) no longer favors right neighbour, g(n) still does
+    we go to the right neigbour again...b   ut h(n) no longer favors right neighbour, g(n) still does
 
   so do we reach a point where h(n) for up is less than h(n) for right by an amount more than
   the difference between g(n) for up neighbour and down neighbour. In this case more than 1.
@@ -218,6 +222,275 @@ iteration:
 */
 
 
-export const aStarSearch = () => {
-  console.log('g');
+
+
+/*
+how do I sort the queue?
+
+we visit nodes in an order based on their sum value
+for each of those nodes we discover all adjacent neighbours
+out of those neighbours we prioritise visiting the one with the lowest sum: h(n) + g(n)
+
+if we re-discover a node and its actual distance g(n) via the current node is less than the
+actual distance currently recorded via a different node, we still update the actual distance
+for visiting that node. Like dijsktra.
+
+so i'd have to sort the unvisited/discovered list based on the sum value
+
+
+psuedo-code:
+
+global variable for target node?
+
+function aStarSearch:
+  this function contains:
+  - a list of visited nodes
+  - a list of discovered nodes
+  - an iterator to keep track of what iteration (number of steps we can travel) we are on
+  - a flag to stop when we have reached the target
+
+  behaviour:
+  - we sort discovered nodes based on euclidean distance (h(n)) to the target
+
+  - a loop that loops over the discovered nodes that have been sorted
+    - in the loop we call discoverNeighbours
+    - at the end of the loop we add newly discovered neighbours to the list of discovered nodes
+    - we remove node we just visited from discovered nodes and add it to visited nodes
+    - increment iterator
+
+  - call tracePath
+
+function discoverNeighbours(currentNode):
+
+  contains:
+  - an array that will be returned containing all the newly discovered nodes, newlyDiscovered
+  - an array that contains all the currentNode's neighbours, currentlyVisitedNeighbours
+
+  behaviour:
+
+  a loop to iterate over currentlyVisitedNeighbours
+    - has this neighbour been discovered or not?
+    - if a neighbour has been discovered will contain the class 'discovered' and we skip over this iteration
+    - if it hasn't been discovered:
+      - calulate its euclidean distance from the target
+      - caclulate its rotational cost
+      - add discovered class to it
+      - add it to newlyDiscovered
+      - update the tracker to say the current node is the one that discovered that neighbour
+  -
+
+*/
+const speedSelection = document.getElementById('speed-button');
+let tracker;
+let target;
+let targetX;
+let targetY;
+
+const getTargetCoords = () => {
+
+  gridCells.forEach((gridcell) => {
+    if (gridcell.innerHTML == targetNodeSelect) {
+      target = gridcell;
+    };
+  });
+
+  targetX = getCoord(target, 'x');
+  targetY = getCoord(target, 'y');
 };
+
+const getCoord = (cell, z) => {
+  const coord = cell.getAttribute(`data-${z}`);
+  return parseInt(coord);
+};
+
+export const aStarSearch = (startcell, startingDirection) => {
+
+  getTargetCoords();
+  const visited = [];
+  let unvisited = [startcell];
+  let iterations = 0;
+  let targetReached = false;
+  let tracker = {};
+  startcell.dataset.direction = startingDirection;
+  startcell.dataset.path = '0';
+
+  while (targetReached == false) {
+
+    sortUnvisitedBySum(unvisited);
+
+    for (let i = 0; i < unvisited.length; i++) {
+
+      if (unvisited[i] == undefined) continue;
+
+
+      if (unvisited[i].dataset.path == iterations) { // must fix this
+        const currentlyVisitedNode = unvisited[i];
+
+        currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedNode);
+
+        visited.push(currentlyVisitedNode);
+        unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
+        delete unvisited[i] in unvisited;
+      };
+
+    };
+    iterations++;
+  };
+};
+
+
+
+const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
+  unsortedDiscoveredNodeArray.sort((a, b) => a.dataset.aStar - b.dataset.aStar);
+};
+
+
+
+
+const findUnvisitedNeighbours = (currentCell) => {
+
+  const yCoord = getCoord(currentCell, 'y');
+  const xCoord = getCoord(currentCell, 'x');
+  const y = parseInt(yCoord);
+  const x = parseInt(xCoord);
+
+  const rightNeighbour = findNeighbours(x, y, 0, -1);
+  const aboveNeighbour = findNeighbours(x, y, 1, 0);
+  const belowNeighbour = findNeighbours(x, y, -1, 0);
+  const leftNeighbour = findNeighbours(x, y, 0, 1);
+  const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
+
+  const unvisitedNeighbours = iterateOverNeighbours(neighbours);
+
+  if (currentCell.id.includes('start')) {
+    currentCell.classList.add('shortest-path-node');
+  }
+
+  return unvisitedNeighbours;
+};
+
+
+
+
+
+
+const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+  const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
+    parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
+  return neighbour;
+};
+
+
+
+
+
+const iterateOverNeighbours = async (neighbours) => {
+
+  const undiscoveredNeighbours = [];
+
+  for (let z = 0; z < neighbours.length; z++) {
+    if (neighbours[z] == undefined ||
+      neighbours[z].classList.contains('discovered-node') ||
+      neighbours[z].classList.contains('visited-node-1') ||
+      neighbours[z].classList.contains('wall-node') ||
+      neighbours[z].id.includes('start')) {
+      continue;
+    };
+
+    neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
+
+    rotationCost(currentCell, neighbours[z]);
+
+    setAStarSumDistance(neighbours[z]);
+
+    if (neighbours[z].classList.contains('weight-node')) {
+      neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 10;
+    }
+
+    if (neighbours[z].innerHTML == targetNodeSelect && bomb == false) {
+      neighbours[z].classList.add('shortest-path-node');
+      updateTracker(currentCell, neighbours[z]);
+      return neighbours[z].id;
+    }
+
+    neighbours[z].classList.add('visiting-node');
+    await addDelay(speedSelection.value);
+    neighbours[z].classList.remove('visiting-node');
+
+    updateTracker(currentCell, neighbours[z]);
+    undiscoveredNeighbours.push(neighbours[z]);
+  };
+
+  return undiscoveredNeighbours;
+};
+
+
+
+
+
+
+const rotationCost = (currentNode, neighbour) => {
+  const currentDirectionInt = parseInt(currentNode.dataset.direction);
+  const neighbourInt = parseInt(neighbour.dataset.direction);
+  const result = currentDirectionInt - neighbourInt < 0 ? ((currentDirectionInt - neighbourInt) * -1) : (currentDirectionInt - neighbourInt);
+
+  switch (result) {
+    case (0):
+      // add 1 to number of iterations
+      neighbour.dataset.path = iterations + 1;
+      return;
+    case (1):
+      // add 2 to shortest path, quarter turn
+      neighbour.dataset.path = iterations + 2;
+      return;
+    case (3):
+      // add 2 to shortest path, quarter turn
+      neighbour.dataset.path = iterations + 2;
+      return;
+    case (2):
+      // add 3 to shortest path. This should only happen once at the very start? half turn
+      neighbour.dataset.path = iterations + 3;
+      return;
+  };
+};
+
+
+
+
+const setAStarSumDistance = (neighbour) => {
+  const yCoord = getCoord(neighbour, 'y');
+  const xCoord = getCoord(neighbour, 'x');
+
+  horizontalDistance = (targetX - xCoord)**2;
+  verticalDistance = (targetY - yCoord)**2;
+  euclidean = (horizontalDistance + verticalDistance)**0.5;
+
+  neighbour.dataset.aStar = (euclidean.toFixed(4) + neighbour.dataset.path);
+};
+
+
+
+
+
+const updateTracker = (currentCell, neighbour) => {
+  tracker[neighbour.id] = currentCell.id;
+};
+
+/*
+the order in which we discover and subsequently visit:
+
+in dijksta...this was captured by the notion of iterations and rotations.
+by only being able to visit nodes whosse path value matched the number of iterations:
+it meant that we ensured we visited nodes that had been discovered in the correct order...
+i.e. a node we have to rotate to reach has an additional cost and would therefore be lower
+in the priority queue to visit than a node facing the same direction
+
+
+in a*, we have to capture the same notion except the order in which we visit nodes.
+Except, instead of visitng nodes by making locally optimal choices based on immediate distance from
+current node....the next choice is based on both the locally optimal distance PLUS that neighbour
+nodes distance to the finish.
+So...for each neighbour I need to grab each the nodes' data path-path value and add it to to the nodes'
+h(n) value.
+
+*/

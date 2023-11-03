@@ -14,7 +14,7 @@ for (i=0; i < gridCellsNo; i++) {
   if (x == 0 && i != 0) {
     y++;
   };
-  grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-direction='' data-path='' id=${i}></div>`;
+  grid.innerHTML += `<div class='node' data-x=${x} data-y=${y} data-direction='' data-path=''  data-aStar='' id=${i}></div>`;
   x++;
 };
 const startNodeSelect = '<img src="./images/right-arrow.png" class="selectedCell">';
@@ -93,15 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       switch (algoBtnSelector.value) {
         case 'dijkstra':
-          if (startCell == undefined) {
-            alert('Please place a start in the grid to visualise an algorithm');
-            return;
-          };
           dijkstraAlgo(startCell, '1', isBomb, false);
           break;
 
         case 'A* search':
-          aStarSearch();
+          aStarSearch(startCell);
           break;
         default:
           break;
