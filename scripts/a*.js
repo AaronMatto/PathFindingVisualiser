@@ -314,26 +314,69 @@ export const aStarSearch = (startcell, startingDirection) => {
   startcell.dataset.direction = startingDirection;
   startcell.dataset.path = '0';
 
+/*
+I need to change the behaviour of the priority of unvisited queue. In other words, the order
+must constantly place any discovered node with the lowest sum value at the front.
+This includes during an iteration where we are visiting the nodes discovered by the previous
+iteration. If a discovered node in the current iteration has a smaller sum than any other
+nodes it must be visited before those other nodes, despite it being discovered in a subsequent iteration.
+This is different to dijsktra.
+
+This means in a straight line from start point to target we dont even visit all 4 squares
+around the start.
+
+We discover all 4 then visit the one with the smallest sum. Then we discover the 3 around that
+node and visit the one with the smallest sum. And so on.
+We'd never visit the other 3 around the start this way.
+
+So, we'd wanna sort our queue after visiting any node in our unvisited list.
+
+e.g. a straight line above the start
+Is this correct? Well after visiting the start node and discovering all of its 4 initial neighbours:
+all the neighbours are added to unvisited and we sort it before beginning the next iteration.
+In the next iteration we visit the discovered neighbour with the lowest sum value as the list has been sorted.
+When we visit this neighbour (say above), we discover its neighbours.
+Its neighbours will have a lower sum value than any of the other 3 initial neighbours of the start.
+At this point, in order to visit those new neighbours before the initial 3 (as they have a lower sum),
+we must resort the undiscovered list.
+*/
+
+
   while (targetReached == false) {
 
-    sortUnvisitedBySum(unvisited);
 
-    for (let i = 0; i < unvisited.length; i++) {
-
-      if (unvisited[i] == undefined) continue;
+    const numberToVisit = unvisited.length;
 
 
-      if (unvisited[i].dataset.path == iterations) { // must fix this
-        const currentlyVisitedNode = unvisited[i];
 
-        currentlyVisitedNewNeighbours = findUnvisitedNeighbours(currentlyVisitedNode);
+      currentlyVisitedNewNeighbours = findUnDiscoveredNeighbours(currentlyVisitedNode);
 
-        visited.push(currentlyVisitedNode);
-        unvisited = unvisited.concat(currentlyVisitedNewNeighbours);
-        delete unvisited[i] in unvisited;
-      };
+      visited.push(currentlyVisitedNode);
+      unvisited = currentlyVisitedNewNeighbours.concat(unvisited);
 
-    };
+      // should I sort the whole thing here or can sorting be broken down and done
+      // throughout the method chain?
+      /* if I sort in the chain it would have to be in findUnDiscoveredNeighbours.
+      Upon discovering the undiscovered neighbours, they can be sorted in terms of their sum.
+      Then, when these neighbours are returned, they can be unshifted (added to the start)
+      of the unvisited array. The assumption here is that any newly discovered neighbours
+      from the current node will always have a smaller sum than the node with the smallest
+      sum currently in the unvisited array (the one at the front of it).
+      This seems logical.
+
+      The question now is how do I dynamically insert into the undiscovered array to bring the newly discovered
+      neighbour with the smallest sum to be visited next
+      the key is the length of currentlyVisitedNewNeighbours.
+      If no new neighbours are discovered, it has length 0 and
+      unvisited array therefore remains the same
+      if new neighbours are discovered it has a non-zero length. If this is true we can reset i
+      to 0 to ensure we start the iteration again and now visit the discovered neighbour
+      with the lowest sum.
+      This way all nodes in undiscovered will be in order of their sum value too.
+
+      */
+
+
     iterations++;
   };
 };
@@ -347,7 +390,7 @@ const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
 
 
 
-const findUnvisitedNeighbours = (currentCell) => {
+const findDiscoveredNeighbours = (currentCell) => {
 
   const yCoord = getCoord(currentCell, 'y');
   const xCoord = getCoord(currentCell, 'x');
@@ -366,7 +409,7 @@ const findUnvisitedNeighbours = (currentCell) => {
     currentCell.classList.add('shortest-path-node');
   }
 
-  return unvisitedNeighbours;
+  return sortUnvisitedBySum(unvisitedNeighbours);
 };
 
 
@@ -421,6 +464,7 @@ const iterateOverNeighbours = async (neighbours) => {
     undiscoveredNeighbours.push(neighbours[z]);
   };
 
+  //
   return undiscoveredNeighbours;
 };
 
