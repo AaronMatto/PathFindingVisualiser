@@ -92,7 +92,7 @@ iteration:
     g(n) = 2
     sum = 9.81
 
-    we go to the right neigbour again...b   ut h(n) no longer favors right neighbour, g(n) still does
+    we go to the right neigbour again...but h(n) no longer favors right neighbour, g(n) still does
 
   so do we reach a point where h(n) for up is less than h(n) for right by an amount more than
   the difference between g(n) for up neighbour and down neighbour. In this case more than 1.
@@ -285,6 +285,7 @@ let tracker;
 let target;
 let targetX;
 let targetY;
+let iterations;
 
 const getTargetCoords = () => {
 
@@ -303,113 +304,85 @@ const getCoord = (cell, z) => {
   return parseInt(coord);
 };
 
-export const aStarSearch = (startcell, startingDirection) => {
+export const aStarSearch = async (startcell, startingDirection) => {
 
   getTargetCoords();
   const visited = [];
   let unvisited = [startcell];
-  let iterations = 0;
   let targetReached = false;
-  let tracker = {};
+  tracker = {};
+  let currentlyVisitedNewNeighbours;
+  iterations = 0;
   startcell.dataset.direction = startingDirection;
   startcell.dataset.path = '0';
+  startcell.dataset.astar = '0';
 
-/*
-I need to change the behaviour of the priority of unvisited queue. In other words, the order
-must constantly place any discovered node with the lowest sum value at the front.
-This includes during an iteration where we are visiting the nodes discovered by the previous
-iteration. If a discovered node in the current iteration has a smaller sum than any other
-nodes it must be visited before those other nodes, despite it being discovered in a subsequent iteration.
-This is different to dijsktra.
-
-This means in a straight line from start point to target we dont even visit all 4 squares
-around the start.
-
-We discover all 4 then visit the one with the smallest sum. Then we discover the 3 around that
-node and visit the one with the smallest sum. And so on.
-We'd never visit the other 3 around the start this way.
-
-So, we'd wanna sort our queue after visiting any node in our unvisited list.
-
-e.g. a straight line above the start
-Is this correct? Well after visiting the start node and discovering all of its 4 initial neighbours:
-all the neighbours are added to unvisited and we sort it before beginning the next iteration.
-In the next iteration we visit the discovered neighbour with the lowest sum value as the list has been sorted.
-When we visit this neighbour (say above), we discover its neighbours.
-Its neighbours will have a lower sum value than any of the other 3 initial neighbours of the start.
-At this point, in order to visit those new neighbours before the initial 3 (as they have a lower sum),
-we must resort the undiscovered list.
-*/
 
 
   while (targetReached == false) {
 
 
     const numberToVisit = unvisited.length;
+    console.log('ENTER FOR LOOP');
+    sortUnvisitedBySum(unvisited);
+    for (let i = 0; i < numberToVisit; i++) {
+      const currentlyVisitedNode = unvisited[i];
+      if (unvisited[i] == undefined) continue;
 
 
+      if (currentlyVisitedNode.classList.contains('discovered-node')) {
+        currentlyVisitedNode.classList.remove('discovered-node');
+        currentlyVisitedNode.classList.add('visited-node-1');
+      }
 
-      currentlyVisitedNewNeighbours = findUnDiscoveredNeighbours(currentlyVisitedNode);
+      currentlyVisitedNewNeighbours = await findUndiscoveredNeighbours(currentlyVisitedNode);
 
       visited.push(currentlyVisitedNode);
+
+      unvisited.splice(i, 1);
+
       unvisited = currentlyVisitedNewNeighbours.concat(unvisited);
 
-      // should I sort the whole thing here or can sorting be broken down and done
-      // throughout the method chain?
-      /* if I sort in the chain it would have to be in findUnDiscoveredNeighbours.
-      Upon discovering the undiscovered neighbours, they can be sorted in terms of their sum.
-      Then, when these neighbours are returned, they can be unshifted (added to the start)
-      of the unvisited array. The assumption here is that any newly discovered neighbours
-      from the current node will always have a smaller sum than the node with the smallest
-      sum currently in the unvisited array (the one at the front of it).
-      This seems logical.
 
-      The question now is how do I dynamically insert into the undiscovered array to bring the newly discovered
-      neighbour with the smallest sum to be visited next
-      the key is the length of currentlyVisitedNewNeighbours.
-      If no new neighbours are discovered, it has length 0 and
-      unvisited array therefore remains the same
-      if new neighbours are discovered it has a non-zero length. If this is true we can reset i
-      to 0 to ensure we start the iteration again and now visit the discovered neighbour
-      with the lowest sum.
-      This way all nodes in undiscovered will be in order of their sum value too.
+      if (unvisited.length - numberToVisit > 0) {
+        break;
+      }
 
-      */
-
-
+    };
+    console.log('OUT FOR LOOP');
     iterations++;
-  };
+  }
 };
 
 
 
 const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
-  unsortedDiscoveredNodeArray.sort((a, b) => a.dataset.aStar - b.dataset.aStar);
+  unsortedDiscoveredNodeArray.sort((a, b) => parseFloat(a.dataset.astar) - parseFloat(b.dataset.astar));
 };
 
 
 
 
-const findDiscoveredNeighbours = (currentCell) => {
+const findUndiscoveredNeighbours = async (currentCell) => {
 
-  const yCoord = getCoord(currentCell, 'y');
-  const xCoord = getCoord(currentCell, 'x');
-  const y = parseInt(yCoord);
-  const x = parseInt(xCoord);
+  const y = getCoord(currentCell, 'y');
+  const x = getCoord(currentCell, 'x');
 
-  const rightNeighbour = findNeighbours(x, y, 0, -1);
-  const aboveNeighbour = findNeighbours(x, y, 1, 0);
-  const belowNeighbour = findNeighbours(x, y, -1, 0);
-  const leftNeighbour = findNeighbours(x, y, 0, 1);
+  const rightNeighbour = findNeighbour(x, y, 0, -1);
+  const aboveNeighbour = findNeighbour(x, y, 1, 0);
+  const belowNeighbour = findNeighbour(x, y, -1, 0);
+  const leftNeighbour = findNeighbour(x, y, 0, 1);
   const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
 
-  const unvisitedNeighbours = iterateOverNeighbours(neighbours);
+  const undiscoveredNeighbours = await iterateOverNeighbours(currentCell, neighbours);
 
   if (currentCell.id.includes('start')) {
     currentCell.classList.add('shortest-path-node');
   }
 
-  return sortUnvisitedBySum(unvisitedNeighbours);
+  // sortUnvisitedBySum(undiscoveredNeighbours);
+
+  return undiscoveredNeighbours;
 };
 
 
@@ -417,7 +390,7 @@ const findDiscoveredNeighbours = (currentCell) => {
 
 
 
-const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+const findNeighbour = (currentX, currentY, ySubtrahend, xSubtrahend) => {
   const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
     parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
   return neighbour;
@@ -427,7 +400,7 @@ const findNeighbours = (currentX, currentY, ySubtrahend, xSubtrahend) => {
 
 
 
-const iterateOverNeighbours = async (neighbours) => {
+const iterateOverNeighbours = async (currentCell, neighbours) => {
 
   const undiscoveredNeighbours = [];
 
@@ -444,11 +417,13 @@ const iterateOverNeighbours = async (neighbours) => {
 
     rotationCost(currentCell, neighbours[z]);
 
-    setAStarSumDistance(neighbours[z]);
-
     if (neighbours[z].classList.contains('weight-node')) {
       neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 10;
     }
+
+    setAStarSumDistance(neighbours[z]);
+
+
 
     if (neighbours[z].innerHTML == targetNodeSelect && bomb == false) {
       neighbours[z].classList.add('shortest-path-node');
@@ -459,12 +434,11 @@ const iterateOverNeighbours = async (neighbours) => {
     neighbours[z].classList.add('visiting-node');
     await addDelay(speedSelection.value);
     neighbours[z].classList.remove('visiting-node');
-
+    neighbours[z].classList.add('discovered-node');
     updateTracker(currentCell, neighbours[z]);
     undiscoveredNeighbours.push(neighbours[z]);
   };
 
-  //
   return undiscoveredNeighbours;
 };
 
@@ -477,7 +451,6 @@ const rotationCost = (currentNode, neighbour) => {
   const currentDirectionInt = parseInt(currentNode.dataset.direction);
   const neighbourInt = parseInt(neighbour.dataset.direction);
   const result = currentDirectionInt - neighbourInt < 0 ? ((currentDirectionInt - neighbourInt) * -1) : (currentDirectionInt - neighbourInt);
-
   switch (result) {
     case (0):
       // add 1 to number of iterations
@@ -505,14 +478,11 @@ const setAStarSumDistance = (neighbour) => {
   const yCoord = getCoord(neighbour, 'y');
   const xCoord = getCoord(neighbour, 'x');
 
-  horizontalDistance = (targetX - xCoord)**2;
-  verticalDistance = (targetY - yCoord)**2;
-  euclidean = (horizontalDistance + verticalDistance)**0.5;
-
-  neighbour.dataset.aStar = (euclidean.toFixed(4) + neighbour.dataset.path);
+  const horizontalDistance = (targetX - xCoord)**2;
+  const verticalDistance = (targetY - yCoord)**2;
+  const euclidean = (horizontalDistance + verticalDistance)**0.5;
+  neighbour.dataset.astar = (parseFloat(euclidean.toFixed(4)) + parseInt(neighbour.dataset.path));
 };
-
-
 
 
 
@@ -530,11 +500,62 @@ i.e. a node we have to rotate to reach has an additional cost and would therefor
 in the priority queue to visit than a node facing the same direction
 
 
-in a*, we have to capture the same notion except the order in which we visit nodes.
-Except, instead of visitng nodes by making locally optimal choices based on immediate distance from
+in a*, we have to capture the same notion except the order in which we visit nodes is different.
+Instead of visitng nodes by making locally optimal choices based on immediate distance from
 current node....the next choice is based on both the locally optimal distance PLUS that neighbour
 nodes distance to the finish.
-So...for each neighbour I need to grab each the nodes' data path-path value and add it to to the nodes'
+So...for each neighbour I need to grab the nodes' data path-path value and add it to to the nodes'
 h(n) value.
 
+*/
+
+
+// should I sort the whole thing here or can sorting be broken down and done
+// throughout the method chain?
+/* if I sort in the chain it would have to be in findUnDiscoveredNeighbours.
+Upon discovering the undiscovered neighbours, they can be sorted in terms of their sum.
+Then, when these neighbours are returned, they can be unshifted (added to the start)
+of the unvisited array. The assumption here is that any newly discovered neighbours
+from the current node will always have a smaller sum than the node with the smallest
+sum currently in the unvisited array (the one at the front of it).
+This seems logical.
+
+The question now is how do I dynamically insert into the undiscovered array to bring the newly discovered
+neighbour with the smallest sum to be visited next
+the key is the length of currentlyVisitedNewNeighbours.
+If no new neighbours are discovered, it has length 0 and
+unvisited array therefore remains the same
+if new neighbours are discovered it has a non-zero length. If this is true we can reset i
+to 0 to ensure we start the iteration again and now visit the discovered neighbour
+with the lowest sum.
+This way all nodes in undiscovered will be in order of their sum value too.
+
+*/
+
+
+/*
+I need to change the behaviour of the priority of unvisited queue. In other words, the order
+must constantly place any discovered node with the lowest sum value at the front.
+This includes during an iteration where we are visiting the nodes discovered by the previous
+iteration. If a discovered node in the current iteration has a smaller sum than any other
+nodes it must be visited before those other nodes, despite it being discovered in a subsequent iteration.
+This is different to dijsktra.
+
+This means in a straight line from start point to target we dont even visit all 4 squares
+around the start.
+
+We discover all 4 then visit the one with the smallest sum. Then we discover the 3 around that
+node and visit the one with the smallest sum. And so on.
+We'd never visit the other 3 around the start this way.
+
+So, we'd wanna sort our queue after visiting any node in our unvisited list.
+
+e.g. a straight line above the start
+Is this correct? Well after visiting the start node and discovering all of its 4 initial neighbours:
+all the neighbours are added to unvisited and we sort it before beginning the next iteration.
+In the next iteration we visit the discovered neighbour with the lowest sum value as the list has been sorted.
+When we visit this neighbour (say above), we discover its neighbours.
+Its neighbours will have a lower sum value than any of the other 3 initial neighbours of the start.
+At this point, in order to visit those new neighbours before the initial 3 (as they have a lower sum),
+we must resort the undiscovered list.
 */

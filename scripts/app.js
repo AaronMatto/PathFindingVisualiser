@@ -59,7 +59,7 @@ const addDelay = async (userChoice) => {
       await delay(30);
       return;
     case 'slow':
-      await delay(110);
+      await delay(910);
       return;
   };
 };
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
           break;
 
         case 'A* search':
-          aStarSearch(startCell);
+          aStarSearch(startCell, '1');
           break;
         default:
           break;
