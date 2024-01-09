@@ -17,267 +17,7 @@ from which neighbour has the lowest value for this sum.
 
 h(n) could be the euclidean distance from each neighbour to the goal.
 
-start (22, 9)
-target (38,4)
-iteration one:
-
-  Left neighbour (21,9):
-    euclidean = 17sq + 5sq = 314 --> h(n) = 17.72
-    g(n) = 3
-    sum = 20.72
-
-  Right neighbour (23,9)
-    euclidean = 15sq + 5sq = 250 --> h(n) = 15.81
-    g(n) = 1
-    sum = 16.81
-
-  Up neighbour (22,8)
-    euclidean = 16sq + 4sq = 256 + 16 --> h(n) = 16.49
-    g(n) = 2
-    sum = 18.49
-
-  Down neigbour (22,10)
-    euclidean = 16sq + 6sq = 256 + 36 --> h(n) = 17.09
-    g(n) = 2
-    sum = 19.09
-
-  we go to the right neigbour.
-
-start (23, 9)
-target (38,4)
-iteration two:
-
-  Left neighbour (22,9):
-  we were just there
-
-  Right neighbour (24,9)
-    euclidean = 14sq + 5sq = 221 --> h(n) = 14.87
-    g(n) = 1
-    sum = 15.87
-
-  Up neighbour (23,8)
-    euclidean = 15sq + 4sq = 241--> h(n) = 15.52
-    g(n) = 2
-    sum = 17.72
-
-  Down neigbour (23,10)
-    euclidean = 15sq + 6sq = 261 --> h(n) = 16.16
-    g(n) = 2
-    sum = 18.16
-
-  we go to the right neigbour again.
-
-The heuristic will always favor going right until reducing the horizontal distance no longer has a greater effect
-on the sum than reducing the vertical distance.
-
-when we reach (33, 9):
-target (38,4)
-iteration:
-
- Left neighbour (32,9):
-  we were just there
-
-  Right neighbour (34,9)
-    euclidean = 4sq + 5sq = 41 --> h(n) = 6.40
-    g(n) = 1
-    sum = 7.40
-
-  Up neighbour (33,8)
-    euclidean = 5sq + 4sq = 41 --> h(n) = 6.40
-    g(n) = 2
-    sum = 8.40
-
-  Down neigbour (33,10)
-    euclidean = 5sq + 6sq = 61 --> h(n) = 7.81
-    g(n) = 2
-    sum = 9.81
-
-    we go to the right neigbour again...but h(n) no longer favors right neighbour, g(n) still does
-
-  so do we reach a point where h(n) for up is less than h(n) for right by an amount more than
-  the difference between g(n) for up neighbour and down neighbour. In this case more than 1.
-  i.e. h(n) up neighbour has to be less than h(n) right neighbour by more than 1
-
-when we reach (34,9)
-target (38,4)
-iteration:
-
-  Right neighbour (35,9)
-  euclidean = 3sq + 5sq = 34 --> h(n) = 5.83
-  g(n) = 1
-  sum = 6.83
-
-  Up neighbour (34,8)
-  euclidean = 4sq + 4sq = 32 --> h(n) = 5.65
-  g(n) = 2
-  sum = 7.65
-
-  go right
-
-
-when we reach (35,9)
-target (38,4)
-iteration:
-
-  Right neighbour (36,9)
-  euclidean = 2sq + 5sq = 29 --> h(n) = 5.39
-  g(n) = 1
-  sum = 6.39
-
-  Up neighbour (35,8)
-  euclidean = 3sq + 4sq = 25 --> h(n) = 5
-  g(n) = 2
-  sum = 7
-
-  go right
-
-when we reach (36,9)
-target (38,4)
-iteration:
-
-  Right neighbour (37,9)
-  euclidean = 1sq + 5sq = 26 --> h(n) = 5.10
-  g(n) = 1
-  sum = 6.10
-
-  Up neighbour (36,8)
-  euclidean = 2sq + 4sq = 20 --> h(n) = 4.47
-  g(n) = 2
-  sum = 6.47
-
-  go right
-
-when we reach (37,9)
-target (38,4)
-iteration:
-
-  Right neighbour (38,9)
-  euclidean = 0sq + 5sq = 25 --> h(n) = 5
-  g(n) = 1
-  sum = 6
-
-  Up neighbour (37,8)
-  euclidean = 1sq + 4sq = 17 --> h(n) = 4.12
-  g(n) = 2
-  sum = 6.12
-
-  go right
-
-when we reach (38,9)
-target (38,4)
-iteration:
-
-  Right neighbour (39,9)
-  euclidean = 1sq + 5sq = 26 --> h(n) = 5.10
-  g(n) = 1
-  sum = 6.10
-
-  Up neighbour (38,8)
-  euclidean = 0sq + 4sq = 16 --> h(n) = 4
-  g(n) = 2
-  sum = 6
-
-  go up.
-  Confirmed..at the point we travel to a node directly below the target, h(n) for the above
-  neighbour is less than h(n) for the right neighbour (which increases again) by more than 1
-  ...meaning the sum for the above neighbour is finally less given g(n) was constant.
-  In the next iteration g(n) would flip for each neighbour, so would be 2 for right neighbour
-  and 1 for up neighbour.
-
-
-
-going from (2,2) to (3,3)
-
-iteration 1
-target (3,3)
-iteration:
-
-  Right neighbour (3,2)
-  euclidean = 0sq + 1sq = 1 --> h(n) = 1
-  g(n) = 1
-  sum = 2
-
-  Up neighbour (2,3)
-  euclidean = 1sq + 0sq = 1 --> h(n) = 1
-  g(n) = 2
-  sum = 3
-
-  go right
-
-iteration 2 (3,2)
-target (3,3)
-iteration:
-
-  Right neighbour (4,2)
-  euclidean = 1sq + 1sq = 2 --> h(n) = root2
-  g(n) = 1
-  sum = root2 + 1 > 2
-
-  Up neighbour (3,3)
-  euclidean = 0sq + 0sq = 0 --> h(n) = 0
-  g(n) = 2
-  sum = 2
-
-  go right
-*/
-
-
-
-
-/*
-how do I sort the queue?
-
-we visit nodes in an order based on their sum value
-for each of those nodes we discover all adjacent neighbours
-out of those neighbours we prioritise visiting the one with the lowest sum: h(n) + g(n)
-
-if we re-discover a node and its actual distance g(n) via the current node is less than the
-actual distance currently recorded via a different node, we still update the actual distance
-for visiting that node. Like dijsktra.
-
-so i'd have to sort the unvisited/discovered list based on the sum value
-
-
-psuedo-code:
-
-global variable for target node?
-
-function aStarSearch:
-  this function contains:
-  - a list of visited nodes
-  - a list of discovered nodes
-  - an iterator to keep track of what iteration (number of steps we can travel) we are on
-  - a flag to stop when we have reached the target
-
-  behaviour:
-  - we sort discovered nodes based on euclidean distance (h(n)) to the target
-
-  - a loop that loops over the discovered nodes that have been sorted
-    - in the loop we call discoverNeighbours
-    - at the end of the loop we add newly discovered neighbours to the list of discovered nodes
-    - we remove node we just visited from discovered nodes and add it to visited nodes
-    - increment iterator
-
-  - call tracePath
-
-function discoverNeighbours(currentNode):
-
-  contains:
-  - an array that will be returned containing all the newly discovered nodes, newlyDiscovered
-  - an array that contains all the currentNode's neighbours, currentlyVisitedNeighbours
-
-  behaviour:
-
-  a loop to iterate over currentlyVisitedNeighbours
-    - has this neighbour been discovered or not?
-    - if a neighbour has been discovered will contain the class 'discovered' and we skip over this iteration
-    - if it hasn't been discovered:
-      - calulate its euclidean distance from the target
-      - caclulate its rotational cost
-      - add discovered class to it
-      - add it to newlyDiscovered
-      - update the tracker to say the current node is the one that discovered that neighbour
-  -
+MANHATTAN WORKS BETTER ALONG GRIDS since movement is restricted to up/down and left/right.
 
 */
 const speedSelection = document.getElementById('speed-button');
@@ -323,8 +63,10 @@ export const aStarSearch = async (startcell, startingDirection) => {
 
 
     const numberToVisit = unvisited.length;
+    console.log("   ");
     console.log('ENTER FOR LOOP');
     sortUnvisitedBySum(unvisited);
+    console.log(unvisited);
     for (let i = 0; i < numberToVisit; i++) {
       const currentlyVisitedNode = unvisited[i];
       if (unvisited[i] == undefined) continue;
@@ -405,15 +147,26 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
   const undiscoveredNeighbours = [];
 
   for (let z = 0; z < neighbours.length; z++) {
+
+    // if (neighbours[z].classList.contains('discovered-node')) {
+
+    //   // find what the current shortest path to that node is
+    //   let knownPath = parseInt(neighbours[z].dataset.path);
+    //   let currentPath = rotationCost()
+
+    // };
+
     if (neighbours[z] == undefined ||
-      neighbours[z].classList.contains('discovered-node') ||
       neighbours[z].classList.contains('visited-node-1') ||
+      neighbours[z].classList.contains('discovered-node') ||
       neighbours[z].classList.contains('wall-node') ||
       neighbours[z].id.includes('start')) {
       continue;
     };
 
     neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
+
+    updateTracker(currentCell, neighbours[z]); // if key does not exist?
 
     rotationCost(currentCell, neighbours[z]);
 
@@ -435,7 +188,6 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
     await addDelay(speedSelection.value);
     neighbours[z].classList.remove('visiting-node');
     neighbours[z].classList.add('discovered-node');
-    updateTracker(currentCell, neighbours[z]);
     undiscoveredNeighbours.push(neighbours[z]);
   };
 
@@ -453,20 +205,20 @@ const rotationCost = (currentNode, neighbour) => {
   const result = currentDirectionInt - neighbourInt < 0 ? ((currentDirectionInt - neighbourInt) * -1) : (currentDirectionInt - neighbourInt);
   switch (result) {
     case (0):
-      // add 1 to number of iterations
-      neighbour.dataset.path = iterations + 1;
+      // add 1 to number of steps (no rotation)
+      neighbour.dataset.path = shortestPathToCurrentNode(currentNode, neighbour) + 1; // needs to be function
       return;
     case (1):
       // add 2 to shortest path, quarter turn
-      neighbour.dataset.path = iterations + 2;
+      neighbour.dataset.path = shortestPathToCurrentNode(currentNode, neighbour) + 2;
       return;
     case (3):
       // add 2 to shortest path, quarter turn
-      neighbour.dataset.path = iterations + 2;
+      neighbour.dataset.path = shortestPathToCurrentNode(currentNode, neighbour) + 2;
       return;
     case (2):
-      // add 3 to shortest path. This should only happen once at the very start? half turn
-      neighbour.dataset.path = iterations + 3;
+      // add 3 to shortest path. half turn
+      neighbour.dataset.path = shortestPathToCurrentNode(currentNode, neighbour) + 3;
       return;
   };
 };
@@ -478,16 +230,56 @@ const setAStarSumDistance = (neighbour) => {
   const yCoord = getCoord(neighbour, 'y');
   const xCoord = getCoord(neighbour, 'x');
 
-  const horizontalDistance = (targetX - xCoord)**2;
-  const verticalDistance = (targetY - yCoord)**2;
-  const euclidean = (horizontalDistance + verticalDistance)**0.5;
-  neighbour.dataset.astar = (parseFloat(euclidean.toFixed(4)) + parseInt(neighbour.dataset.path));
+  const horizontalDistanceSqrd = (targetX - xCoord)**2;
+  const verticalDistanceSqrd = (targetY - yCoord)**2;
+  const verticalDistance = (verticalDistanceSqrd)**0.5;
+  const horizontalDistance = (horizontalDistanceSqrd)**0.5;
+  const manhattan = verticalDistance + horizontalDistance;
+  neighbour.dataset.astar = (manhattan + parseInt(neighbour.dataset.path));
 };
 
 
 
 const updateTracker = (currentCell, neighbour) => {
   tracker[neighbour.id] = currentCell.id;
+};
+
+
+const shortestPathToCurrentNode = (currentNode, neighbour) => {
+
+  /*
+
+  If the neighbour of the currently visited node is already discovered
+
+    - compare the path to the neighbour via the node we are visiting to the known shortest path
+    to that neighbour. Of course, this means the neighbour has already been discovered but not visited.
+    If the path to the neighbour via node we are visiting is smaller,
+    update the previous node value for that neighbour id key in tracker {}. Remember to factor
+    rotation cost into this comparison.
+    That neighbour will already have a key. The new value for that key will be the id of the current node.
+
+    - If path via current node is not shorter, dont update the value.
+    Remember the path via the current node is the path value of the current node
+    PLUS any rotational costs
+
+  If the the neighbour of the currently visited node is not discovered
+
+    - update tracker as [neighbourId] = [currentnodeId]
+
+  return the value for the key that is the id of the current node:
+  tracker[idOfCurrentlyVisitedNode] = idOfNodeThatDiscoveredCurrentlyVisited
+  */
+
+  if (neighbour.classList.contains('discovered-node')) {
+    console.log('FAIL');
+  } else {
+    const shortestPathToCurrentCell = currentNode.dataset.path;
+    return parseInt(shortestPathToCurrentCell);
+  }
+
+
+
+
 };
 
 /*
