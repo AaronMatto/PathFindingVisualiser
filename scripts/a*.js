@@ -25,7 +25,6 @@ let tracker;
 let target;
 let targetX;
 let targetY;
-let iterations;
 
 const getTargetCoords = () => {
 
@@ -52,7 +51,6 @@ export const aStarSearch = async (startcell, startingDirection) => {
   let targetReached = false;
   tracker = {};
   let currentlyVisitedNewNeighbours;
-  iterations = 0;
   startcell.dataset.direction = startingDirection;
   startcell.dataset.path = '0';
   startcell.dataset.astar = '0';
@@ -81,18 +79,20 @@ export const aStarSearch = async (startcell, startingDirection) => {
 
       visited.push(currentlyVisitedNode);
 
-      unvisited.splice(i, 1);
+      // unvisited.splice(i, 1);
+      if (unvisited[i].classList.contains('visited-node-1')) {
+        delete unvisited[i];
+      }
 
       unvisited = currentlyVisitedNewNeighbours.concat(unvisited);
 
 
-      if (unvisited.length - numberToVisit > 0) {
+      if (currentlyVisitedNewNeighbours.length !== 0) {
         break;
       }
 
     };
     console.log('OUT FOR LOOP');
-    iterations++;
   }
 };
 
@@ -232,10 +232,12 @@ const setAStarSumDistance = (neighbour) => {
 
   const horizontalDistanceSqrd = (targetX - xCoord)**2;
   const verticalDistanceSqrd = (targetY - yCoord)**2;
-  const verticalDistance = (verticalDistanceSqrd)**0.5;
-  const horizontalDistance = (horizontalDistanceSqrd)**0.5;
+  const verticalDistance = Math.sqrt(verticalDistanceSqrd);
+  const horizontalDistance = Math.sqrt(horizontalDistanceSqrd);
   const manhattan = verticalDistance + horizontalDistance;
-  neighbour.dataset.astar = (manhattan + parseInt(neighbour.dataset.path));
+  let euclidean = Math.sqrt(horizontalDistanceSqrd + verticalDistanceSqrd);
+  euclidean = parseFloat(euclidean.toFixed(4));
+  neighbour.dataset.astar = (manhattan + euclidean + parseInt(neighbour.dataset.path));
 };
 
 
