@@ -63,6 +63,7 @@ export const aStarSearch = async (startcell, startingDirection) => {
     const numberToVisit = unvisited.length;
     console.log("   ");
     console.log('ENTER FOR LOOP');
+    console.log(unvisited);
     sortUnvisitedBySum(unvisited);
     console.log(unvisited);
     for (let i = 0; i < numberToVisit; i++) {
@@ -80,7 +81,7 @@ export const aStarSearch = async (startcell, startingDirection) => {
       visited.push(currentlyVisitedNode);
 
       // unvisited.splice(i, 1);
-      if (unvisited[i].classList.contains('visited-node-1')) {
+      if (unvisited[i].classList.contains('visited-node-1') || currentlyVisitedNode.id.includes('start')) {
         delete unvisited[i];
       }
 
@@ -99,7 +100,27 @@ export const aStarSearch = async (startcell, startingDirection) => {
 
 
 const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
-  unsortedDiscoveredNodeArray.sort((a, b) => parseFloat(a.dataset.astar) - parseFloat(b.dataset.astar));
+  unsortedDiscoveredNodeArray.sort((a, b) => {
+    const aStarDiff = parseInt(a.dataset.astar) - parseInt(b.dataset.astar);
+    const pathDiff = parseInt(b.dataset.path) - parseInt(a.dataset.path);
+
+    if (aStarDiff == 0 && pathDiff == 0) {
+      // If astar and path values are the same, prioritize the one added first
+      console.log('ll');
+      console.log(a);
+      console.log(unsortedDiscoveredNodeArray.indexOf(a));
+      console.log(b);
+      console.log(unsortedDiscoveredNodeArray.indexOf(b));
+      return unsortedDiscoveredNodeArray.indexOf(a) - unsortedDiscoveredNodeArray.indexOf(b);
+    };
+
+    if (aStarDiff == 0) {
+      return pathDiff;
+    }
+
+    return aStarDiff;
+
+  });
 };
 
 
@@ -109,20 +130,17 @@ const findUndiscoveredNeighbours = async (currentCell) => {
 
   const y = getCoord(currentCell, 'y');
   const x = getCoord(currentCell, 'x');
-
+  const neighbours = [];
   const rightNeighbour = findNeighbour(x, y, 0, -1);
   const aboveNeighbour = findNeighbour(x, y, 1, 0);
   const belowNeighbour = findNeighbour(x, y, -1, 0);
   const leftNeighbour = findNeighbour(x, y, 0, 1);
-  const neighbours = [rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour];
-
+  neighbours.push(rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour);
   const undiscoveredNeighbours = await iterateOverNeighbours(currentCell, neighbours);
 
   if (currentCell.id.includes('start')) {
     currentCell.classList.add('shortest-path-node');
-  }
-
-  // sortUnvisitedBySum(undiscoveredNeighbours);
+  };
 
   return undiscoveredNeighbours;
 };
@@ -148,27 +166,26 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
 
   for (let z = 0; z < neighbours.length; z++) {
 
-    // if (neighbours[z].classList.contains('discovered-node')) {
-
-    //   // find what the current shortest path to that node is
-    //   let knownPath = parseInt(neighbours[z].dataset.path);
-    //   let currentPath = rotationCost()
-
-    // };
-
     if (neighbours[z] == undefined ||
       neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].classList.contains('discovered-node') ||
       neighbours[z].classList.contains('wall-node') ||
       neighbours[z].id.includes('start')) {
       continue;
     };
 
-    neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
+    if (neighbours[z].classList.contains('discovered-node')) {
+      const test = isItShorter(currentCell, neighbours[z], z);
+      undiscoveredNeighbours.push(test);
+      continue;
+    } else {
+      neighbours[z].dataset.direction = z + 1;
+      updateTracker(currentCell, neighbours[z]);
+      rotationCost(currentCell, neighbours[z]);
+    };
 
-    updateTracker(currentCell, neighbours[z]); // if key does not exist?
+     // handily sets our dynamic number-direction system
 
-    rotationCost(currentCell, neighbours[z]);
+
 
     if (neighbours[z].classList.contains('weight-node')) {
       neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 10;
@@ -237,7 +254,7 @@ const setAStarSumDistance = (neighbour) => {
   const manhattan = verticalDistance + horizontalDistance;
   let euclidean = Math.sqrt(horizontalDistanceSqrd + verticalDistanceSqrd);
   euclidean = parseFloat(euclidean.toFixed(4));
-  neighbour.dataset.astar = (manhattan + euclidean + parseInt(neighbour.dataset.path));
+  neighbour.dataset.astar = (manhattan + parseInt(neighbour.dataset.path));
 };
 
 
@@ -281,6 +298,45 @@ const shortestPathToCurrentNode = (currentNode, neighbour) => {
 
 
 
+
+};
+
+const isItShorter = (currentCell, neighbour, z) => {
+  const knownPathCost = parseInt(neighbour.dataset.path);
+  const currentDirection = parseInt(currentCell.dataset.direction);
+  const pathToCurrentCell = parseInt(currentCell.dataset.path);
+  const newDirection = z + 1;
+  const result = Math.abs(currentDirection - newDirection);
+
+  let newPathCost;
+
+  switch (result) {
+    case (0):
+      newPathCost = pathToCurrentCell + 1;
+      break;
+
+    case (1):
+      newPathCost = pathToCurrentCell + 2;
+      break;
+
+    case (2):
+      newPathCost = pathToCurrentCell + 3;
+      break;
+
+    case (3):
+      newPathCost = pathToCurrentCell + 2;
+      break;
+  };
+
+  console.log(`new path cost would be ${newPathCost}`);
+
+  if (newPathCost < knownPathCost) {
+    updateTracker(currentCell, neighbour);
+    neighbour.dataset.path = newPathCost;
+    neighbour.dataset.direction = newDirection;
+    setAStarSumDistance(neighbour);
+    return neighbour;
+  };
 
 };
 
