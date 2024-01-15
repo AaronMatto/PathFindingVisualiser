@@ -25,7 +25,7 @@ let tracker;
 let target;
 let targetX;
 let targetY;
-
+let iterations;
 const getTargetCoords = () => {
 
   gridCells.forEach((gridcell) => {
@@ -54,6 +54,7 @@ export const aStarSearch = async (startcell, startingDirection) => {
   startcell.dataset.direction = startingDirection;
   startcell.dataset.path = '0';
   startcell.dataset.astar = '0';
+  iterations = 0;
 
 
 
@@ -91,10 +92,10 @@ export const aStarSearch = async (startcell, startingDirection) => {
       if (currentlyVisitedNewNeighbours.length !== 0) {
         break;
       }
-
     };
     console.log('OUT FOR LOOP');
-  }
+    iterations++;
+  };
 };
 
 
@@ -111,7 +112,7 @@ const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
       console.log(unsortedDiscoveredNodeArray.indexOf(a));
       console.log(b);
       console.log(unsortedDiscoveredNodeArray.indexOf(b));
-      return unsortedDiscoveredNodeArray.indexOf(a) - unsortedDiscoveredNodeArray.indexOf(b);
+      return unsortedDiscoveredNodeArray.indexOf(b) - unsortedDiscoveredNodeArray.indexOf(a);
     };
 
     if (aStarDiff == 0) {
@@ -173,17 +174,18 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
       continue;
     };
 
+    // if bomb
+
     if (neighbours[z].classList.contains('discovered-node')) {
       const test = isItShorter(currentCell, neighbours[z], z);
       undiscoveredNeighbours.push(test);
       continue;
     } else {
-      neighbours[z].dataset.direction = z + 1;
+      neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
       updateTracker(currentCell, neighbours[z]);
       rotationCost(currentCell, neighbours[z]);
     };
 
-     // handily sets our dynamic number-direction system
 
 
 
@@ -247,13 +249,9 @@ const setAStarSumDistance = (neighbour) => {
   const yCoord = getCoord(neighbour, 'y');
   const xCoord = getCoord(neighbour, 'x');
 
-  const horizontalDistanceSqrd = (targetX - xCoord)**2;
-  const verticalDistanceSqrd = (targetY - yCoord)**2;
-  const verticalDistance = Math.sqrt(verticalDistanceSqrd);
-  const horizontalDistance = Math.sqrt(horizontalDistanceSqrd);
+  const horizontalDistance = Math.abs(targetX - xCoord);
+  const verticalDistance = Math.abs(targetY - yCoord);
   const manhattan = verticalDistance + horizontalDistance;
-  let euclidean = Math.sqrt(horizontalDistanceSqrd + verticalDistanceSqrd);
-  euclidean = parseFloat(euclidean.toFixed(4));
   neighbour.dataset.astar = (manhattan + parseInt(neighbour.dataset.path));
 };
 
@@ -328,7 +326,12 @@ const isItShorter = (currentCell, neighbour, z) => {
       break;
   };
 
+  if (neighbour.classList.contains('weight-node')) {
+    newPathCost + 10;
+  }
+
   console.log(`new path cost would be ${newPathCost}`);
+
 
   if (newPathCost < knownPathCost) {
     updateTracker(currentCell, neighbour);
