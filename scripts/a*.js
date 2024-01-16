@@ -3,10 +3,9 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
+// REFACTOR needed
 import {gridCells, targetNodeSelect, bombNodeSelect, addDelay} from './app.js';
-/*
-MANHATTAN WORKS BETTER ALONG GRIDS since movement is restricted to up/down and left/right.
-*/
+
 const speedSelection = document.getElementById('speed-button');
 let tracker;
 let target;
@@ -256,4 +255,70 @@ const isItShorter = (currentCell, neighbour, z) => {
 };
 
 /*
+Notes from implementing a*:
+
+The biggest challenge was in ultimately reaching the conclusion that the manhattan distance
+is the best heuristic to use.
+Originally, I went with euclidean distance but it quickly became clear that this is not a good
+heuristic because movement in the grid is restriscted to horizontal and vertical motion; movement
+cannot be diagonal. Thus, using euclidean distance as a heuristic would not always find the shortest
+path and would sometimes explore unnecessary nodes.
+
+Using the manhattan distance worked much better. To optimise it and make a* even more efficient,
+I tried adding the euclidean distance to the manhattan distance for the heuristic value for each node.
+This worked better in certain tests as it removed the limitation of using just the manhattan distance,
+where every node in the same row (if travelling horizontal then vertically) has the same a* distance
+because as the path increases by 1, the heuristic decreases by one.
+This is of course only true for each node up until the path reaches the node in the same plane
+as the target. That is, if we travelled horizontally first, the same column and vice versa if travelling
+vertically first. For the node after the one in the same plane, both a* and the path increase by 1.
+
+The reason that the manhattan distance setting the same a* value for all these nodes is that
+if there is a wall or weight just in front of the target, it forces the algorithm to explore the paths
+of all the nodes in the rows with the same a* value. This is true even when setting a tie breaker for
+h(n) + g(n). Hence we see a rectangle in this scenario when the algo executes.
+
+Adding the euclidean distance to the manhattan distance solves this scenario.
+
+It also solves the scenario where there are two equally optimal paths to the target and using
+just the manhattan distance as the heuristic forces the algorithm to find both paths rather than
+just continuing along the one it discovered first.
+
+However....
+
+Setting the heuristic value as the euclidean distance plus the manhattan distance cannot always
+guaratnee the shortest path.
+Because...we prioritise visitation of nodes by g(n) + h(n) but at the same time, the action of
+'visiting' a node (not 'discovering') is meant to guarantee that we are visiting that node
+via the shortest path to it.
+In certain scenarios, when there is a wall around the target, I found that at the point where
+the algorithm visits the node closest to the target but next to the wall, it then discovers nodes
+adjacent to this node (also next to the wall).
+
+When it discovers them, it sets the 'aStar value' i.e. g(n) + h(n) for them.
+In doing so, it calculates g(n) for them via the node that discovered them i.e. the one next to
+the wall.
+
+This g(n) value is in fact incorrect, as the shortest path to these nodes adjacent to the one
+closest to the wall would have to come from the nodes directly above them since this involves
+less turns.
+
+At this point, these nodes adjacent to the one next to the wall end up having the lowest
+g(n) + h(n) value (and not the nodes above them that would need to be visited next to
+establish the shortest path to them).
+
+Because they have the lowest g(n) + h(n) value, the algorithm places them to the front of the
+priority queue for which node to visit next.
+
+So they end up being visited despite not having the shortest path to them found.
+
+The path to the target then ends up being found via these nodes, which means the path to the
+target is not via the shortest path.
+
+The key insight here is that using the euclidean distance plus the manhattan distance is considered
+an 'inadmissable' heuristic because it overestimates the remaining distance from the node being
+evaluated to the target.
+
+The estimate from the node being evaluated to the target must always be less than or equal to
+the true remaining distance from that node to the target for the heuristic to be admissible.
 */
