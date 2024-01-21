@@ -4,32 +4,33 @@
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 // REFACTOR needed
-import {gridCells, targetNodeSelect, bombNodeSelect, addDelay} from './app.js';
+import {gridCells, targetNodeSelect, bombNodeSelect, addDelay, path} from './app.js';
 
 const speedSelection = document.getElementById('speed-button');
 let tracker;
 let target;
 let targetX;
 let targetY;
-const getTargetCoords = () => {
+const bomb = false;
 
+const getTargetCoords = () => {
   gridCells.forEach((gridcell) => {
     if (gridcell.innerHTML == targetNodeSelect) {
       target = gridcell;
     };
   });
-
   targetX = getCoord(target, 'x');
   targetY = getCoord(target, 'y');
 };
+
 
 const getCoord = (cell, z) => {
   const coord = cell.getAttribute(`data-${z}`);
   return parseInt(coord);
 };
 
-export const aStarSearch = async (startcell, startingDirection) => {
 
+export const aStarSearch = async (startcell, startingDirection) => {
   getTargetCoords();
   const visited = [];
   let unvisited = [startcell];
@@ -49,13 +50,19 @@ export const aStarSearch = async (startcell, startingDirection) => {
       const currentlyVisitedNode = unvisited[i];
       if (unvisited[i] == undefined) continue;
 
-
       if (currentlyVisitedNode.classList.contains('discovered-node')) {
         currentlyVisitedNode.classList.remove('discovered-node');
         currentlyVisitedNode.classList.add('visited-node-1');
       };
 
       currentlyVisitedNewNeighbours = await findUndiscoveredNeighbours(currentlyVisitedNode);
+
+      if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
+        targetReached = true;
+        target = currentlyVisitedNewNeighbours;
+        break;
+      };
+
       visited.push(currentlyVisitedNode);
 
       if (unvisited[i].classList.contains('visited-node-1') || currentlyVisitedNode.id.includes('start')) {
@@ -69,6 +76,7 @@ export const aStarSearch = async (startcell, startingDirection) => {
       };
     };
   };
+  calculatePath(tracker, target);
 };
 
 
@@ -78,7 +86,7 @@ const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
     const pathDiff = parseInt(b.dataset.path) - parseInt(a.dataset.path);
 
     if (aStarDiff == 0 && pathDiff == 0) {
-      // If astar and path values are the same, prioritize the one added first
+      // If astar and path values are the same, prioritize the node added first
       return unsortedDiscoveredNodeArray.indexOf(b) - unsortedDiscoveredNodeArray.indexOf(a);
     };
 
@@ -87,13 +95,11 @@ const sortUnvisitedBySum = (unsortedDiscoveredNodeArray) => {
     }
 
     return aStarDiff;
-
   });
 };
 
 
 const findUndiscoveredNeighbours = async (currentCell) => {
-
   const y = getCoord(currentCell, 'y');
   const x = getCoord(currentCell, 'x');
   const neighbours = [];
@@ -111,14 +117,15 @@ const findUndiscoveredNeighbours = async (currentCell) => {
   return undiscoveredNeighbours;
 };
 
+
 const findNeighbour = (currentX, currentY, ySubtrahend, xSubtrahend) => {
   const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
     parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
   return neighbour;
 };
 
-const iterateOverNeighbours = async (currentCell, neighbours) => {
 
+const iterateOverNeighbours = async (currentCell, neighbours) => {
   const undiscoveredNeighbours = [];
 
   for (let z = 0; z < neighbours.length; z++) {
@@ -133,8 +140,8 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
     // if bomb
 
     if (neighbours[z].classList.contains('discovered-node')) {
-      const test = isItShorter(currentCell, neighbours[z], z);
-      undiscoveredNeighbours.push(test);
+      const newDistance = isItShorter(currentCell, neighbours[z], z);
+      undiscoveredNeighbours.push(newDistance);
       continue;
     } else {
       neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
@@ -164,6 +171,7 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
   return undiscoveredNeighbours;
 };
 
+
 const rotationCost = (currentNode, neighbour) => {
   const currentDirectionInt = parseInt(currentNode.dataset.direction);
   const neighbourInt = parseInt(neighbour.dataset.direction);
@@ -188,6 +196,7 @@ const rotationCost = (currentNode, neighbour) => {
   };
 };
 
+
 const setAStarSumDistance = (neighbour) => {
   const yCoord = getCoord(neighbour, 'y');
   const xCoord = getCoord(neighbour, 'x');
@@ -198,19 +207,15 @@ const setAStarSumDistance = (neighbour) => {
   neighbour.dataset.astar = (manhattan + parseInt(neighbour.dataset.path));
 };
 
+
 const updateTracker = (currentCell, neighbour) => {
   tracker[neighbour.id] = currentCell.id;
 };
 
 
-const shortestPathToCurrentNode = (currentNode, neighbour) => {
-
-  if (neighbour.classList.contains('discovered-node')) {
-    console.log('FAIL');
-  } else {
-    const shortestPathToCurrentCell = currentNode.dataset.path;
-    return parseInt(shortestPathToCurrentCell);
-  };
+const shortestPathToCurrentNode = (currentNode) => {
+  const shortestPathToCurrentCell = currentNode.dataset.path;
+  return parseInt(shortestPathToCurrentCell);
 };
 
 
@@ -251,6 +256,30 @@ const isItShorter = (currentCell, neighbour, z) => {
     neighbour.dataset.direction = newDirection;
     setAStarSumDistance(neighbour);
     return neighbour;
+  };
+
+  return;
+};
+
+// export const path = [];
+const calculatePath = (tracker, targetId) => {
+  const previousCell = targetId;
+  if (tracker[previousCell].includes('start')) {
+    path.unshift(previousCell);
+    showPath(path);
+    return;
+  } else {
+    path.unshift(previousCell);
+    calculatePath(tracker, tracker[previousCell]);
+  };
+};
+
+const showPath = async (pathIdArray) => {
+  for (let j = 0; j < pathIdArray.length; j++) {
+    const pathDiv = document.getElementById(pathIdArray[j]);
+    pathDiv.classList.remove('visited-node-1');
+    pathDiv.classList.add('shortest-path-node');
+    await addDelay('medium');
   };
 };
 

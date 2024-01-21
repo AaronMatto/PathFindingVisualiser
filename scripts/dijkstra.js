@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
-import {gridCells, targetNodeSelect, bombNodeSelect, addDelay} from './app.js';
+import {gridCells, targetNodeSelect, bombNodeSelect, addDelay, path, path2} from './app.js';
 
 const getCoord = (cell, z) => {
   return cell.getAttribute(`data-${z}`);
@@ -191,8 +191,6 @@ const rotationCost = (currentNode, neighbour) => {
 };
 
 // function to calculate shortest path once target found
-export const path = [];
-export const path2 = [];
 let finalPath;
 const calculatePath = (tracker, targetId) => {
   const previousCell = targetId;

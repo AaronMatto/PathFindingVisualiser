@@ -1,9 +1,13 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstraAlgo, path, path2} from './dijkstra.js';
+import {dijkstraAlgo} from './dijkstra.js';
 import {aStarSearch} from './a*.js';
+import { greedyBFS } from './greedyBFS.js';
+
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
+export const path = [];
+export const path2 = [];
 
 const grid = document.getElementById('grid');
 const gridCellsNo = 1200;
@@ -99,6 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'A* search':
           aStarSearch(startCell, '1');
           break;
+
+        case 'Greedy Best-first Search':
+          greedyBFS(startCell, '1');
+
         default:
           break;
       };
