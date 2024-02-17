@@ -144,11 +144,11 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
       rotationCost(currentCell, neighbours[z]);
     };
 
-    if (neighbours[z].classList.contains('weight-node')) {
-      neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 10;
-    };
-
     setAStarSumDistance(neighbours[z]);
+
+    if (neighbours[z].classList.contains('weight-node')) {
+      neighbours[z].dataset.astar += parseInt(neighbours[z].dataset.astar) + 10;
+    };
 
     if (neighbours[z].innerHTML == targetNodeSelect && bomb == false) {
       neighbours[z].classList.add('shortest-path-node');
@@ -245,7 +245,7 @@ const isItShorter = (currentCell, neighbour, z) => {
 
   if (newPathCost < knownPathCost) {
     updateTracker(currentCell, neighbour);
-    neighbour.dataset.path = newPathCost;
+    neighbour.dataset.astar = newPathCost;
     neighbour.dataset.direction = newDirection;
     setAStarSumDistance(neighbour);
     return neighbour;

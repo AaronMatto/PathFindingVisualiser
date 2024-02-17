@@ -62,7 +62,7 @@ export const dijkstraAlgo = async (startcell, startingDirection, isBomb, isBombS
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false && currentlyVisitedNewNeighbours.includes('bomb') == false) {
         running = false;
-        i = numberToVisit; // so that we don't perform this loop > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over.
+        i = numberToVisit; // so that we don't perform this loop > once, since the target can be the neigbour of more than one cell in the unvisited[] we are iterating over. First path found alwasys shortest.
         target = currentlyVisitedNewNeighbours;
       }
     };
@@ -138,7 +138,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
 
     if (neighbours[z].innerHTML == bombNodeSelect) {
       bomb = false;
-      neighbours[z].classList.add('visited-node-1');
       neighbours[z].id += ' bomb';
       updateTracker(currentCell, neighbours[z]);
       return neighbours[z].id;

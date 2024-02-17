@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (gridcell.innerHTML == bombNodeSelect) {
           isBomb = true;
-        }
+        };
       });
 
 
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
           break;
 
         case 'A* search':
-          aStarSearch(startCell, '1');
+          aStarSearch(startCell, '1', isBomb, false);
           break;
 
         case 'Greedy Best-first Search':
@@ -115,28 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   clearBoardBtn.addEventListener('click', (e) => {
     if (e.target == clearBoardBtn) {
-      switch (algoBtnSelector.value) {
-        case 'dijkstra':
-          for (let i = 0; i < gridCells.length; i++) {
-            gridCells[i].innerHTML = '';
-            gridCells[i].className = '';
-            gridCells[i].id = i;
-            gridCells[i].classList.add('node');
-          };
-          // for (const id in tracker) {
-          //   delete tracker[id];
-          // };
-          path.length = 0;
-          path2.length = 0;
-          defaultStart.innerHTML = startNodeSelect;
-          defaultTarget.innerHTML = targetNodeSelect;
-          break;
-        case 'A* search':
-
-          break;
-        default:
-          break;
+      for (let i = 0; i < gridCells.length; i++) {
+        gridCells[i].innerHTML = '';
+        gridCells[i].className = '';
+        gridCells[i].id = i;
+        gridCells[i].classList.add('node');
       };
+      path.length = 0;
+      path2.length = 0;
+      defaultStart.innerHTML = startNodeSelect;
+      defaultTarget.innerHTML = targetNodeSelect;
     };
   });
 

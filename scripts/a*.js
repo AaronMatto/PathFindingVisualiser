@@ -11,11 +11,17 @@ let tracker;
 let target;
 let targetX;
 let targetY;
-const bomb = false;
+let isBombStart;
+let bombExists;
+let recursiveCount;
 
 const getTargetCoords = () => {
   gridCells.forEach((gridcell) => {
-    if (gridcell.innerHTML == targetNodeSelect) {
+    if (gridcell.innerHTML == targetNodeSelect && bombExists == false) {
+      target = gridcell;
+    };
+
+    if (gridcell.innerHTML == bombNodeSelect && bombExists == true) {
       target = gridcell;
     };
   });
@@ -30,7 +36,9 @@ const getCoord = (cell, z) => {
 };
 
 
-export const aStarSearch = async (startcell, startingDirection) => {
+export const aStarSearch = async (startcell, startingDirection, isBomb, bombStart) => {
+  bombExists = isBomb;
+  isBombStart = bombStart;
   getTargetCoords();
   const visited = [];
   let unvisited = [startcell];
@@ -40,6 +48,7 @@ export const aStarSearch = async (startcell, startingDirection) => {
   startcell.dataset.direction = startingDirection;
   startcell.dataset.path = '0';
   startcell.dataset.astar = '0';
+  recursiveCount = 0;
 
   while (targetReached == false) {
 
@@ -50,14 +59,28 @@ export const aStarSearch = async (startcell, startingDirection) => {
       const currentlyVisitedNode = unvisited[i];
       if (unvisited[i] == undefined) continue;
 
-      if (currentlyVisitedNode.classList.contains('discovered-node')) {
+      if (isBombStart == false) {
         currentlyVisitedNode.classList.remove('discovered-node');
         currentlyVisitedNode.classList.add('visited-node-1');
+      } else {
+        currentlyVisitedNode.classList.remove('discovered-node-2');
+        currentlyVisitedNode.classList.add('visited-node-2');
       };
 
       currentlyVisitedNewNeighbours = await findUndiscoveredNeighbours(currentlyVisitedNode);
 
-      if (Array.isArray(currentlyVisitedNewNeighbours) == false) {
+      if (Array.isArray(currentlyVisitedNewNeighbours) == false && bombExists == true) {
+        bombExists = false;
+        // targetReached = true;
+        target = currentlyVisitedNewNeighbours;
+        const newStart = document.getElementById(currentlyVisitedNewNeighbours);
+        const bombStartDirection = newStart.dataset.direction;
+        calculatePath(tracker, newStart.id);
+        aStarSearch(newStart, bombStartDirection, bombExists, true);
+        return;
+      };
+
+      if (Array.isArray(currentlyVisitedNewNeighbours) == false && bombExists == false) {
         targetReached = true;
         target = currentlyVisitedNewNeighbours;
         break;
@@ -65,7 +88,9 @@ export const aStarSearch = async (startcell, startingDirection) => {
 
       visited.push(currentlyVisitedNode);
 
-      if (unvisited[i].classList.contains('visited-node-1') || currentlyVisitedNode.id.includes('start')) {
+      if (unvisited[i].classList.contains('visited-node-1') ||
+       currentlyVisitedNode.id.includes('start') ||
+       unvisited[i].classList.contains('visited-node-2')) {
         delete unvisited[i];
       };
 
@@ -77,6 +102,7 @@ export const aStarSearch = async (startcell, startingDirection) => {
     };
   };
   calculatePath(tracker, target);
+  showPath(path);
 };
 
 
@@ -131,20 +157,48 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
   for (let z = 0; z < neighbours.length; z++) {
 
     if (neighbours[z] == undefined ||
-      neighbours[z].classList.contains('visited-node-1') ||
-      neighbours[z].classList.contains('wall-node') ||
-      neighbours[z].id.includes('start')) {
+      neighbours[z].classList.contains('wall-node')) {
       continue;
     };
 
-    // if bomb
+    if (isBombStart == true) {
+
+      if (neighbours[z].id.includes('start')) {
+        neighbours[z].id = neighbours[z].id.replace(' start', '');
+      };
+
+      if (neighbours[z].classList.contains('discovered-node-2')) {
+        const newDistance = isItShorter(currentCell, neighbours[z], z);
+        undiscoveredNeighbours.push(newDistance);
+        continue;
+      };
+
+      if (neighbours[z].classList.contains('visited-node-1') ||
+        neighbours[z].classList.contains('discovered-node') ) {
+        neighbours[z].classList.remove('visited-node-1');
+        neighbours[z].classList.remove('discovered-node');
+      };
+
+      if (neighbours[z].classList.contains('visited-node-2')) {
+        continue;
+      };
+    };
+
+    if (neighbours[z].id.includes('start')) {
+      continue;
+    };
+
+    if (neighbours[z].classList.contains('visited-node-1')) {
+      continue;
+    };
+
 
     if (neighbours[z].classList.contains('discovered-node')) {
       const newDistance = isItShorter(currentCell, neighbours[z], z);
       undiscoveredNeighbours.push(newDistance);
       continue;
     } else {
-      neighbours[z].dataset.direction = z + 1; // handily sets our dynamic number-direction system
+      neighbours[z].dataset.direction = z + 1; // sets our dynamic number-direction system
       updateTracker(currentCell, neighbours[z]);
       rotationCost(currentCell, neighbours[z]);
     };
@@ -155,7 +209,13 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
 
     setAStarSumDistance(neighbours[z]);
 
-    if (neighbours[z].innerHTML == targetNodeSelect && bomb == false) {
+    if (neighbours[z].innerHTML == bombNodeSelect) {
+      neighbours[z].id += ' bomb';
+      updateTracker(currentCell, neighbours[z]);
+      return neighbours[z].id;
+    }
+
+    if (neighbours[z].innerHTML == targetNodeSelect && bombExists == false) {
       neighbours[z].classList.add('shortest-path-node');
       updateTracker(currentCell, neighbours[z]);
       return neighbours[z].id;
@@ -164,7 +224,7 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
     neighbours[z].classList.add('visiting-node');
     await addDelay(speedSelection.value);
     neighbours[z].classList.remove('visiting-node');
-    neighbours[z].classList.add('discovered-node');
+    isBombStart == false ? neighbours[z].classList.add('discovered-node') : neighbours[z].classList.add('discovered-node-2');
     undiscoveredNeighbours.push(neighbours[z]);
   };
 
@@ -218,7 +278,7 @@ const shortestPathToCurrentNode = (currentNode) => {
   return parseInt(shortestPathToCurrentCell);
 };
 
-
+// need logic to say if we should update based on whether we started from a bomb
 const isItShorter = (currentCell, neighbour, z) => {
   const knownPathCost = parseInt(neighbour.dataset.path);
   const currentDirection = parseInt(currentCell.dataset.direction);
@@ -250,6 +310,22 @@ const isItShorter = (currentCell, neighbour, z) => {
     newPathCost += 10;
   };
 
+  /*
+  scenarios:
+  -start from bomb and neighbour has already been discovered/visited (discovered-node) on way to bomb
+    bombStart: true AND (neighbour.classList.contains(discovered-node) OR neighbour.classList.contains(visited-node-1))
+    - we ALWAYS want to update in this case
+    - make this a seperate function
+
+  -start from bomb and neighbour has already been visited (visited-node-2) on way to target from bomb and new path shorter
+  bombStart: true AND neighbour.classList.contains(discovered-node-2)
+    - remember admissibility. visiting means shortest has been found to that
+    - only update if new path shorter than known
+  -start from start and neighbour has already been discovered (discovered-node)
+  bombStart: false AND newpath < known path
+    - only update if new path shorter than known
+  */
+
   if (newPathCost < knownPathCost) {
     updateTracker(currentCell, neighbour);
     neighbour.dataset.path = newPathCost;
@@ -261,15 +337,20 @@ const isItShorter = (currentCell, neighbour, z) => {
   return;
 };
 
-// export const path = [];
+let specificIndex;
 const calculatePath = (tracker, targetId) => {
   const previousCell = targetId;
-  if (tracker[previousCell].includes('start')) {
-    path.unshift(previousCell);
-    showPath(path);
+
+  if (isBombStart) {
+    specificIndex = path.length - recursiveCount;
+    recursiveCount++;
+  };
+
+  if (tracker[previousCell].includes('start') || tracker[previousCell].includes('bomb')) {
+    isBombStart ? path.splice(specificIndex, 0, previousCell) : path.unshift(previousCell);
     return;
   } else {
-    path.unshift(previousCell);
+    isBombStart ? path.splice(specificIndex, 0, previousCell) : path.unshift(previousCell);
     calculatePath(tracker, tracker[previousCell]);
   };
 };
@@ -302,7 +383,7 @@ This is of course only true for each node up until the path reaches the node in 
 as the target. That is, if we travelled horizontally first, the same column and vice versa if travelling
 vertically first. For the node after the one in the same plane, both a* and the path increase by 1.
 
-The reason that the manhattan distance setting the same a* value for all these nodes is that
+The reason that the manhattan distance setting the same a* value for all these nodes seems sub-optimal is that
 if there is a wall or weight just in front of the target, it forces the algorithm to explore the paths
 of all the nodes in the rows with the same a* value. This is true even when setting a tie breaker for
 h(n) + g(n). Hence we see a rectangle in this scenario when the algo executes.
