@@ -71,7 +71,6 @@ export const aStarSearch = async (startcell, startingDirection, isBomb, bombStar
 
       if (Array.isArray(currentlyVisitedNewNeighbours) == false && bombExists == true) {
         bombExists = false;
-        // targetReached = true;
         target = currentlyVisitedNewNeighbours;
         const newStart = document.getElementById(currentlyVisitedNewNeighbours);
         const bombStartDirection = newStart.dataset.direction;
@@ -192,7 +191,6 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
       continue;
     };
 
-
     if (neighbours[z].classList.contains('discovered-node')) {
       const newDistance = isItShorter(currentCell, neighbours[z], z);
       undiscoveredNeighbours.push(newDistance);
@@ -278,7 +276,6 @@ const shortestPathToCurrentNode = (currentNode) => {
   return parseInt(shortestPathToCurrentCell);
 };
 
-// need logic to say if we should update based on whether we started from a bomb
 const isItShorter = (currentCell, neighbour, z) => {
   const knownPathCost = parseInt(neighbour.dataset.path);
   const currentDirection = parseInt(currentCell.dataset.direction);
@@ -336,6 +333,7 @@ const isItShorter = (currentCell, neighbour, z) => {
 
   return;
 };
+
 
 let specificIndex;
 const calculatePath = (tracker, targetId) => {

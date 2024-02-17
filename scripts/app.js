@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
           break;
 
         case 'Greedy Best-first Search':
-          greedyBFS(startCell, '1');
+          greedyBFS(startCell, '1', isBomb, false);
 
         default:
           break;
