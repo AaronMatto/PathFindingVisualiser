@@ -98,6 +98,9 @@ export const greedyBFS = async (startcell, startingDirection, isBomb, bombStart)
       if (currentlyVisitedNewNeighbours.length !== 0) {
         break;
       };
+
+      if (unvisited.every((element) => element == undefined)) return; // to stop infinite loops if there is no path from start to target.
+
     };
   };
   calculatePath(tracker, target);

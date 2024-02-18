@@ -98,6 +98,9 @@ export const aStarSearch = async (startcell, startingDirection, isBomb, bombStar
       if (currentlyVisitedNewNeighbours.length !== 0) {
         break;
       };
+
+      if (unvisited.every((element) => element == undefined)) return; // to stop infinite loops if there is no path from start to target.
+
     };
   };
   calculatePath(tracker, target);
@@ -322,7 +325,6 @@ const isItShorter = (currentCell, neighbour, z) => {
   bombStart: false AND newpath < known path
     - only update if new path shorter than known
   */
-
   if (newPathCost < knownPathCost) {
     updateTracker(currentCell, neighbour);
     neighbour.dataset.path = newPathCost;
@@ -357,6 +359,7 @@ const showPath = async (pathIdArray) => {
   for (let j = 0; j < pathIdArray.length; j++) {
     const pathDiv = document.getElementById(pathIdArray[j]);
     pathDiv.classList.remove('visited-node-1');
+    pathDiv.classList.remove('visited-node-2');
     pathDiv.classList.add('shortest-path-node');
     await addDelay('medium');
   };
