@@ -102,7 +102,7 @@
 
   .icons-sizing{
     height: 18px;
-    margin: 12px 0 0 0;
+    margin: 12px 4px 0 0;
     display: inline;
     /* border: 1px solid red; */
   }
@@ -239,4 +239,9 @@
 .shortest-path-node {
   background-color: rgb(31, 182, 23);
   border: 0.01px solid rgb(31, 182, 23);
+}
+
+.shortest-path-node-2 {
+  background-color: rgb(250, 167, 0);
+  border: 0.01px solid rgb(250, 167, 0);
 }

@@ -310,21 +310,6 @@ const isItShorter = (currentCell, neighbour, z) => {
     newPathCost += 10;
   };
 
-  /*
-  scenarios:
-  -start from bomb and neighbour has already been discovered/visited (discovered-node) on way to bomb
-    bombStart: true AND (neighbour.classList.contains(discovered-node) OR neighbour.classList.contains(visited-node-1))
-    - we ALWAYS want to update in this case
-    - make this a seperate function
-
-  -start from bomb and neighbour has already been visited (visited-node-2) on way to target from bomb and new path shorter
-  bombStart: true AND neighbour.classList.contains(discovered-node-2)
-    - remember admissibility. visiting means shortest has been found to that
-    - only update if new path shorter than known
-  -start from start and neighbour has already been discovered (discovered-node)
-  bombStart: false AND newpath < known path
-    - only update if new path shorter than known
-  */
   if (newPathCost < knownPathCost) {
     updateTracker(currentCell, neighbour);
     neighbour.dataset.path = newPathCost;
@@ -432,4 +417,34 @@ evaluated to the target.
 
 The estimate from the node being evaluated to the target must always be less than or equal to
 the true remaining distance from that node to the target for the heuristic to be admissible.
+*/
+
+
+/*
+interesting scenario:
+
+If there is a flag in the grid and several paths with the same cost of reaching the flag...
+my a* implementation will always go down the first path it discovers to the flag.
+
+The problem is that the first path to the flag does not always lead to the path with the least
+cost from the start to the end via the flag. This is because of the rotational cost.
+
+For example, if there are multiple paths from the start to the flag with a cost of 35..
+and the first path (and hence chosen path) is one where we reach the flag facing left
+
+Then, if the target is to the right of the flag, we have to do a 180 degree turn for the
+shortest path startng from the flag to the target. This adds to the cost of the total path by 2.
+
+However, it can be the case that another one of the multiple paths from the start to the flag
+with a cost of 35 could reach it and be facing right when it does.
+This is favorable for the path from the flag to the target as it measn we avoid the 180 degree
+turn and save ourself the additional cost of two in the total cost.
+
+Solution?
+There are no solutions only tradeoffs....
+You could evaluate all paths that lead to the flag which are equal to the shortest distance so
+that the algorithm is not biased by the order in which is examines nodes
+
+However...this of course means more processing before a path can be found, making the algorithm
+overall less efficient. It depends whether the cost saving to the final path is worth it.
 */

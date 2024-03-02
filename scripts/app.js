@@ -1,9 +1,11 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import {dijkstraAlgo} from './dijkstra.js';
-import {aStarSearch} from './a*.js';
+import { dijkstraAlgo } from './dijkstra.js';
+import { aStarSearch } from './a*.js';
 import { greedyBFS } from './greedyBFS.js';
+import { breadthFS } from './breadthFS.js';
+import { depthFirstSearch } from './depthFS.js';
 
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
 export const path = [];
@@ -13,7 +15,7 @@ const grid = document.getElementById('grid');
 const gridCellsNo = 1200;
 let i = 0;
 let y = 0;
-for (i=0; i < gridCellsNo; i++) {
+for (i = 0; i < gridCellsNo; i++) {
   let x = i % 60;
   if (x == 0 && i != 0) {
     y++;
@@ -106,6 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         case 'Greedy Best-first Search':
           greedyBFS(startCell, '1', isBomb, false);
+          break;
+
+        case 'Breadth-first search':
+          breadthFS(startCell, '1', isBomb, false);
+          break;
+
+        case 'Depth-first search':
+          depthFirstSearch(startCell, '2', isBomb, false);
+          break;
 
         default:
           break;
@@ -134,19 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const iconsAndText = Array.from(userNodeDivs[i].children);
       if (userNodeDivs[i] == e.target || iconsAndText.includes(e.target)) {
         switch (userNodeDivs[i].lastElementChild.innerText) {
-          case 'Start Node':
+          case 'Start':
             hiddenField.value = startNodeSelect;
             break;
-          case 'Target Node':
+          case 'Target':
             hiddenField.value = targetNodeSelect;
             break;
-          case 'Flag Node':
+          case 'Flag':
             hiddenField.value = bombNodeSelect;
             break;
-          case 'Weight Node':
+          case 'Weights':
             hiddenField.value = weightNodeSelect;
             break;
-          case 'Wall Node':
+          case 'Walls':
             hiddenField.value = wallNodeSelect;
             break;
         };
@@ -247,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const placeNodeInGridCell = (e, hiddenfieldValue) => {
     gridCells.forEach((gridcell) => {
-    // compare the innerhtml of the cell to the hidden field value
+      // compare the innerhtml of the cell to the hidden field value
 
       if (hiddenField.value == wallNodeSelect) {
         return;
@@ -270,26 +281,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  const addRemoveWeightNode = (e, gridcell) => { // unique function since we want to be able to add multiple weight nodes to grid
-    // if (gridcell.innerHTML == weightNodeSelect &&
-    //   (e.target == gridcell.firstElementChild || e.target == gridcell)) {
-    //   gridcell.innerHTML = '';
-    // };
-
-    // if (gridcell.innerHTML == weightNodeMouseOver && (e.target == gridcell.firstElementChild ||
-    //    e.target == gridcell)) {
-    //   gridcell.innerHTML = weightNodeSelect;
-    // };
-  };
-
   // CLEAR PATH BUT NOT WALLS AND WEIGHTS
   clearPathBtn.addEventListener('click', () => {
     gridCells.forEach((gridcell) => {
       if (gridcell.classList.contains('visited-node-1') || gridcell.classList.contains('shortest-path-node') ||
-          gridcell.classList.contains('discovered-node') || gridcell.classList.contains('visited-node-2') ||
-          gridcell.classList.contains('discovered-node-2')) {
+        gridcell.classList.contains('discovered-node') || gridcell.classList.contains('visited-node-2') ||
+        gridcell.classList.contains('discovered-node-2') || gridcell.classList.contains('shortest-path-node-2')) {
         gridcell.classList.remove('visited-node-1');
         gridcell.classList.remove('shortest-path-node');
+        gridcell.classList.remove('shortest-path-node-2');
         gridcell.classList.remove('discovered-node');
         gridcell.id = gridcell.id.replace(' start', '');
         path.length = 0;
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect};
+export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect };
 
 // TO DO:
 // - improve animations
