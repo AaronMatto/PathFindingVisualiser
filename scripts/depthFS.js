@@ -162,7 +162,6 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
     }
 
     if (neighbours[z].innerHTML == targetNodeSelect && bombExists == false) {
-      // neighbours[z].classList.add('shortest-path-node');
       updateTracker(currentCell, neighbours[z]);
       return neighbours[z].id;
     };

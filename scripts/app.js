@@ -139,6 +139,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
+  const highlightKey = (div, nodeSelect) => {
+    // get the value of hidden field first
+
+    // if it is that div's node select, remove the green lass from that div and clear hidden field
+    if (hiddenField.value == nodeSelect) {
+      div.classList.remove('test');
+      hiddenField.value = '';
+      return;
+    };
+
+    // if it is empty or not that div's NodeSelect, set it to that div's NodeSelect
+    if (hiddenField.value !== '') {
+      const selectedDiv = document.querySelector('#main .key .user-slct.test');
+      selectedDiv.classList.remove('test');
+    };
+
+    div.classList.add('test');
+    hiddenField.value = nodeSelect;
+  };
+
   keyForNodes.addEventListener('click', (e) => {
     let i = 0;
     for (i = 0; i < userNodeDivs.length; i++) {
@@ -146,19 +166,24 @@ document.addEventListener('DOMContentLoaded', () => {
       if (userNodeDivs[i] == e.target || iconsAndText.includes(e.target)) {
         switch (userNodeDivs[i].lastElementChild.innerText) {
           case 'Start':
-            hiddenField.value = startNodeSelect;
+            // hiddenField.value = startNodeSelect;
+            highlightKey(userNodeDivs[i], startNodeSelect);
             break;
           case 'Target':
-            hiddenField.value = targetNodeSelect;
+            // hiddenField.value = targetNodeSelect;
+            highlightKey(userNodeDivs[i], targetNodeSelect);
             break;
           case 'Flag':
-            hiddenField.value = bombNodeSelect;
+            // hiddenField.value = bombNodeSelect;
+            highlightKey(userNodeDivs[i], bombNodeSelect);
             break;
           case 'Weights':
-            hiddenField.value = weightNodeSelect;
+            // hiddenField.value = weightNodeSelect;
+            highlightKey(userNodeDivs[i], weightNodeSelect);
             break;
           case 'Walls':
-            hiddenField.value = wallNodeSelect;
+            // hiddenField.value = wallNodeSelect;
+            highlightKey(userNodeDivs[i], wallNodeSelect);
             break;
         };
       };
