@@ -44,13 +44,13 @@ const hiddenField = document.getElementById('hiddenField');
 
 // To populate hidden field when user clicks on which node they want to place in the grid
 const startNodeMouseOver = '<img src="./images/right-arrow.png" class="mouseover-grid-icons">';
-const targetNodeMouseOver = '<img src="./images/target.png" class="mouseover-grid-icons" id="icon-target">';
-const weightNodeMouseOver = '<img src="./images/weight.png" class="mouseover-grid-icons" id="icon-weight">';
-const bombNodeMouseOver = '<img src="./images/flag.png" class="mouseover-grid-icons" id="icon-bomb">';
+const targetNodeMouseOver = '<img src="./images/target.png" class="mouseover-grid-icons">';
+const weightNodeMouseOver = '<img src="./images/weight.png" class="mouseover-grid-icons">';
+const bombNodeMouseOver = '<img src="./images/flag.png" class="mouseover-grid-icons">';
 const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></div>';
 
 // ADDING HOVER EFFECT IN GRID FOR SELECTED NODE
-const weightNodeSelect = '<img src="./images/weight.png" class="selectedCell" id="icon-weight">';
+const weightNodeSelect = '<img src="./images/weight.png" class="selectedCell">';
 const bombNodeSelect = '<img src="./images/flag.png" class="selectedCell" id="icon-bomb">';
 const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
 
@@ -140,22 +140,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const highlightKey = (div, nodeSelect) => {
-    // get the value of hidden field first
-
-    // if it is that div's node select, remove the green lass from that div and clear hidden field
+    // if it is that div's node select, remove the green class from that div and clear hidden field
     if (hiddenField.value == nodeSelect) {
-      div.classList.remove('test');
+      div.classList.remove('selected-key-node');
       hiddenField.value = '';
+
+      if (nodeSelect == bombNodeSelect) {
+        const bombNode = document.querySelector('#main #grid .node #icon-bomb');
+        bombNode.parentElement.innerHTML = '';
+      };
+
       return;
     };
 
     // if it is empty or not that div's NodeSelect, set it to that div's NodeSelect
     if (hiddenField.value !== '') {
-      const selectedDiv = document.querySelector('#main .key .user-slct.test');
-      selectedDiv.classList.remove('test');
+      const selectedDiv = document.querySelector('#main .key .user-slct.selected-key-node');
+      selectedDiv.classList.remove('selected-key-node');
     };
 
-    div.classList.add('test');
+    div.classList.add('selected-key-node');
     hiddenField.value = nodeSelect;
   };
 
@@ -334,6 +338,3 @@ export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelec
 // - change arrow rotation
 // - add mazes and patterns
 // - clear walls and weights button
-// - drag and drop target once path is calculated
-// - iteration counter
-// euclidean distance for a*

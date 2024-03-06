@@ -120,10 +120,6 @@ const findUnvisitedNeighbours = async (currentCell) => {
 
     neighbours[z].dataset.path = iterations + 1;
 
-    if (neighbours[z].classList.contains('weight-node')) {
-      neighbours[z].dataset.path = parseInt(neighbours[z].dataset.path) + 10;
-    }
-
     if (currentCell.id.includes('start')) {
       currentCell.classList.add('shortest-path-node');
     }
