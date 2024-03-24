@@ -104,7 +104,7 @@ export const aStarSearch = async (startcell, startingDirection, isBomb, bombStar
     };
   };
   calculatePath(tracker, target);
-  showPath(path);
+  await showPath(path);
 };
 
 

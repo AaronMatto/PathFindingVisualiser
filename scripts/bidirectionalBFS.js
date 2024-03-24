@@ -1,29 +1,50 @@
 /* eslint-disable max-len */
+import {gridCells, addDelay, path} from './app.js';
+
+let pathFromStart;
+let tracker;
+const speedSelection = document.getElementById('speed-button');
+
 const getCoord = (cell, z) => {
   const coord = cell.getAttribute(`data-${z}`);
   return parseInt(coord);
 };
 
-const bidirectionalBFS = (startNode, goalNode) => {
-let pathFound = false;
-
+export const bidirectionalBFS = async (startNode, goalNode) => {
+  let pathFound = false;
+  let unvisited = [startNode, goalNode];
+  let connectingIdToStart;
+  let connectingIdToGoal;
+  pathFromStart = true;
+  tracker = {};
 
   while (pathFound == false) {
+    for (let i = 0; i < unvisited.length; i++) {
+      if (unvisited[i] == undefined) continue;
+      const currentlyVisitedNode = unvisited[i];
 
-    // call a function that finds the neighbours of the start node and returns them
+      const discovered = await findUndiscoveredNeighbours(currentlyVisitedNode);
 
-    findNeigbours(startNode);
+      delete unvisited[i] in unvisited;
 
-    // store them in an array
+      unvisited = unvisited.concat(discovered);
 
-    // call the same function for the goalNode
+      if (Array.isArray(discovered) == false) {
+        connectingIdToStart = discovered.substring(0, discovered.indexOf(' '));
+        connectingIdToGoal = discovered.substring(discovered.indexOf(' ') + 1);
+        pathFound = true;
+        break;
+      };
 
-    // if either function call contains the same node in their returned nodes, a path can be
-    // established
-    // use arrayFromFunction2.filter(x => arrayFromFunction1.includes(x));
-
-    // if not, repeat
+      if (unvisited.every((element) => element == undefined)) return;
+    };
   };
+
+  calculatePath(tracker, connectingIdToStart);
+  pathFromStart = false;
+  calculatePath(tracker, connectingIdToGoal);
+  console.log(path);
+  await showPath(path);
 };
 
 
@@ -36,33 +57,58 @@ const findUndiscoveredNeighbours = async (givenNode) => {
   const belowNeighbour = findNeighbour(x, y, -1, 0);
   const leftNeighbour = findNeighbour(x, y, 0, 1);
   neighbours.push(rightNeighbour, aboveNeighbour, leftNeighbour, belowNeighbour);
-  const undiscoveredNeighbours = await iterateOverNeighbours(currentCell, neighbours);
+  let undiscoveredNeighbours;
 
-  if (currentCell.id.includes('start')) {
-    currentCell.classList.add('shortest-path-node');
+  if (givenNode.classList.contains('discovered-node') || givenNode.id.includes('start')) {
+    givenNode.classList.remove('discovered-node');
+    undiscoveredNeighbours = await iterateOverNeighboursFromStart(givenNode, neighbours);
+    givenNode.classList.add('visited-node-1');
+  } else {
+    givenNode.classList.remove('discovered-node-2');
+    undiscoveredNeighbours = await iterateOverNeighboursFromGoal(givenNode, neighbours);
+    givenNode.classList.add('visited-node-2');
+  };
+
+  if (givenNode.id.includes('start') || givenNode.id.includes('goal')) {
+    givenNode.classList.add('shortest-path-node');
   };
 
   return undiscoveredNeighbours;
 };
 
+const findNeighbour = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+  const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
+    parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
+  return neighbour;
+};
 
-const iterateOverNeighbours = async (currentCell, neighbours) => {
+
+const iterateOverNeighboursFromStart = async (currentCell, neighbours) => {
   const undiscoveredNeighbours = [];
 
   for (let z = 0; z < neighbours.length; z++) {
     if (neighbours[z] == undefined ||
       neighbours[z].classList.contains('wall-node') ||
       neighbours[z].id.includes('start') ||
-      neighbours[z].classList.contains('visited-node-1')) {
+      neighbours[z].classList.contains('visited-node-1') ||
+      neighbours[z].classList.contains('discovered-node')) {
       continue;
     };
-
-    updateTracker(currentCell, neighbours[z]);
 
     neighbours[z].classList.add('visiting-node');
     await addDelay(speedSelection.value);
     neighbours[z].classList.remove('visiting-node');
-    isBombStart == false ? neighbours[z].classList.add('discovered-node') : neighbours[z].classList.add('discovered-node-2');
+
+    if (neighbours[z].classList.contains('discovered-node-2')) {
+      const ids = `${currentCell.id} ${neighbours[z].id}`;
+      console.log('yes');
+      return ids;
+    };
+
+    updateTracker(currentCell, neighbours[z]);
+
+    neighbours[z].classList.add('discovered-node');
+
     undiscoveredNeighbours.push(neighbours[z]);
   };
 
@@ -70,14 +116,63 @@ const iterateOverNeighbours = async (currentCell, neighbours) => {
 };
 
 
-// need to distinguish if we are finding neighbours by searching from the goal, A,
-// or by searching from the target, B. Use a bool.
+const iterateOverNeighboursFromGoal = async (currentCell, neighbours) => {
+  const undiscoveredNeighbours = [];
 
-// if searching from A, and any discovered neighbours contain B's discovered class
-// then the path is found. Vice versa.
+  for (let z = 0; z < neighbours.length; z++) {
+    if (neighbours[z] == undefined ||
+      neighbours[z].classList.contains('wall-node') ||
+      neighbours[z].id.includes('goal') ||
+      neighbours[z].classList.contains('visited-node-2') ||
+      neighbours[z].classList.contains('discovered-node-2')) {
+      continue;
+    };
 
-// use one tracker...each key entry for either the goal or the start is the discovered
-// neighbours of the current iteration, so there is no chance of overlapping keys
-// until the first time either the iteration from the start discovers the iteration from the
-// target or vice versa. At which point, the tracker will not need to be updated anyway, as
-// we can establish the path.
+    neighbours[z].classList.add('visiting-node');
+    await addDelay(speedSelection.value);
+    neighbours[z].classList.remove('visiting-node');
+
+    if (neighbours[z].classList.contains('discovered-node')) {
+      const ids = `${neighbours[z].id} ${currentCell.id}`;
+      return ids;
+    };
+
+    updateTracker(currentCell, neighbours[z]);
+
+    neighbours[z].classList.add('discovered-node-2');
+
+    undiscoveredNeighbours.push(neighbours[z]);
+  };
+
+  return undiscoveredNeighbours;
+};
+
+
+const updateTracker = (currentCell, neighbour) => {
+  tracker[neighbour.id] = currentCell.id;
+};
+
+
+const calculatePath = (tracker, cellId) => {
+  const currentCellId = cellId;
+  const previousCellId = tracker[currentCellId];
+
+  if (previousCellId.includes('start') || previousCellId.includes('goal')) {
+    pathFromStart ? path.unshift(currentCellId) : path.push(currentCellId);
+    return;
+  } else {
+    pathFromStart ? path.unshift(currentCellId) : path.push(currentCellId);
+    calculatePath(tracker, previousCellId);
+  };
+};
+
+
+const showPath = async (pathIdArray) => {
+  for (let j = 0; j < pathIdArray.length; j++) {
+    const pathDiv = document.getElementById(pathIdArray[j]);
+    pathDiv.classList.remove('visited-node-1');
+    pathDiv.classList.remove('visited-node-2');
+    pathDiv.classList.add('shortest-path-node');
+    await addDelay('medium');
+  };
+};

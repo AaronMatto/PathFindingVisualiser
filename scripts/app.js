@@ -6,6 +6,7 @@ import { aStarSearch } from './a*.js';
 import { greedyBFS } from './greedyBFS.js';
 import { breadthFS } from './breadthFS.js';
 import { depthFirstSearch } from './depthFS.js';
+import { bidirectionalBFS } from './bidirectionalBFS.js';
 
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
 export const path = [];
@@ -83,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   visualiseBtn.addEventListener('click', (e) => {
     let startCell;
     let isBomb = false;
+    let goalNode;
 
     if (e.target == visualiseBtn) {
       gridCells.forEach((gridcell) => {
@@ -93,6 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (gridcell.innerHTML == bombNodeSelect) {
           isBomb = true;
+        };
+
+        if (gridcell.innerHTML == targetNodeSelect) {
+          goalNode = gridcell;
         };
       });
 
@@ -116,6 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         case 'Depth-first search':
           depthFirstSearch(startCell, '2', isBomb, false);
+          break;
+
+        case 'Bidirectional BFS':
+          goalNode.id += ' goal';
+          bidirectionalBFS(startCell, goalNode);
           break;
 
         default:
@@ -324,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         path.length = 0;
         path2.length = 0;
         gridcell.id = gridcell.id.replace(' bomb', '');
+        gridcell.id = gridcell.id.replace(' goal', '');
         gridcell.classList.remove('visited-node-2');
         gridcell.classList.remove('discovered-node-2');
       };
