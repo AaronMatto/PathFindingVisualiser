@@ -245,3 +245,11 @@
   background-color: rgb(250, 167, 0);
   border: 0.01px solid rgb(250, 167, 0);
 }
+
+/* Disabling the weight btn */
+.disabled {
+  text-decoration: line-through;
+  text-decoration-color: red;
+  background-color: rgba(0,0,0, 0.3);
+  pointer-events: none;
+}

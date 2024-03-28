@@ -42,6 +42,9 @@ const clearPathBtn = document.getElementById('clearPathBtn');
 const keyForNodes = document.querySelector('#main .key');
 const userNodeDivs = Array.from(document.querySelectorAll('#main .key .user-slct'));
 const hiddenField = document.getElementById('hiddenField');
+const weightDivBtn = document.getElementById('weight-div-btn');
+const flagDivBtn = document.getElementById('flag-div-btn');
+
 
 // To populate hidden field when user clicks on which node they want to place in the grid
 const startNodeMouseOver = '<img src="./images/right-arrow.png" class="mouseover-grid-icons">';
@@ -54,6 +57,9 @@ const wallNodeMouseOver = '<div class="mouseover-grid-icons" id="wall-node"></di
 const weightNodeSelect = '<img src="./images/weight.png" class="selectedCell">';
 const bombNodeSelect = '<img src="./images/flag.png" class="selectedCell" id="icon-bomb">';
 const wallNodeSelect = '<div class="selectedCell" id="wall-node"></div>';
+
+// ALGO MSG
+const algoMsg = document.getElementById('pick-msg');
 
 
 // SELECTING an algorithm to visualise and giving it the delay chosen by user
@@ -181,23 +187,24 @@ document.addEventListener('DOMContentLoaded', () => {
       if (userNodeDivs[i] == e.target || iconsAndText.includes(e.target)) {
         switch (userNodeDivs[i].lastElementChild.innerText) {
           case 'Start':
-            // hiddenField.value = startNodeSelect;
             highlightKey(userNodeDivs[i], startNodeSelect);
             break;
           case 'Target':
-            // hiddenField.value = targetNodeSelect;
             highlightKey(userNodeDivs[i], targetNodeSelect);
             break;
           case 'Flag':
-            // hiddenField.value = bombNodeSelect;
+            if (userNodeDivs[i].classList.contains('disabled')) {
+              return;
+            };
             highlightKey(userNodeDivs[i], bombNodeSelect);
             break;
           case 'Weights':
-            // hiddenField.value = weightNodeSelect;
+            if (userNodeDivs[i].classList.contains('disabled')) {
+              return;
+            };
             highlightKey(userNodeDivs[i], weightNodeSelect);
             break;
           case 'Walls':
-            // hiddenField.value = wallNodeSelect;
             highlightKey(userNodeDivs[i], wallNodeSelect);
             break;
         };
@@ -264,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hiddenField.value == weightNodeSelect) {
       mouseDown = true;
       e.target.classList.add('weight-node');
-    }
+    };
   });
 
   grid.addEventListener('mouseup', () => {
@@ -350,3 +357,74 @@ export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelec
 // - change arrow rotation
 // - add mazes and patterns
 // - clear walls and weights button
+
+
+// changing algorithm message
+
+algoBtnSelector.addEventListener('change', () => {
+  switch (algoBtnSelector.value) {
+    case 'dijkstra':
+      algoMsg.textContent = 'Dijkstra\'s Algorithm is weighted and guarantees the shortest path';
+      weightDivBtn.classList.remove('disabled');
+      flagDivBtn.classList.remove('disabled');
+      break;
+
+    case 'A* search':
+      algoMsg.textContent = 'A* Search is weighted and guarantees the shortest path';
+      weightDivBtn.classList.remove('disabled');
+      flagDivBtn.classList.remove('disabled');
+      break;
+
+    case 'Greedy Best-first Search':
+      algoMsg.textContent = 'Greedy Best-First Search is weighted but does not guarantee the shortest path';
+      weightDivBtn.classList.remove('disabled');
+      flagDivBtn.classList.remove('disabled');
+      break;
+
+    case 'Breadth-first search':
+      algoMsg.textContent = 'Breadth First Search is unweighted and guarantees the shortest path';
+      weightDivBtn.classList.add('disabled');
+      weightDivBtn.classList.remove('selected-key-node');
+      flagDivBtn.classList.remove('disabled');
+      hiddenField.value = '';
+      removeWeights();
+      break;
+
+    case 'Depth-first search':
+      algoMsg.textContent = 'Depth First Search is unweighted and does not guarantee the shortest path';
+      weightDivBtn.classList.add('disabled');
+      weightDivBtn.classList.remove('selected-key-node');
+      flagDivBtn.classList.remove('disabled');
+      hiddenField.value = '';
+      removeWeights();
+      break;
+
+    case 'Bidirectional BFS':
+      algoMsg.textContent = 'Bidirectional BFS is unweighted and guarantees the shortest path';
+      weightDivBtn.classList.add('disabled');
+      weightDivBtn.classList.remove('selected-key-node');
+      flagDivBtn.classList.add('disabled');
+      flagDivBtn.classList.remove('selected-key-node');
+      hiddenField.value = '';
+      removeWeights();
+      removeFlag();
+      break;
+
+    default:
+      break;
+  };
+});
+
+const removeWeights = () => {
+  gridCells.forEach((gridcell) => {
+    gridcell.classList.remove('weight-node');
+  });
+};
+
+const removeFlag = () => {
+  gridCells.forEach((gridcell) => {
+    if (gridcell.innerHTML == bombNodeSelect) {
+      gridcell.innerHTML = '';
+    };
+  });
+};
