@@ -350,8 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect };
-
 // TO DO:
 // - improve animations
 // - change arrow rotation
@@ -359,7 +357,7 @@ export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelec
 // - clear walls and weights button
 
 
-// changing algorithm message
+// Changing algorithm message
 
 algoBtnSelector.addEventListener('change', () => {
   switch (algoBtnSelector.value) {
@@ -386,7 +384,6 @@ algoBtnSelector.addEventListener('change', () => {
       weightDivBtn.classList.add('disabled');
       weightDivBtn.classList.remove('selected-key-node');
       flagDivBtn.classList.remove('disabled');
-      hiddenField.value = '';
       removeWeights();
       break;
 
@@ -395,7 +392,6 @@ algoBtnSelector.addEventListener('change', () => {
       weightDivBtn.classList.add('disabled');
       weightDivBtn.classList.remove('selected-key-node');
       flagDivBtn.classList.remove('disabled');
-      hiddenField.value = '';
       removeWeights();
       break;
 
@@ -405,7 +401,6 @@ algoBtnSelector.addEventListener('change', () => {
       weightDivBtn.classList.remove('selected-key-node');
       flagDivBtn.classList.add('disabled');
       flagDivBtn.classList.remove('selected-key-node');
-      hiddenField.value = '';
       removeWeights();
       removeFlag();
       break;
@@ -419,6 +414,10 @@ const removeWeights = () => {
   gridCells.forEach((gridcell) => {
     gridcell.classList.remove('weight-node');
   });
+
+  if (hiddenField.value === weightNodeSelect) {
+    hiddenField.value = '';
+  };
 };
 
 const removeFlag = () => {
@@ -427,4 +426,10 @@ const removeFlag = () => {
       gridcell.innerHTML = '';
     };
   });
+
+  if (hiddenField.value === bombNodeSelect) {
+    hiddenField.value = '';
+  };
 };
+
+export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect};
