@@ -248,9 +248,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ADDING A USER SELECTED ICON INTO A GRID CELL
 
-  // WALL NODES
+  // WALL & WEIGHT NODES
   let mouseDown;
+  const nodes = [startNodeSelect, targetNodeSelect, bombNodeSelect];
   grid.addEventListener('mousedown', (e) => {
+    if (nodes.includes(e.target.outerHTML)) {
+      return;
+    };
+
     if (hiddenField.value == wallNodeSelect && e.target.classList.contains('wall-node')) {
       mouseDown = true;
       e.target.classList.remove('wall-node');
@@ -279,6 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   grid.addEventListener('mouseover', (e) => {
+    if (nodes.includes(e.target.outerHTML) || e.target.innerHTML != '') {
+      return;
+    };
+
     if (mouseDown == true && e.target.classList.contains('wall-node')) {
       e.target.classList.remove('wall-node');
       return;
@@ -309,20 +318,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (hiddenField.value == wallNodeSelect) {
         return;
-      }
+      };
 
       if (hiddenField.value == weightNodeSelect) {
-        addRemoveWeightNode(e, gridcell);
         return;
-      }
+      };
+
+      if (nodes.includes(gridcell.innerHTML) && hiddenfieldValue != gridcell.innerHTML) {
+        return;
+      };
 
       // removing a placed start/target from a gridcell
-      if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue) {
+      if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue &&
+        nodes.includes(e.target.outerHTML) == false &&
+        e.target.classList.contains('weight-node') == false &&
+        e.target.classList.contains('wall-node') == false ) {
         gridcell.innerHTML = '';
       };
 
       // adding a different node to a new gridcell
-      if ((e.target == gridcell || e.target == gridcell.firstElementChild) && gridcell.innerHTML != hiddenfieldValue) {
+      if ((e.target == gridcell || e.target == gridcell.firstElementChild) && gridcell.innerHTML != hiddenfieldValue &&
+      gridcell.classList.contains('weight-node') == false &&
+      gridcell.classList.contains('wall-node') == false
+      ) {
         gridcell.innerHTML = hiddenField.value;
       };
     });
@@ -432,4 +450,4 @@ const removeFlag = () => {
   };
 };
 
-export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect};
+export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect };
