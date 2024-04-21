@@ -240,7 +240,7 @@ const rotationCost = (currentNode, neighbour) => {
   switch (result) {
     case (0):
       // add 1 to number of steps (no rotation)
-      neighbour.dataset.path = shortestPathToCurrentNode(currentNode, neighbour) + 1; // needs to be function
+      neighbour.dataset.path = shortestPathToCurrentNode(currentNode, neighbour) + 1;
       return;
     case (1):
       // add 2 to shortest path, quarter turn

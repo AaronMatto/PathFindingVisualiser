@@ -8,6 +8,8 @@ import { breadthFS } from './breadthFS.js';
 import { depthFirstSearch } from './depthFS.js';
 import { bidirectionalBFS } from './bidirectionalBFS.js';
 
+import { recursiveDivision } from './mazes/recursiveDivision.js';
+
 // CREATING THE GRID AND COORDINATE SYSTEM FOR EACH CELL AND ADDING DEFAULT START AND TARGET
 export const path = [];
 export const path2 = [];
@@ -37,6 +39,8 @@ const gridCells = Array.from(document.getElementsByClassName('node'));
 const algoBtnSelector = document.getElementById('algo-button');
 const clearBoardBtn = document.getElementById('clearBoardBtn');
 const clearPathBtn = document.getElementById('clearPathBtn');
+const clearWallsAndWeightsBtn = document.getElementById('walls-weights-btn');
+const mazeBtn = document.getElementById('maze-button');
 
 // USER SELECTING A NODE FROM THE KEY
 const keyForNodes = document.querySelector('#main .key');
@@ -44,7 +48,6 @@ const userNodeDivs = Array.from(document.querySelectorAll('#main .key .user-slct
 const hiddenField = document.getElementById('hiddenField');
 const weightDivBtn = document.getElementById('weight-div-btn');
 const flagDivBtn = document.getElementById('flag-div-btn');
-
 
 // To populate hidden field when user clicks on which node they want to place in the grid
 const startNodeMouseOver = '<img src="./images/right-arrow.png" class="mouseover-grid-icons">';
@@ -73,6 +76,9 @@ const addDelay = async (userChoice) => {
       return;
     case 'slow':
       await delay(910);
+      return;
+    case 'maze':
+      await delay(10);
       return;
   };
 };
@@ -329,12 +335,17 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       // removing a placed start/target from a gridcell
-      if ((e.target != gridcell.firstElementChild) && gridcell.innerHTML == hiddenfieldValue &&
+      const srcStartIndex = hiddenfieldValue.indexOf('src="') + 5;
+      const srcEndIndex = hiddenfieldValue.indexOf('"', srcStartIndex);
+      const srcValue = hiddenfieldValue.substring(srcStartIndex, srcEndIndex);
+      const gridCellSrcValue = gridcell.innerHTML.substring(srcStartIndex, srcEndIndex);
+
+      if ((e.target != gridcell.firstElementChild) && gridCellSrcValue == srcValue &&
         nodes.includes(e.target.outerHTML) == false &&
         e.target.classList.contains('weight-node') == false &&
         e.target.classList.contains('wall-node') == false ) {
         gridcell.innerHTML = '';
-      };
+      }; // ensure integreity of gridcell.innerhtml == hiddenfieldValue by using gridcell.innerHTML.src == hiddenfieldValue.splice
 
       // adding a different node to a new gridcell
       if ((e.target == gridcell || e.target == gridcell.firstElementChild) && gridcell.innerHTML != hiddenfieldValue &&
@@ -369,14 +380,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // TO DO:
-// - improve animations
-// - change arrow rotation
+// - improve animations and colour scheme
+// - change arrow rotation and move it along shortest path
 // - add mazes and patterns
-// - clear walls and weights button
-
+// - scalable with view
 
 // Changing algorithm message
-
 algoBtnSelector.addEventListener('change', () => {
   switch (algoBtnSelector.value) {
     case 'dijkstra':
@@ -450,4 +459,27 @@ const removeFlag = () => {
   };
 };
 
-export { gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect };
+
+// Remove Walls and weights btn
+clearWallsAndWeightsBtn.addEventListener('click', () => {
+  gridCells.forEach((gridcell) => {
+    if (gridcell.classList.contains('wall-node') || gridcell.classList.contains('weight-node')) {
+      gridcell.classList.remove('wall-node');
+      gridcell.classList.remove('weight-node');
+    };
+  });
+});
+
+
+// Mazes
+mazeBtn.addEventListener('change', () => {
+  switch (mazeBtn.value) {
+    case 'recDivision':
+      recursiveDivision();
+      break;
+
+    default: break;
+  };
+});
+
+export {gridCells, startNodeSelect, targetNodeSelect, addDelay, weightNodeSelect, bombNodeSelect};
