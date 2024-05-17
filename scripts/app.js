@@ -2,7 +2,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
 import { dijkstraAlgo } from './dijkstra.js';
-import { aStarSearch } from './a*.js';
+import { aStarSearch } from './aStar.js';
 import { greedyBFS } from './greedyBFS.js';
 import { breadthFS } from './breadthFS.js';
 import { depthFirstSearch } from './depthFS.js';
