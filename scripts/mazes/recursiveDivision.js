@@ -3,122 +3,164 @@
 
 import {gridCells, targetNodeSelect, bombNodeSelect, addDelay, path} from '../app.js';
 
+let wallCounter = 0;
+
+const xLowerBoundary = 1;
+const xHigherBoundary = 58;
+const yLowerBoundary = 1;
+const yHigherBoundary = 18;
 
 export const recursiveDivision = async (yEnd, yStart, xEnd, xStart) => {
-// excluded: any coords of already existing walls, gaps, or row/col either side of an exisiting wall
-  const excludedHorizontalCoords = [];
-  const excludedVerticalCoords = [];
 
-  let horizontalWallCoord = getRandomCoord(17, 2);
-  let verticalWallCoord = getRandomCoord(57, 2);
+  createVerticalWall();
 
   // base condition
 
-  // only on first iteration
-  await createPerimeter();
 
   // every iteration
-  await createWalls(verticalWallCoord, horizontalWallCoord);
 
-  addGapsInVerticalWall(horizontalWallCoord, verticalWallCoord);
 
-  addGapInHorizontalWall(initialHorizontalWallCoord, initialVerticalWallCoord);
+
 
   // call function again
 };
 
 
-const createPerimeter = async () => {
-  let perimeter = [];
 
-  const LeftXBorder = Array.from(document.querySelectorAll('[data-x="0"]'));
-  const RightXBorder = Array.from(document.querySelectorAll('[data-x="59"]'));
-  const TopYBorder = Array.from(document.querySelectorAll('[data-y="0"]'));
-  const BottomYBorder = Array.from(document.querySelectorAll('[data-y="19"]'));
 
-  perimeter = perimeter.concat(TopYBorder, RightXBorder, LeftXBorder, BottomYBorder);
 
-  for (let i = 0; i < perimeter.length; i++) {
+const createVerticalWall = () => {
 
-    if (perimeter[i].innerHTML == '') {
-      perimeter[i].classList.add('wall-node');
+  // random x coord between 2 and 57
+
+  var startPointX = randomPoint(2, 57);
+
+  var wallDivs = Array.from(document.querySelectorAll(`[data-x='${startPointX}']`));
+
+
+  wallDivs.forEach(wall => {
+
+
+    var validationResult = validateWallSegment(wall, true);
+
+    if (validationResult == true) {
+      wall.classList.add('wall-node');
     };
 
-    await addDelay('maze');
-  };
+  });
+
+  // draw wall all the way down
+
+  // set a wall id
+
+  // add random gap between y = 0 and y = 19
+
+  // create list of valid extension points. For an extension point to be valid it must have at least 2 squares free
+  // in either direction. Each extension point must maintain which directions it can validly extend into 
+  // (R/L) in this case. The random gap cannot be a valid extension point.
+
+  // add the wall to the dictionary. The key is the wall id and the value is the list of valid extension points.
+
+
+
+
 };
 
-const createWalls = async (randomX, randomY) => {
-  await horizontalSplit(randomY);
-  await verticalSplit(randomX);
+
+const randomPoint = (inclusiveStart, exclusiveEnd) => {
+  return Math.floor(Math.random() * (exclusiveEnd)) + inclusiveStart;
 };
 
+const validateWallSegment = (currentCell, isVertical) => {
 
-const getRandomCoord = (max, min) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+  if (isVertical) {
 
+    var currentX = currentCell.getAttribute('data-x');
+    var currentY = currentCell.getAttribute('data-y');
 
-const horizontalSplit = async (randomYCoord) => {
-  const randomRowCells = createArrayFromRowOrColumn('y', randomYCoord);
+    var leftNeighbour = findNeighbour(currentX, currentY, 0, 1);
+    var rightNeighbour =  findNeighbour(currentX, currentY, 0, -1);
 
-  for (let i = 0; i < randomRowCells.length; i++) {
-    if (randomRowCells[i].innerHTML == '') {
-      randomRowCells[i].classList.add('wall-node');
+    var cellTwoToLeft = findNeighbour(currentX, currentY, 0, 2);
+    var cellTwoToRight = findNeighbour(currentX, currentY, 0, -2);
+
+    var canExtendLeft = false;
+    var canExtendRight = false;
+
+    if (leftNeighbour.classList.contains('wall-node') == false && cellTwoToLeft.classList.contains('wall-node') == false) {
+      // valid extension point for left
+      canExtendLeft = true;
     };
-    await addDelay('maze');
-  };
 
-};
-
-const verticalSplit = async (randomXCoord) => {
-  const randomColCells = createArrayFromRowOrColumn('x', randomXCoord);
-
-  for (let i = 0; i < randomColCells.length; i++) {
-    if (randomColCells[i].innerHTML == '') {
-      randomColCells[i].classList.add('wall-node');
+    if (rightNeighbour.classList.contains('wall-node') == false && cellTwoToRight.classList.contains('wall-node') == false) {
+      // valid extension point for right
+      canExtendRight = true;
     };
-    await addDelay('maze');
-  };
-};
-
-
-const addGapsInVerticalWall = (horizontalWallCoord, verticalWallCoord) => {
-  const topGap = getRandomCoord(horizontalWallCoord - 1, 1);
-
-  const bottomGap = getRandomCoord(18, horizontalWallCoord + 1);
-
-  const verticalWall = createArrayFromRowOrColumn('x', verticalWallCoord);
-
-  for (let i = 0; i < verticalWall.length; i++) {
-    if (verticalWall[i].dataset.y == topGap || verticalWall[i].dataset.y == bottomGap) {
-      verticalWall[i].classList.remove('wall-node');
+    
+    if (canExtendLeft == false && canExtendRight == false) {
+      // invalid extension point on the current wall being added.
+      return false;
     };
+
+
   };
 
-  return [topGap, bottomGap];
+
+
 };
 
-const addGapInHorizontalWall = (horizontalWallCoord, verticalWallCoord) => {
-  let gap;
+const getCoord = (cell, xOrY) => {
+  const coord = cell.getAttribute(`data-${xOrY}`);
+  return parseInt(coord);
+};
 
-  if (Math.random() > 0.49) {
-    gap = getRandomCoord(verticalWallCoord - 1, 1);
-  } else {
-    gap = getRandomCoord(58, verticalWallCoord + 1);
+const findNeighbour = (currentX, currentY, ySubtrahend, xSubtrahend) => {
+  const neighbour = gridCells.find((cell) => parseInt(getCoord(cell, 'y')) == currentY - ySubtrahend &&
+    parseInt(getCoord(cell, 'x')) == currentX - xSubtrahend);
+  return neighbour;
+};
+
+
+class VerticalWall {
+
+  constructor(yStart, yEnd, validExtensionPoints ) {
+    this.yStart = yStart
+    this.yEnd = yEnd
+    this.validExtensionPoints = validExtensionPoints
+    this.Id = wallCounter++;
+    
+  };
+
+
+
+};
+
+
+class HorizontalWall {
+
+
+  constructor(xStart, ) {
+
+    this.xStart = 
+    this.xEnd
+    this.validExtensionPoints = []
+    this.Id = wallCounter++;
+    
+  };
+
+
+
+};
+
+
+class ExtensionPoint {
+
+  // if an extensionpoint is not valid at all, it shouldnt list in the wall's list of valid extension points.
+
+  constructor(isValidLeft, isValidRight) {
+
+    
   }
 
-  const horizontalWall = createArrayFromRowOrColumn('y', horizontalWallCoord);
+}
 
-  for (let i = 0; i < horizontalWall.length; i++) {
-    if (horizontalWall[i].dataset.x == gap) {
-      horizontalWall[i].classList.remove('wall-node');
-    };
-  };
-
-  return gap;
-};
-
-const createArrayFromRowOrColumn = (xOrY, coord) => {
-  return Array.from(document.querySelectorAll(`[data-${xOrY}="${coord}"]`));
-};
